@@ -4,6 +4,7 @@
   become: true
   gather_facts: true
   roles:
+    - fetch-wg-keys
     - role: config-lg
       lg_configure_proxy: true
       lg_configure_server: false
