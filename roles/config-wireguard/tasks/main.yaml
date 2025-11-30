@@ -11,11 +11,14 @@
 - name: Setup WireGuard tunnels for nodes
   ansible.builtin.include_tasks:
     file: node.yaml
+  when: task_type is undefined or task_type == 'node'
 
 - name: Setup WireGuard tunnels for DN42 peers
   ansible.builtin.include_tasks:
     file: dn42.yaml
-  when: inventory_hostname in groups.get(dn42_group, [])
+  when:
+    - inventory_hostname in groups.get(dn42_group, [])
+    - task_type is undefined or task_type == 'dn42'
 
 - name: Restart WireGuard services when configuration changes
   ansible.builtin.systemd:

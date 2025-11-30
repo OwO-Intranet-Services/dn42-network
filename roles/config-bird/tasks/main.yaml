@@ -36,6 +36,7 @@
     - peer != inventory_hostname
     - target is undefined or target == (node_prefix ~ peer | replace('-', '_'))
     - not (remove | default(false))
+    - task_type is undefined or task_type == 'node'
 
 - name: Remove per-node BIRD configurations
   ansible.builtin.file:
@@ -49,6 +50,7 @@
     - peer != inventory_hostname
     - target is undefined or target == (node_prefix ~ peer | replace('-', '_'))
     - remove | default(false)
+    - task_type is undefined or task_type == 'node'
 
 - name: Render DN42 peer configurations
   ansible.builtin.template:
@@ -62,6 +64,7 @@
     - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
     - target is undefined or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
     - not (remove | default(false))
+    - task_type is undefined or task_type == 'dn42'
   notify: Reload BIRD configuration
 
 - name: Remove DN42 peer configurations
@@ -73,4 +76,5 @@
     - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
     - target is undefined or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
     - remove | default(false)
+    - task_type is undefined or task_type == 'dn42'
   notify: Reload BIRD configuration
