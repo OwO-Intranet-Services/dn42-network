@@ -5,6 +5,9 @@
 PrivateKey = {{ wireguard_private_key }}
 ListenPort = {{ 30000 + peer_order }}
 Table = off
+{% if wireguard_peer_default_mtu %}
+MTU = {{ wireguard_peer_default_mtu }}
+{% endif %}
 PostUp = ip addr add {{ inter_node_lla_prefix }}{{ order }}/64 dev %i
 
 [Peer]

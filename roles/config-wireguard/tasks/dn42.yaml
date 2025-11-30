@@ -15,6 +15,7 @@
       own6: "{{ item.wg.own6 | default(none) }}"
       psk: "{{ item.wg.psk | default(none) }}"
       keepalive: "{{ item.wg.keepalive | default(none) }}"
+      mtu: "{{ item.wg.mtu | default(wireguard_peer_default_mtu | default(none)) }}"
   loop: "{{ vars[inventory_hostname].peers | default([]) }}"
   loop_control:
     label: "{{ item.bgp.asn }}"

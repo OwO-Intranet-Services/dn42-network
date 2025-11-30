@@ -13,3 +13,5 @@ wireguard_allowed_ips_internal:
   - ff02::/16
 
 inter_node_lla_prefix: "fe80::1023:"
+
+wireguard_peer_default_mtu: 1360
