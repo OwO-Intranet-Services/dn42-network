@@ -19,9 +19,50 @@
   loop: "{{ vars[inventory_hostname].peers | default([]) }}"
   loop_control:
     label: "{{ item.bgp.asn }}"
-  when: target is undefined or
-        target == peer_name or
-        target == (node_prefix ~ inventory_hostname | replace('-', '_'))
+  when:
+    - not (item.removed | default(false))
+    - target is undefined or
+      target == peer_name or
+      target == (node_prefix ~ inventory_hostname | replace('-', '_'))
+
+- name: Build removed DN42 peer descriptors
+  ansible.builtin.set_fact:
+    wg_dn42_removed_peer_list: "{{ (wg_dn42_removed_peer_list | default([])) + [peer_entry] }}"
+  vars:
+    peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
+    peer_entry:
+      name: "{{ peer_name }}"
+      interface_name: "{{ peer_name }}"
+  loop: "{{ vars[inventory_hostname].peers | default([]) }}"
+  loop_control:
+    label: "{{ item.bgp.asn }}"
+  when:
+    - item.removed | default(false)
+    - target is undefined or
+      target == peer_name or
+      target == (node_prefix ~ inventory_hostname | replace('-', '_'))
+
+- name: Remove WireGuard configurations for removed DN42 peers
+  ansible.builtin.file:
+    path: "/etc/wireguard/{{ peer.name }}.conf"
+    state: absent
+  loop: "{{ wg_dn42_removed_peer_list | default([]) }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.name }}"
+  when: (wg_dn42_removed_peer_list | default([])) | length > 0
+
+- name: Stop and disable WireGuard services for removed DN42 peers
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ peer.interface_name }}"
+    state: stopped
+    enabled: false
+  loop: "{{ wg_dn42_removed_peer_list | default([]) }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.interface_name }}"
+  when: (wg_dn42_removed_peer_list | default([])) | length > 0
+  failed_when: false
 
 - name: Render per-peer WireGuard configurations for DN42 peers
   ansible.builtin.template:

@@ -66,11 +66,27 @@
     mode: '0644'
   loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
   when:
-    - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
+    - lookup('vars', inventory_hostname) is defined and
+      lookup('vars', inventory_hostname).peers is defined
     - target is undefined or
       target == (dn42_prefix ~ (item.bgp.asn | string)[-4:]) or
       target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - not (remove | default(false))
+    - not (item.removed | default(false))
+    - task_type is undefined or task_type == 'dn42'
+  notify: Reload BIRD configuration
+
+- name: Remove removed DN42 peer configurations
+  ansible.builtin.file:
+    path: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
+    state: absent
+  loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+  when:
+    - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
+    - target is undefined
+      or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
+      or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
+    - item.removed | default(false)
     - task_type is undefined or task_type == 'dn42'
   notify: Reload BIRD configuration
 
