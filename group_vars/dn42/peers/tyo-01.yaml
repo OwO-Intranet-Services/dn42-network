@@ -32,6 +32,7 @@ tyo-01:
         endpoint: tyo-jp.ecs.iyoroy-infra.top:21023
         wg_pubkey: "Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4="
         peer6: fe80::2024
+        mtu: 1240
       bgp:
         asn: 4242422024
         ipv4: false
