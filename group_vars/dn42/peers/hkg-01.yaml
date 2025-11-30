@@ -25,7 +25,7 @@ hkg-01:
         mp_bgp: true
     - comment: yuyuko
       wg:
-        endpoint: hk01.dn42.yuyuko.com:21117
+        endpoint: hk01.dn42.yuyuko.com:21023
         wg_pubkey: "gqwdC9p6jdSy80oRxdatr9QdSrNMLCvRMadaCeOBqDY="
         peer6: fe80::1117
       bgp:
@@ -45,6 +45,7 @@ hkg-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+      removed: true
     - comment: potat0
       wg:
         endpoint: hkg.node.potat0.cc:21023
@@ -80,7 +81,7 @@ hkg-01:
         mp_bgp: true
     - comment: cowgl
       wg:
-        endpoint: hkg.node.cowgl.xyz:31023
+        endpoint: v6.hkg.node.cowgl.xyz:31023
         wg_pubkey: "mGGBczSVKW+7UKRquI2GkbKrfxiATv9r4uF5WTP+vWI="
         peer6: fe80::3999
       bgp:
@@ -102,7 +103,7 @@ hkg-01:
         mp_bgp: true
     - comment: mhr
       wg:
-        endpoint: hk-hkg1.bb.mhr.hk:21023
+        endpoint: 6.hk-hkg1.bb.mhr.hk:21023
         wg_pubkey: "PUjqyQ3ATLp8Cxp3YFVQ44QLoZEpoPgdXsbMfXhDMRk="
         peer6: fe80::2279
       bgp:
