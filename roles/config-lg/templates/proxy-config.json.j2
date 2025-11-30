@@ -23,7 +23,7 @@
 		'ipv4': (ownip | mandatory),
 		'ipv6': (ownip6 | mandatory),
 		'link_local_ipv6': (link_local_ipv6 | mandatory),
-		'wg_pubkey': (wg_pubkey | mandatory),
+		'wg_pubkey': (wireguard_public_key | mandatory),
 		'endpoint': (ansible_host | mandatory),
 		'comment': (peering_comment | default(None)),
 	}

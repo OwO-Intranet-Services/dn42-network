@@ -51,8 +51,8 @@
 - name: Read WireGuard public key
   ansible.builtin.slurp:
     src: /etc/wireguard/publickey
-  register: wg_pubkey
+  register: __wg_pubkey
 
 - name: Print WireGuard public key
   ansible.builtin.debug:
-    msg: "Node {{ inventory_hostname }} WireGuard Public Key: {{ wg_pubkey.content | b64decode | trim }}"
+    msg: "Node {{ inventory_hostname }} WireGuard Public Key: {{ __wg_pubkey.content | b64decode | trim }}"

@@ -13,10 +13,8 @@
   vars:
     peer_hostvars: "{{ hostvars[peer] | default({}) }}"
     peer_public_key: >-
-      {{ peer_hostvars.peer.wg_pubkey
-         if peer_hostvars.peer is defined and peer_hostvars.peer.wg_pubkey is defined
-         else (peer_hostvars.wg_pubkey if peer_hostvars.wg_pubkey is defined
-         else (peer_hostvars.wireguard_public_key | default(''))) }}
+      {{ (peer_hostvars.wg_pubkey if peer_hostvars.wg_pubkey is defined
+         else (peer_hostvars.wireguard_public_key | mandatory )) }}
     peer_entry:
       name: "{{ peer }}"
       interface_name: "{{ node_prefix }}{{ peer | replace('-', '_') }}"
@@ -67,3 +65,11 @@
     wg_rendered_peers: >-
       {{ (wg_rendered_peers | default([])) + node_peer_templates.results }}
   when: node_peer_templates is defined
+
+- name: Set fact for removed WireGuard peers
+  ansible.builtin.set_fact:
+    wg_removed_peers: >-
+      {{ (wg_removed_peers | default([])) + node_peer_templates.results }}
+  when:
+    - node_peer_templates is defined
+    - remove | default(false)

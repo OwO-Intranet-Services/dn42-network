@@ -11,7 +11,6 @@ all:
           ownip6block: fd42:4242:1023:65::/64
           link_local_ipv6: fe80::1023:2
           ip_support: dual
-          wg_pubkey: "nwMyp5pohAUDaaT2oVQQZiE/EI31DnnxVqAcKIWSuiM="
 
         hkg-01:
           ansible_host: hkg-01.node.svc.moe
@@ -20,7 +19,6 @@ all:
           ownip6block: fd42:4242:1023:66::/64
           link_local_ipv6: fe80::1023:2
           ip_support: dual
-          wg_pubkey: "dPTukyAM6scP2dlCYiP55BDb0lmuBhX7Rm4G8p/9awA="
 
         tyo-01:
           ansible_host: tyo-01.node.svc.moe
@@ -29,7 +27,6 @@ all:
           ownip6block: fd42:4242:1023:67::/64
           link_local_ipv6: fe80::1023:2
           ip_support: dual
-          wg_pubkey: "pv0bwaUm/ppI7Yaoi7w0qrXX5EW7Qo2njTSNG19AHgM="
 
         dls-01:
           ansible_host: dls-01.node.svc.moe
@@ -38,7 +35,6 @@ all:
           ownip6block: fd42:4242:1023:68::/64
           link_local_ipv6: fe80::1023:2
           ip_support: ipv4
-          wg_pubkey: "NWNxHIL6Fdwk8AkflKAlpdpeo8l3fYyMZH+JcTug6iQ="
           peering_comment: "IPv4 only"
 
         lax-02:

@@ -37,7 +37,7 @@
     - (wg_dn42_peer_list | default([])) | length > 0
     - not (remove | default(false))
 
-- name: Remove per-peer WireGuard configurations for DN42 peers
+- name: Remove per-peer WireGuard configurations
   ansible.builtin.file:
     path: "/etc/wireguard/{{ peer.name }}.conf"
     state: absent
@@ -54,3 +54,11 @@
     wg_rendered_peers: >-
       {{ (wg_rendered_peers | default([])) + dn42_peer_templates.results }}
   when: dn42_peer_templates is defined
+
+- name: Set fact for removed WireGuard peers
+  ansible.builtin.set_fact:
+    wg_removed_peers: >-
+      {{ (wg_removed_peers | default([])) + dn42_peer_templates.results }}
+  when:
+    - dn42_peer_templates is defined
+    - remove | default(false)

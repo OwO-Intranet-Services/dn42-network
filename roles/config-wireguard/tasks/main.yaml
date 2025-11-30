@@ -42,7 +42,7 @@
     name: "wg-quick@{{ item.peer.interface_name }}"
     state: stopped
     enabled: false
-  loop: "{{ wg_rendered_peers | default([]) }}"
+  loop: "{{ wg_removed_peers | default([]) }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
   when: remove | default(false)

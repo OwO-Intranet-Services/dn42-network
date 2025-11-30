@@ -2,9 +2,9 @@
 PrivateKey = {{ wireguard_private_key }}
 ListenPort = {{ peer.port }}
 Table = off
-# {% if peer.mtu %}
-# MTU = {{ peer.mtu }}
-# {% endif %}
+{% if peer.mtu %}
+MTU = {{ peer.mtu }}
+{% endif %}
 
 {% if peer.peer4 %}
 PostUp = ip addr add {{ ownip }} peer {{ peer.peer4 }} dev %i

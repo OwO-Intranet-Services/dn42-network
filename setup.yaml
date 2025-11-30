@@ -1,13 +1,20 @@
 ---
 - name: System Configuration
-  hosts: dn42
+  hosts: nodes
   become: true
   gather_facts: true
   roles:
     - config-system
 
+- name: Fetch WireGuard Keys
+  hosts: nodes
+  become: true
+  gather_facts: false
+  roles:
+    - fetch-wg-keys
+
 - name: Network Configuration
-  hosts: dn42
+  hosts: nodes
   become: true
   gather_facts: true
   roles:
