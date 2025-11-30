@@ -29,6 +29,9 @@
     owner: root
     group: "{{ dns_service.group }}"
     mode: "0644"
+  run_once: true
+  delegate_to: "{{ item }}"
+  loop: "{{ ansible_play_hosts }}"
   notify: Restart bind9
 
 - name: Render DNS zone files
@@ -38,10 +41,13 @@
     owner: "{{ dns_service.user }}"
     group: "{{ dns_service.group }}"
     mode: "0644"
-  loop: "{{ dns_zones | selectattr('type', 'equalto', 'master') | list }}"
+  vars:
+    zone: "{{ item[1] }}"
+  run_once: true
+  delegate_to: "{{ item[0] }}"
+  loop: "{{ ansible_play_hosts | product(dns_zones | selectattr('type', 'equalto', 'master') | list) | list }}"
   loop_control:
-    label: "{{ zone.name }}"
-    loop_var: zone
+    label: "{{ item[1].name }} -> {{ item[0] }}"
   notify: Restart bind9
 
 - name: Ensure BIND is enabled and started
