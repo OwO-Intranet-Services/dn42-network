@@ -7,6 +7,39 @@
   ansible.builtin.set_fact:
     wg_node_self_order: "{{ node_hosts.index(inventory_hostname) + 1 }}"
 
+- name: Generate WireGuard PSKs
+  ansible.builtin.shell:
+    cmd: |
+      umask 077
+      if [ ! -f /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key ]; then
+        wg genpsk > /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key
+      fi
+      cat /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key
+  delegate_to: "{{ item.0 }}"
+  loop: "{{ node_hosts | product(node_hosts) | list }}"
+  loop_control:
+    label: "{{ item.0 }} -> {{ item.1 }}"
+  when:
+    - item.0 < item.1
+    - (inventory_hostname == item.0 and item.1 in node_hosts) or (inventory_hostname == item.1 and item.0 in node_hosts)
+    - item.0 != item.1
+  register: wg_psk_results
+  changed_when: false
+  no_log: true
+
+- name: Parse WireGuard PSKs
+  ansible.builtin.set_fact:
+    wg_peer_psks: >-
+      {{ wg_peer_psks | default({}) | combine({
+        (item.item.0 if inventory_hostname == item.item.1 else item.item.1): item.stdout
+      }) }}
+  loop: "{{ wg_psk_results.results }}"
+  loop_control:
+    label: "{{ item.item.0 }} -> {{ item.item.1 }}"
+  when:
+    - item.skipped is not defined or not item.skipped
+    - item.stdout is defined
+
 - name: Build WireGuard peer descriptors
   ansible.builtin.set_fact:
     wg_node_peer_list: "{{ (wg_node_peer_list | default([])) + [peer_entry] }}"
@@ -21,9 +54,11 @@
       peer_order: "{{ node_hosts.index(peer) + 1 }}"
       endpoint_host: "{{ peer_hostvars.ansible_host | mandatory }}"
       public_key: "{{ peer_public_key }}"
+      preshared_key: "{{ wg_peer_psks[peer] }}"
   loop: "{{ node_hosts }}"
   loop_control:
     loop_var: peer
+    label: "{{ peer }}"
   when:
     - peer != inventory_hostname
     - >-

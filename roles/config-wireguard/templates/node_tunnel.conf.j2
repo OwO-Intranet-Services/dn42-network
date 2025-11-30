@@ -13,4 +13,5 @@ PostUp = ip addr add {{ inter_node_lla_prefix }}{{ order }}/64 dev %i
 [Peer]
 PublicKey = {{ peer.public_key }}
 Endpoint = {{ peer.endpoint_host }}:{{ 30000 + order }}
+PresharedKey = {{ peer.preshared_key }}
 AllowedIPs = {{ (wireguard_allowed_ips + wireguard_allowed_ips_internal) | join(', ') }}
