@@ -25,12 +25,6 @@
   ansible.builtin.systemd:
     name: "wg-quick@{{ item }}"
     state: stopped
-  loop: "{{ wg_all_cleanup_interfaces }}"
-  ignore_errors: true
-
-- name: Disable WireGuard services
-  ansible.builtin.systemd:
-    name: "wg-quick@{{ item }}"
     enabled: false
   loop: "{{ wg_all_cleanup_interfaces }}"
   ignore_errors: true
@@ -40,3 +34,19 @@
     path: "/etc/wireguard/{{ item }}.conf"
     state: absent
   loop: "{{ wg_all_cleanup_interfaces }}"
+
+- name: Find PSK files
+  ansible.builtin.find:
+    paths: /etc/wireguard
+    patterns:
+      - "psk_{{ inventory_hostname }}_*.key"
+      - "psk_*_{{ inventory_hostname }}.key"
+  register: wg_psk_files
+
+- name: Remove PSK files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ wg_psk_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
