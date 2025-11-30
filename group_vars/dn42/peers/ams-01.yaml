@@ -44,3 +44,14 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+    - comment: factor2431
+      wg:
+        endpoint: de-nue.factor2431.com:21023
+        wg_pubkey: "I9ph8+xOycyma708SXY1ajm9/zMSBsz6eIKxF41jiHI="
+        peer6: fe80::1534
+      bgp:
+        asn: 4242421534
+        ipv4: false
+        ipv6: true
+        extended_next_hop: true
+        mp_bgp: true

@@ -133,3 +133,14 @@ hkg-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+    - comment: factor2431
+      wg:
+        endpoint: hk-hkg.factor2431.com:21023
+        wg_pubkey: "VncCNj0rfJ8xF4ms7yqvt+WzAS0ePC+pLiiG4FPPHkw="
+        peer6: fe80::1534
+      bgp:
+        asn: 4242421534
+        ipv4: false
+        ipv6: true
+        extended_next_hop: true
+        mp_bgp: true

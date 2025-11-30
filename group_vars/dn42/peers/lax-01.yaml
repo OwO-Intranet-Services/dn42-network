@@ -91,3 +91,14 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: factor2431
+    wg:
+      endpoint: us-lax.factor2431.com:21023
+      wg_pubkey: "2ULgc/w+4jx5CKqpTeT1FoZhL3DrlELrI8Nvl/Hq7To="
+      peer6: fe80::1534
+    bgp:
+      asn: 4242421534
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
