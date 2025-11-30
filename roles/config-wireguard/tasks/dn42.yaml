@@ -19,7 +19,9 @@
   loop: "{{ vars[inventory_hostname].peers | default([]) }}"
   loop_control:
     label: "{{ item.bgp.asn }}"
-  when: target is undefined or target == peer_name
+  when: target is undefined or
+        target == peer_name or
+        target == (node_prefix ~ inventory_hostname | replace('-', '_'))
 
 - name: Render per-peer WireGuard configurations for DN42 peers
   ansible.builtin.template:

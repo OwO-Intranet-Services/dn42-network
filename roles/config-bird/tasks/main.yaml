@@ -34,7 +34,9 @@
     label: "{{ peer }}"
   when:
     - peer != inventory_hostname
-    - target is undefined or target == (node_prefix ~ peer | replace('-', '_'))
+    - target is undefined
+      or target == (node_prefix ~ peer | replace('-', '_'))
+      or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - not (remove | default(false))
     - task_type is undefined or task_type == 'node'
 
@@ -48,7 +50,10 @@
     label: "{{ peer }}"
   when:
     - peer != inventory_hostname
-    - target is undefined or target == (node_prefix ~ peer | replace('-', '_'))
+    - target is undefined
+      or target == (node_prefix ~ peer | replace('-', '_'))
+      # handled by cleanup task
+      # or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - remove | default(false)
     - task_type is undefined or task_type == 'node'
 
@@ -62,7 +67,9 @@
   loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
   when:
     - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
-    - target is undefined or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
+    - target is undefined or
+      target == (dn42_prefix ~ (item.bgp.asn | string)[-4:]) or
+      target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - not (remove | default(false))
     - task_type is undefined or task_type == 'dn42'
   notify: Reload BIRD configuration
@@ -74,7 +81,10 @@
   loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
   when:
     - lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
-    - target is undefined or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
+    - target is undefined
+      or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
+      # handled by cleanup task
+      # or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - remove | default(false)
     - task_type is undefined or task_type == 'dn42'
   notify: Reload BIRD configuration
