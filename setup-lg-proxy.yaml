@@ -4,4 +4,6 @@
   become: true
   gather_facts: true
   roles:
-    - config-lg-proxy
+    - role: config-lg
+      lg_configure_proxy: true
+      lg_configure_server: false

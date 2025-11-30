@@ -1,0 +1,14 @@
+---
+- name: Configure Looking Glass proxy component
+  ansible.builtin.include_tasks:
+    file: proxy.yaml
+  when:
+    - target is undefined
+    - (lg_configure_proxy | default(inventory_hostname in groups.get(dn42_group, []), true)) | bool
+
+- name: Configure Looking Glass server component
+  ansible.builtin.include_tasks:
+    file: server.yaml
+  when:
+    - target is undefined
+    - (lg_configure_server | default(inventory_hostname in groups.get('lg_server', []), true)) | bool

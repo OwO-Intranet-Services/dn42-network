@@ -22,15 +22,6 @@
     mode: "0755"
   when: lg_server_binary.stat.exists
 
-- name: Copy lg server binary
-  ansible.builtin.copy:
-    src: lg-server
-    dest: "{{ automation_root_dir }}/lg/lg-server"
-    owner: root
-    group: nogroup
-    mode: "0755"
-  notify: Restart lg-server
-
 - name: Render lg server config
   ansible.builtin.template:
     src: server-config.json.j2
@@ -40,6 +31,16 @@
     mode: "0644"
   notify: Restart lg-server
 
+- name: Copy lg server binary
+  ansible.builtin.copy:
+    src: lg-server
+    dest: "{{ automation_root_dir }}/lg/lg-server"
+    owner: root
+    group: nogroup
+    mode: "0755"
+  changed_when: true
+  notify: Restart lg-server
+
 - name: Install lg-server systemd service
   ansible.builtin.template:
     src: lg-server.service.j2
@@ -47,7 +48,6 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Restart lg-server
 
 - name: Ensure lg-server service is enabled and running
   ansible.builtin.systemd:

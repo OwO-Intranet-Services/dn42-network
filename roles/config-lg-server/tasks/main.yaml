@@ -1,5 +1,0 @@
----
-- name: Run prologue setup
-  ansible.builtin.include_tasks:
-    file: prologue.yaml
-  when: target is undefined

@@ -22,15 +22,6 @@
     mode: "0755"
   when: lg_proxy_binary.stat.exists
 
-- name: Copy lg proxy binary
-  ansible.builtin.copy:
-    src: lg-proxy
-    dest: "{{ automation_root_dir }}/lg/lg-proxy"
-    owner: root
-    group: nogroup
-    mode: "0755"
-  notify: Restart lg-proxy
-
 - name: Resolve lg_server hostnames (IPv4)
   ansible.builtin.command: "dig +short A {{ hostvars[item].ansible_host | default(item) }}"
   loop: "{{ groups['lg_server'] | default([]) }}"
@@ -52,6 +43,16 @@
     mode: "0644"
   notify: Restart lg-proxy
 
+- name: Copy lg proxy binary
+  ansible.builtin.copy:
+    src: lg-proxy
+    dest: "{{ automation_root_dir }}/lg/lg-proxy"
+    owner: root
+    group: nogroup
+    mode: "0755"
+  changed_when: true
+  notify: Restart lg-proxy
+
 - name: Setup lg-proxy systemd service
   ansible.builtin.template:
     src: lg-proxy.service.j2
@@ -59,7 +60,6 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Restart lg-proxy
 
 - name: Enable and start lg-proxy service
   ansible.builtin.systemd:

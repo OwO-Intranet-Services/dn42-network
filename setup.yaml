@@ -20,11 +20,15 @@
   gather_facts: true
   roles:
     - config-dns
-    - config-lg-proxy
+    - role: config-lg
+      lg_configure_proxy: true
+      lg_configure_server: false
 
 - name: Looking Glass Server
   hosts: lg_server
   become: true
   gather_facts: true
   roles:
-    - config-lg-server
+    - role: config-lg
+      lg_configure_proxy: false
+      lg_configure_server: true

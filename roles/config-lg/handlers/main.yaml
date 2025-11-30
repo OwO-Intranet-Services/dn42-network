@@ -1,3 +1,10 @@
+---
+- name: Restart lg-proxy
+  ansible.builtin.systemd:
+    name: lg-proxy.service
+    state: restarted
+    daemon_reload: true
+
 - name: Restart lg-server
   ansible.builtin.systemd:
     name: lg-server.service
