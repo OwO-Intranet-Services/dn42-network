@@ -20,7 +20,7 @@ all:
           ownip6block: fd42:4242:1023:66::/64
           link_local_ipv6: fe80::1023:2
           ip_support: ipv6
-          wg_pubkey: "wiBTPTqefXpEsSyxN4aJ1N43wyDayhIjXATSA7UsF0E="
+          wg_pubkey: "dPTukyAM6scP2dlCYiP55BDb0lmuBhX7Rm4G8p/9awA="
           peering_comment: "IPv6 only"
 
         tyo-01:
