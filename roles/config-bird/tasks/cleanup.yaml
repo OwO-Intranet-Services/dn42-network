@@ -1,0 +1,76 @@
+---
+- name: Gather node list for cleanup
+  ansible.builtin.set_fact:
+    node_hosts: "{{ groups.get(node_group, []) | list }}"
+
+- name: Gather dn42 node list for cleanup
+  ansible.builtin.set_fact:
+    dn42_hosts: "{{ groups.get(dn42_group, []) | list }}"
+
+- name: Stop BIRD service
+  ansible.builtin.systemd:
+    name: bird
+    state: stopped
+  ignore_errors: true
+
+- name: Disable BIRD service
+  ansible.builtin.systemd:
+    name: bird
+    enabled: false
+  ignore_errors: true
+
+- name: Remove per-node BIRD configurations
+  ansible.builtin.file:
+    path: "/etc/bird/nodes/{{ node_prefix }}{{ peer | replace('-', '_') }}.conf"
+    state: absent
+  loop: "{{ node_hosts }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer }}"
+  when: peer != inventory_hostname
+
+- name: Remove DN42 peer BIRD configurations
+  ansible.builtin.file:
+    path: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
+    state: absent
+  loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+  when: lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
+
+- name: Remove BIRD main configuration files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/bird/bird.conf
+    - /etc/bird/node.conf
+    - /etc/bird/babel.conf
+
+- name: Remove DN42 dummy interface
+  ansible.builtin.shell: |
+    ifdown dn42-dummy || true
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+  changed_when: false
+
+- name: Remove DN42 interface configuration
+  ansible.builtin.file:
+    path: /etc/network/interfaces.d/60-dn42-dummy
+    state: absent
+
+- name: Remove DN42 sysctl configuration
+  ansible.builtin.file:
+    path: /etc/sysctl.d/60-dn42.conf
+    state: absent
+
+- name: Remove ROA update cron job
+  ansible.builtin.cron:
+    name: "Update DN42 ROAs"
+    state: absent
+    user: bird
+
+- name: Remove automation user
+  ansible.builtin.user:
+    name: "{{ automation_user }}"
+    state: absent
+    remove: true

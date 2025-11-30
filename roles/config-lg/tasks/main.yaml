@@ -1,4 +1,9 @@
 ---
+- name: Cleanup Looking Glass configuration
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  when: target is defined and target == 'cleanup'
+
 - name: Configure Looking Glass proxy component
   ansible.builtin.include_tasks:
     file: proxy.yaml

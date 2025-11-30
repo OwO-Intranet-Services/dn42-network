@@ -1,0 +1,54 @@
+---
+- name: Stop lg-proxy service
+  ansible.builtin.systemd:
+    name: lg-proxy.service
+    state: stopped
+  ignore_errors: true
+
+- name: Disable lg-proxy service
+  ansible.builtin.systemd:
+    name: lg-proxy.service
+    enabled: false
+  ignore_errors: true
+
+- name: Stop lg-server service
+  ansible.builtin.systemd:
+    name: lg-server.service
+    state: stopped
+  ignore_errors: true
+
+- name: Disable lg-server service
+  ansible.builtin.systemd:
+    name: lg-server.service
+    enabled: false
+  ignore_errors: true
+
+- name: Remove lg-proxy systemd service file
+  ansible.builtin.file:
+    path: /etc/systemd/system/lg-proxy.service
+    state: absent
+
+- name: Remove lg-server systemd service file
+  ansible.builtin.file:
+    path: /etc/systemd/system/lg-server.service
+    state: absent
+
+- name: Disable lg-server nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/lg-server.conf
+    state: absent
+  notify: Reload nginx
+
+- name: Remove lg-server nginx configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/lg-server.conf
+    state: absent
+
+- name: Remove lg workspace directory
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/lg"
+    state: absent
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true

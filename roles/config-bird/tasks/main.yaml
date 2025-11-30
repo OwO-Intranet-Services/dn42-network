@@ -7,6 +7,15 @@
   ansible.builtin.set_fact:
     node_hosts: "{{ groups.get(dn42_group, []) | list }}"
 
+- name: Run cleanup when removing node
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  when: remove_node | default(false)
+
+- name: End play if removing node
+  ansible.builtin.meta: end_host
+  when: remove_node | default(false)
+
 - name: Run prologue setup
   ansible.builtin.include_tasks:
     file: prologue.yaml

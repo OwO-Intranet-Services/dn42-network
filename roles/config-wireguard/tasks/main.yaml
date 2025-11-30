@@ -1,4 +1,13 @@
 ---
+- name: Run cleanup when removing node
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  when: remove_node | default(false)
+
+- name: End play if removing node
+  ansible.builtin.meta: end_host
+  when: remove_node | default(false)
+
 - name: Setup WireGuard tunnels for nodes
   ansible.builtin.include_tasks:
     file: node.yaml
