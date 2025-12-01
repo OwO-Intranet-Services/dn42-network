@@ -1,0 +1,185 @@
+---
+- name: Ping DN42 Peer Endpoints and Calculate Communities
+  hosts: dn42
+  gather_facts: true
+  vars_files:
+    - group_vars/all/communities.yaml
+  vars:
+    ping_count: 10
+
+  tasks:
+    - name: Load this node's peer configuration
+      ansible.builtin.include_vars:
+        file: "group_vars/dn42/peers/{{ inventory_hostname }}.yaml"
+        name: node_peers
+
+    - name: Extract peers for this node
+      ansible.builtin.set_fact:
+        active_peers: >-
+          {{
+            node_peers[inventory_hostname].peers
+            | selectattr('removed', 'undefined')
+            | list
+          }}
+
+    - name: Ping peer endpoints from this node
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          host="{{ item.wg.endpoint.split(':')[0] }}"
+          if ping -c {{ ping_count }} -W 5 "$host" > /dev/null 2>&1; then
+            avg_rtt=$(ping -c {{ ping_count }} -W 5 "$host" | tail -1 | awk -F '/' '{print $5}')
+            echo "success:$avg_rtt"
+          else
+            echo "failed:0"
+          fi
+        executable: /bin/bash
+      register: ping_results
+      loop: "{{ active_peers }}"
+      loop_control:
+        label: "{{ item.comment }} ({{ item.wg.endpoint }})"
+      changed_when: false
+      failed_when: false
+
+    - name: Calculate latency communities for this node
+      ansible.builtin.set_fact:
+        peer_latencies: >-
+          {{
+            peer_latencies | default([]) + [{
+              'node': inventory_hostname,
+              'comment': item.0.comment,
+              'asn': item.0.bgp.asn,
+              'endpoint': item.0.wg.endpoint,
+              'status': item.1.stdout.split(':')[0],
+              'latency_ms': item.1.stdout.split(':')[1] | float,
+              'latency_community': (
+                1 if (item.1.stdout.split(':')[1] | float) <= 2.7 else
+                2 if (item.1.stdout.split(':')[1] | float) <= 7.3 else
+                3 if (item.1.stdout.split(':')[1] | float) <= 20 else
+                4 if (item.1.stdout.split(':')[1] | float) <= 55 else
+                5 if (item.1.stdout.split(':')[1] | float) <= 148 else
+                6 if (item.1.stdout.split(':')[1] | float) <= 403 else
+                7 if (item.1.stdout.split(':')[1] | float) <= 1097 else
+                8 if (item.1.stdout.split(':')[1] | float) <= 2981 else
+                9
+              ) if item.1.stdout.split(':')[0] == 'success' else 9,
+              'current_community': item.0.bgp.community.latency | default('not set')
+            }]
+          }}
+      loop: "{{ active_peers | zip(ping_results.results) | list }}"
+      loop_control:
+        label: "{{ item.0.comment }}"
+
+    - name: Display results for this node
+      ansible.builtin.debug:
+        msg: |
+          ════════════════════════════════════════════════════════════════════════════════
+          Node: {{ inventory_hostname }}
+          Peer: {{ item.comment }} (AS{{ item.asn }})
+          Endpoint: {{ item.endpoint }}
+          {% if item.status == 'success' %}
+          Status: ✅ Reachable
+          Latency: {{ '%.2f' | format(item.latency_ms) }} ms
+          Suggested Community: {{ item.latency_community }} ({{ latency_ranges[item.latency_community] }})
+          Current Setting: {{ item.current_community }}
+          {% if item.current_community != 'not set' and item.current_community != item.latency_community %}
+          ⚠️  MISMATCH: Current ({{ item.current_community }}) != Suggested ({{ item.latency_community }})
+          {% endif %}
+          {% else %}
+          Status: ❌ Unreachable
+          Suggested Community: 9 (unknown/unreachable)
+          {% endif %}
+          ────────────────────────────────────────────────────────────────────────────────
+      loop: "{{ peer_latencies | default([]) }}"
+      loop_control:
+        label: "{{ item.comment }}"
+      vars:
+        latency_ranges:
+          1: "0-2.7ms"
+          2: "2.7-7.3ms"
+          3: "7.3-20ms"
+          4: "20-55ms"
+          5: "55-148ms"
+          6: "148-403ms"
+          7: "403-1097ms"
+          8: "1097-2981ms"
+          9: ">2981ms or unknown"
+
+- name: Generate Summary Report
+  hosts: localhost
+  gather_facts: true
+  vars_files:
+    - group_vars/all/communities.yaml
+  tasks:
+    - name: Aggregate results from all nodes
+      ansible.builtin.set_fact:
+        all_results: >-
+          {{
+            all_results | default([]) +
+            hostvars[item].peer_latencies | default([])
+          }}
+      loop: "{{ groups.dn42 }}"
+
+    - name: Display summary header
+      ansible.builtin.debug:
+        msg: |
+          ════════════════════════════════════════════════════════════════════════════════
+          DN42 Peer Latency Measurement - Summary Report
+          ════════════════════════════════════════════════════════════════════════════════
+
+    - name: Generate summary statistics
+      ansible.builtin.debug:
+        msg: |
+          Total Peers: {{ all_results | length }}
+          Reachable: {{ all_results | selectattr('status', 'equalto', 'success') | list | length }}
+          Unreachable: {{ all_results | selectattr('status', 'equalto', 'failed') | list | length }}
+
+          Peers Needing Update:
+          {% for peer in all_results | sort(attribute='node') %}
+          {%   if peer.current_community != 'not set' and peer.current_community != peer.latency_community and peer.status == 'success' %}
+            - {{ peer.node }}: {{ peer.comment }} ({{ peer.current_community }} → {{ peer.latency_community }})
+          {%   endif %}
+          {% endfor %}
+
+          Peers Without Community:
+          {% for peer in all_results | sort(attribute='node') %}
+          {%   if peer.current_community == 'not set' %}
+            - {{ peer.node }}: {{ peer.comment }} (suggest: {{ peer.latency_community }})
+          {%   endif %}
+          {% endfor %}
+
+          ════════════════════════════════════════════════════════════════════════════════
+
+    - name: Save results to file
+      ansible.builtin.copy:
+        content: |
+          # DN42 Peer Latency Measurement - {{ ansible_date_time.iso8601 }}
+
+          {% for peer in all_results | sort(attribute='node') %}
+          ## {{ peer.node }}/{{ peer.comment }} (AS{{ peer.asn }})
+          - Endpoint: {{ peer.endpoint }}
+          {% if peer.status == 'success' %}
+          - Latency: {{ '%.2f' | format(peer.latency_ms) }} ms
+          - Suggested: {{ peer.latency_community }}
+          - Current: {{ peer.current_community }}
+          {% else %}
+          - Status: Unreachable
+          {% endif %}
+
+          {% endfor %}
+        dest: /tmp/peer-latency-results.txt
+        mode: '0644'
+      delegate_to: localhost
+
+    - name: Display save location
+      ansible.builtin.debug:
+        msg: |
+          ════════════════════════════════════════════════════════════════════════════════
+          Results saved to: /tmp/peer-latency-results.txt
+
+          To update a peer, edit group_vars/dn42/peers/<node>.yaml and add:
+            community:
+              latency: <value>
+              bandwidth: <value>
+              encryption: 34
+          ════════════════════════════════════════════════════════════════════════════════
