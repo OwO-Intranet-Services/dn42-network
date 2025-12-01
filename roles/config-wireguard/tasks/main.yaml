@@ -35,6 +35,7 @@
   ansible.builtin.systemd:
     name: "wg-quick@{{ item.peer.interface_name }}"
     enabled: true
+    state: started
     daemon_reload: true
   loop: "{{ wg_rendered_peers | default([]) }}"
   loop_control:
