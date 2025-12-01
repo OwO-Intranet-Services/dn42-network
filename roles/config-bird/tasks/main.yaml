@@ -74,7 +74,6 @@
     - not (remove | default(false))
     - not (item.removed | default(false))
     - task_type is undefined or task_type == 'dn42'
-  notify: Reload BIRD configuration
 
 - name: Remove removed DN42 peer configurations
   ansible.builtin.file:
@@ -88,7 +87,6 @@
       or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - item.removed | default(false)
     - task_type is undefined or task_type == 'dn42'
-  notify: Reload BIRD configuration
 
 - name: Remove DN42 peer configurations
   ansible.builtin.file:
@@ -103,4 +101,9 @@
       # or target == (node_prefix ~ inventory_hostname | replace('-', '_'))
     - remove | default(false)
     - task_type is undefined or task_type == 'dn42'
-  notify: Reload BIRD configuration
+
+- name: Reload BIRD configurations
+  ansible.builtin.command: birdc configure
+  register: bird_reconfigure_result
+  changed_when: "'Reconfigured' in bird_reconfigure_result.stdout"
+  failed_when: bird_reconfigure_result.rc != 0
