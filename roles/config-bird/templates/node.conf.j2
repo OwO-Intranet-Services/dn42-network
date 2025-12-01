@@ -8,3 +8,5 @@ define OWNNODENETv6 = {{ ownip6block }};
 define OWNNETSET = [{{ ownnet4 }}+];
 define OWNNETSETv6 = [{{ ownnet6 }}+];
 define OWNHOSTNAME = "{{ ansible_host }}";
+define DN42_REGION = {{ dn42_regions[region] }};
+define DN42_COUNTRY = {{ dn42_countries[country] }};

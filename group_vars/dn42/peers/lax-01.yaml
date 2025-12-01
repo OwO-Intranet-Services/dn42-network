@@ -14,6 +14,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
   - comment: darkpoint
     wg:
       endpoint: iad.darkpoint.xyz:21023
@@ -25,6 +28,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 5
+        bandwidth: 24
   - comment: nedifinita
     wg:
       endpoint: dn42b.nedifinita.com:48894
@@ -36,6 +42,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 4
+        bandwidth: 24
   - comment: daylily
     wg:
       endpoint: sjc1.dn42.dayli.ly:41023
@@ -47,6 +56,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
   - comment: leziblog
     wg:
       endpoint: los1-us.peer.dn42.leziblog.com:21023
@@ -58,6 +70,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
   - comment: Stevie
     wg:
       endpoint: lax01.dn42.wwrr.ru:21023
@@ -69,6 +84,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
   - comment: mhr
     wg:
       endpoint: us-sjc1.bb.mhr.hk:21023
@@ -80,6 +98,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
   - comment: sun
     wg:
       endpoint: v6.lax1-us.dn42.6700.cc:21023
@@ -91,6 +112,9 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
   - comment: factor2431
     wg:
       endpoint: us-lax.factor2431.com:21023
@@ -102,3 +126,6 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

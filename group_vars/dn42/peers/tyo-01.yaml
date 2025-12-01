@@ -1,118 +1,148 @@
 tyo-01:
   peers:
-    - comment: factor2431
-      wg:
-        port: 21534
-        endpoint: jp-tyo.factor2431.com:21023
-        wg_pubkey: "XYyk/uk3LTHk7vOqtDsDh/AcPtdT3qQptqhggzZCRio="
-        peer4: null
-        peer6: fe80::1534
-        own6: null
-        keepalive: null
-      bgp:
-        asn: 4242421534
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment:  tech9
-      wg:
-        endpoint: jp-tyo01.dn42.tech9.io:52923
-        wg_pubkey: "unTYSat5YjkY+BY31Q9xLSfFhTUBvn3CiDCSZxbINVM="
-        peer6: fe80::1588
-        own6: fe80::100
-      bgp:
-        asn: 4242421588
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: iyoroy
-      wg:
-        endpoint: tyo-jp.ecs.iyoroy-infra.top:21023
-        wg_pubkey: "Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4="
-        peer6: fe80::2024
-        mtu: 1280
-      bgp:
-        asn: 4242422024
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: iedon
-      wg:
-        endpoint: jp-ty2.dn42.iedon.net:57739
-        wg_pubkey: "XjKsLfOYJ8y/U9saLpfM/MjXErlQ7gkw3+OgQTdVZ0U="
-        peer6: fe80::2189:115
-      bgp:
-        asn: 4242422189
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: lare
-      wg:
-        endpoint: jp01.dn42.lare.cc:21023
-        wg_pubkey: "oTPdRylNhX2O80e6rLejT9Fwzo7KWKZ7a3PUF4G9oEM="
-        peer6: fe80::3035:134
-      bgp:
-        asn: 4242423035
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: cowgl
-      wg:
-        endpoint: tyo.node.cowgl.xyz:31023
-        wg_pubkey: "mMGGxtEqsagrx1Raw57C2H3Stl6ch/cUuF7y08eVgBE="
-        peer6: fe80::1:3999
-      bgp:
-        asn: 4242423999
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: Stevie
-      wg:
-        endpoint: tyo01.dn42.wwrr.ru:21023
-        wg_pubkey: "xZBEeAO1btrRvU7cpXTBqaw8CZsmxrfB0005OgljtmU="
-        peer6: fe80::337
-      bgp:
-        asn: 4242420337
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: qiuxin
-      wg:
-        endpoint: tyo1.exploro.one:32619
-        wg_pubkey: "MhxNjov4q8GjBFhDhSX4G8Zzx7/w4qbWw2RQSU5JDTU="
-        peer6: fe80::1771
-      bgp:
-        asn: 4242421771
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: mhr
-      wg:
-        endpoint: jp-nrt1.bb.mhr.hk:21023
-        wg_pubkey: "Bt0gmHMrBBCgV8/k7n8ykA31YStGc55xmyLgMyB04E0="
-        peer6: fe80::2279
-      bgp:
-        asn: 4242422279
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: sun
-      wg:
-        endpoint: v6.tyo1-jp.dn42.6700.cc:21023
-        wg_pubkey: "b3gUz8an2+wSCvXAwuxGR7AnxKDUqqQMd1+LASo93R0="
-        peer6: fe80::3088:190
-      bgp:
-        asn: 4242423088
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: factor2431
+    wg:
+      port: 21534
+      endpoint: jp-tyo.factor2431.com:21023
+      wg_pubkey: "XYyk/uk3LTHk7vOqtDsDh/AcPtdT3qQptqhggzZCRio="
+      peer4: null
+      peer6: fe80::1534
+      own6: null
+      keepalive: null
+    bgp:
+      asn: 4242421534
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: tech9
+    wg:
+      endpoint: jp-tyo01.dn42.tech9.io:52923
+      wg_pubkey: "unTYSat5YjkY+BY31Q9xLSfFhTUBvn3CiDCSZxbINVM="
+      peer6: fe80::1588
+      own6: fe80::100
+    bgp:
+      asn: 4242421588
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: iyoroy
+    wg:
+      endpoint: tyo-jp.ecs.iyoroy-infra.top:21023
+      wg_pubkey: "Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4="
+      peer6: fe80::2024
+      mtu: 1280
+    bgp:
+      asn: 4242422024
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: iedon
+    wg:
+      endpoint: jp-ty2.dn42.iedon.net:57739
+      wg_pubkey: "XjKsLfOYJ8y/U9saLpfM/MjXErlQ7gkw3+OgQTdVZ0U="
+      peer6: fe80::2189:115
+    bgp:
+      asn: 4242422189
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: lare
+    wg:
+      endpoint: jp01.dn42.lare.cc:21023
+      wg_pubkey: "oTPdRylNhX2O80e6rLejT9Fwzo7KWKZ7a3PUF4G9oEM="
+      peer6: fe80::3035:134
+    bgp:
+      asn: 4242423035
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: cowgl
+    wg:
+      endpoint: tyo.node.cowgl.xyz:31023
+      wg_pubkey: "mMGGxtEqsagrx1Raw57C2H3Stl6ch/cUuF7y08eVgBE="
+      peer6: fe80::1:3999
+    bgp:
+      asn: 4242423999
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: Stevie
+    wg:
+      endpoint: tyo01.dn42.wwrr.ru:21023
+      wg_pubkey: "xZBEeAO1btrRvU7cpXTBqaw8CZsmxrfB0005OgljtmU="
+      peer6: fe80::337
+    bgp:
+      asn: 4242420337
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: qiuxin
+    wg:
+      endpoint: tyo1.exploro.one:32619
+      wg_pubkey: "MhxNjov4q8GjBFhDhSX4G8Zzx7/w4qbWw2RQSU5JDTU="
+      peer6: fe80::1771
+    bgp:
+      asn: 4242421771
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
+  - comment: mhr
+    wg:
+      endpoint: jp-nrt1.bb.mhr.hk:21023
+      wg_pubkey: "Bt0gmHMrBBCgV8/k7n8ykA31YStGc55xmyLgMyB04E0="
+      peer6: fe80::2279
+    bgp:
+      asn: 4242422279
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: sun
+    wg:
+      endpoint: v6.tyo1-jp.dn42.6700.cc:21023
+      wg_pubkey: "b3gUz8an2+wSCvXAwuxGR7AnxKDUqqQMd1+LASo93R0="
+      peer6: fe80::3088:190
+    bgp:
+      asn: 4242423088
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

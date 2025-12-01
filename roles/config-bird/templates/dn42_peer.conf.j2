@@ -1,5 +1,9 @@
 {%- set peer_name = dn42_prefix + (item.bgp.asn | string)[-4:] -%}
 {%- set extended_next_hop_switch = 'on' if item.bgp.get('extended_next_hop') else 'off' -%}
+{%- set latency = item.bgp.community.latency | default(9) -%}
+{%- set bandwidth = item.bgp.community.bandwidth | default(21) -%}
+{%- set encryption = item.bgp.community.encryption | default(34) -%}
+
 {% if item.bgp.get('mp_bgp') %}
 protocol bgp {{ peer_name }} from dnpeers {
     enable extended messages on;
@@ -7,17 +11,27 @@ protocol bgp {{ peer_name }} from dnpeers {
     interface "{{ peer_name }}";
     ipv4 {
         extended next hop {{ extended_next_hop_switch }};
+        import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+        export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+    };
+    ipv6 {
+        import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+        export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
     };
 }
 {% else %}
 
-{# Below are not tested #}
+{# Non-MP-BGP configuration #}
 
 {%   if item.bgp.get('ipv4') %}
 protocol bgp {{ peer_name }}_v4 from dnpeers {
     enable extended messages on;
     neighbor {{ item.wg.peer4 }} as {{ item.bgp.asn }};
     interface "{{ peer_name }}";
+    ipv4 {
+        import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+        export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+    };
 }
 {%   endif %}
 
@@ -26,6 +40,10 @@ protocol bgp {{ peer_name }}_v6 from dnpeers {
     enable extended messages on;
     neighbor {{ item.wg.peer6 }} as {{ item.bgp.asn }};
     interface "{{ peer_name }}";
+    ipv6 {
+        import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+        export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
+    };
 }
 {%   endif %}
 {% endif %}

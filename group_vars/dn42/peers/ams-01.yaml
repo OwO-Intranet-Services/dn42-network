@@ -11,6 +11,9 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+        community:
+          latency: 1
+          bandwidth: 24
     - comment: mhr
       wg:
         endpoint: 6.nl-ams1.bb.mhr.hk:21023
@@ -22,6 +25,9 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+        community:
+          latency: 1
+          bandwidth: 24
     - comment: darkpoint
       wg:
         endpoint: fra.darkpoint.xyz:21023
@@ -33,6 +39,9 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+        community:
+          latency: 3
+          bandwidth: 24
     - comment: sun
       wg:
         endpoint: v6.ams1-nl.dn42.6700.cc:21023
@@ -44,6 +53,9 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+        community:
+          latency: 1
+          bandwidth: 24
     - comment: factor2431
       wg:
         endpoint: de-nue.factor2431.com:21023
@@ -55,3 +67,6 @@ ams-01:
         ipv6: true
         extended_next_hop: true
         mp_bgp: true
+        community:
+          latency: 3
+          bandwidth: 24

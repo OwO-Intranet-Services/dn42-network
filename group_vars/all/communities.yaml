@@ -1,0 +1,85 @@
+---
+# DN42 BGP Communities
+# Reference: https://dn42.eu/howto/BGP-communities
+
+# Latency communities (64511, 1-9)
+# Ranges: [exp(x-1), exp(x)] ms
+latency_communities:
+  1: [0, 2.7] # 0-2.7ms
+  2: [2.7, 7.3] # 2.7-7.3ms
+  3: [7.3, 20] # 7.3-20ms
+  4: [20, 55] # 20-55ms
+  5: [55, 148] # 55-148ms
+  6: [148, 403] # 148-403ms
+  7: [403, 1097] # 403-1097ms
+  8: [1097, 2981] # 1097-2981ms
+  9: [2981, 999999] # >2981ms
+
+# Bandwidth communities (64511, 21-29)
+# bw >= 10^(x-2) mbit
+bandwidth_communities:
+  21: 0.1 # >=0.1mbit
+  22: 1 # >=1mbit
+  23: 10 # >=10mbit
+  24: 100 # >=100mbit
+  25: 1000 # >=1000mbit
+
+# Encryption communities (64511, 31-34)
+encryption_communities:
+  31: "unencrypted"
+  32: "unsafe" # Unsafe VPN solution
+  33: "encrypted" # Safe VPN (no PFS) - standard OpenVPN P2P
+  34: "pfs" # Safe VPN with PFS (Perfect Forward Secrecy)
+
+# Region communities (64511, 41-70)
+dn42_regions:
+  EUROPE: 41
+  NORTH_AMERICA_E: 42
+  NORTH_AMERICA_C: 43
+  NORTH_AMERICA_W: 44
+  CENTRAL_AMERICA: 45
+  SOUTH_AMERICA_E: 46
+  SOUTH_AMERICA_W: 47
+  AFRICA_N: 48 # Above Sahara
+  AFRICA_S: 49 # Below Sahara
+  ASIA_S: 50 # IN, PK, BD
+  ASIA_SE: 51 # TH, SG, PH, ID, MY
+  ASIA_E: 52 # JP, CN, KR, TW, HK
+  PACIFIC_OCEANIA: 53 # AU, NZ, FJ
+  ANTARCTICA: 54
+  ASIA_N: 55 # RU
+  ASIA_W: 56 # IR, TR, UAE
+  CENTRAL_ASIA: 57 # AF, UZ, KZ
+
+# Country communities (64511, 1000-1999)
+# ISO-3166-1 numeric + 1000
+dn42_countries:
+  AU: 1036 # Australia
+  BD: 1050 # Bangladesh
+  CA: 1124 # Canada
+  CN: 1156 # China
+  DE: 1276 # Germany
+  FR: 1250 # France
+  HK: 1344 # Hong Kong
+  ID: 1360 # Indonesia
+  IN: 1356 # India
+  IR: 1364 # Iran
+  JP: 1392 # Japan
+  KR: 1410 # South Korea
+  KZ: 1398 # Kazakhstan
+  MY: 1458 # Malaysia
+  NL: 1528 # Netherlands
+  NO: 1578 # Norway
+  NZ: 1554 # New Zealand
+  PH: 1608 # Philippines
+  PK: 1586 # Pakistan
+  RU: 1643 # Russian Federation
+  SG: 1702 # Singapore
+  TH: 1764 # Thailand
+  TR: 1792 # Turkey
+  TW: 1158 # Taiwan
+  UA: 1804 # Ukraine
+  AE: 1784 # United Arab Emirates
+  GB: 1826 # United Kingdom
+  US: 1840 # United States of America
+  UZ: 1860 # Uzbekistan

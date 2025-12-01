@@ -1,62 +1,77 @@
 lax-02:
   peers:
-    - comment: cowgl
-      wg:
-        port: 23999
-        endpoint: lax.node.cowgl.xyz:31023
-        wg_pubkey: "jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg="
-        peer6: fe80::2:3999
-      bgp:
-        asn: 4242423999
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: iedon
-      wg:
-        port: 22189
-        endpoint: us-lax.dn42.iedon.net:41504
-        wg_pubkey: "DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA="
-        peer6: fe80::2189:ef
-      bgp:
-        asn: 4242422189
-        ipv4: true
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: iyoroy
-      wg:
-        port: 21023
-        endpoint: lax-us.ecs.iyoroy-infra.top:21023
-        wg_pubkey: "As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU="
-        peer6: fe80::2024
-      bgp:
-        asn: 4242422024
-        ipv4: true
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: HExpNetwork
-      wg:
-        port: 20298
-        endpoint: node3.ox5.cc:21023
-        wg_pubkey: "qIqq1s5f0OMr1h9bZ5sRSo3+z5VaCfpzlbI/MG+JdhU="
-        psk: "{{ lax_02_dn42_0298_psk }}"
-        peer6: fe80::298
-      bgp:
-        asn: 4242420298
-        ipv4: true
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-    - comment: qiuxin
-      wg:
-        endpoint: lax1.exploro.one:32641
-        wg_pubkey: "Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E="
-        peer6: fe80::1771
-      bgp:
-        asn: 4242421771
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: cowgl
+    wg:
+      port: 23999
+      endpoint: lax.node.cowgl.xyz:31023
+      wg_pubkey: "jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg="
+      peer6: fe80::2:3999
+    bgp:
+      asn: 4242423999
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: iedon
+    wg:
+      port: 22189
+      endpoint: us-lax.dn42.iedon.net:41504
+      wg_pubkey: "DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA="
+      peer6: fe80::2189:ef
+    bgp:
+      asn: 4242422189
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: iyoroy
+    wg:
+      port: 21023
+      endpoint: lax-us.ecs.iyoroy-infra.top:21023
+      wg_pubkey: "As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU="
+      peer6: fe80::2024
+    bgp:
+      asn: 4242422024
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 4
+        bandwidth: 24
+  - comment: HExpNetwork
+    wg:
+      port: 20298
+      endpoint: node3.ox5.cc:21023
+      wg_pubkey: "qIqq1s5f0OMr1h9bZ5sRSo3+z5VaCfpzlbI/MG+JdhU="
+      psk: "{{ lax_02_dn42_0298_psk }}"
+      peer6: fe80::298
+    bgp:
+      asn: 4242420298
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: qiuxin
+    wg:
+      endpoint: lax1.exploro.one:32641
+      wg_pubkey: "Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E="
+      peer6: fe80::1771
+    bgp:
+      asn: 4242421771
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

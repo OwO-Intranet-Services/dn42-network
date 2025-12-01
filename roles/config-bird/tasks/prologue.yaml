@@ -112,6 +112,22 @@
     group: bird
     mode: "0644"
 
+- name: Copy DN42 community filter configuration
+  ansible.builtin.copy:
+    src: community_filters.conf
+    dest: /etc/bird/community_filters.conf
+    owner: bird
+    group: bird
+    mode: "0644"
+
+- name: Render DN42 communities configuration
+  ansible.builtin.template:
+    src: communities.conf.j2
+    dest: /etc/bird/communities.conf
+    owner: bird
+    group: bird
+    mode: "0644"
+
 - name: Copy BIRD main configuration
   ansible.builtin.copy:
     src: bird.conf

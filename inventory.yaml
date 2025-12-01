@@ -12,6 +12,8 @@ all:
           link_local_ipv6: fe80::1023:2
           ip_support: dual
           wg_pubkey: "nwMyp5pohAUDaaT2oVQQZiE/EI31DnnxVqAcKIWSuiM="
+          region: NORTH_AMERICA_W
+          country: US
 
         hkg-01:
           ansible_host: hkg-01.node.svc.moe
@@ -22,6 +24,8 @@ all:
           ip_support: ipv6
           wg_pubkey: "dPTukyAM6scP2dlCYiP55BDb0lmuBhX7Rm4G8p/9awA="
           peering_comment: "IPv6 only"
+          region: ASIA_E
+          country: HK
 
         tyo-01:
           ansible_host: tyo-01.node.svc.moe
@@ -31,6 +35,8 @@ all:
           link_local_ipv6: fe80::1023:2
           ip_support: dual
           wg_pubkey: "pv0bwaUm/ppI7Yaoi7w0qrXX5EW7Qo2njTSNG19AHgM="
+          region: ASIA_E
+          country: JP
 
         dls-01:
           ansible_host: dls-01.node.svc.moe
@@ -41,6 +47,8 @@ all:
           ip_support: ipv4
           wg_pubkey: "NWNxHIL6Fdwk8AkflKAlpdpeo8l3fYyMZH+JcTug6iQ="
           peering_comment: "IPv4 only"
+          region: NORTH_AMERICA_W
+          country: US
 
         lax-02:
           ansible_host: lax-02.node.svc.moe
@@ -50,6 +58,8 @@ all:
           link_local_ipv6: fe80::1023:2
           ip_support: dual
           wg_pubkey: "yHtmGTi6r9AtrSeTZyl2yce6nHdSVcc017VMI1s9HH8="
+          region: NORTH_AMERICA_W
+          country: US
 
         ams-01:
           ansible_host: ams-01.node.svc.moe
@@ -60,6 +70,8 @@ all:
           ip_support: ipv6
           wg_pubkey: "EERaAzJ1oDMhWZCMIWbK4Gd523BDM2YlV1O7AB1th1Y="
           peering_comment: "IPv6 only"
+          region: EUROPE
+          country: NL
 
     lg_server:
       hosts:
