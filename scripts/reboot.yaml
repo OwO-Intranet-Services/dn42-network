@@ -1,0 +1,16 @@
+---
+- name: Reboot all nodes
+  hosts: nodes
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Perform reboot
+      ansible.builtin.reboot:
+        pre_reboot_delay: 5
+      when:
+        inventory_hostname != 'lax-02'
+    - name: Perform reboot
+      ansible.builtin.reboot:
+        pre_reboot_delay: 5
+      when:
+        inventory_hostname == 'lax-02'
