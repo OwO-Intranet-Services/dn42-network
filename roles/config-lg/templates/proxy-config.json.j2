@@ -26,7 +26,8 @@
 		'wg_pubkey': (wireguard_public_key | mandatory),
 		'endpoint': (ansible_host | mandatory),
 		'comment': (peering_comment | default(None)),
-	}
+	},
+	'wireguard_command': (automation_root_dir ~ '/wg-show')
 } -%}
 
 {{ config | to_nice_json }}

@@ -5,6 +5,7 @@
       - wireguard
       - wireguard-tools
       - bird2
+      - build-essential
       - git
       - cron
       - acl
