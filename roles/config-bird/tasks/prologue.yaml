@@ -23,7 +23,7 @@
 - name: Create automation account for dn42 scripts
   ansible.builtin.user:
     name: "{{ automation_user }}"
-    group: nogroup
+    group: "{{ automation_user }}"
     groups: bird
     system: true
     password: "!"

@@ -8,6 +8,14 @@
   ansible.builtin.meta: end_host
   when: remove_node | default(false)
 
+- name: Create lg workspace
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/lg"
+    state: directory
+    owner: "{{ automation_user }}"
+    group: nogroup
+    mode: "0755"
+
 - name: Configure Looking Glass proxy component
   ansible.builtin.include_tasks:
     file: proxy.yaml
@@ -21,18 +29,6 @@
   when:
     - target is undefined
     - (lg_configure_server | default(inventory_hostname in groups.get('lg_server', []), true)) | bool
-
-- name: Ensure automation group exists
-  ansible.builtin.group:
-    name: "{{ automation_user }}"
-    state: present
-    system: true
-
-- name: Ensure automation user is in automation group
-  ansible.builtin.user:
-    name: "{{ automation_user }}"
-    groups: "{{ automation_user }}"
-    append: true
 
 - name: Install build dependencies
   ansible.builtin.apt:

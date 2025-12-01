@@ -1,12 +1,4 @@
 ---
-- name: Create lg workspace
-  ansible.builtin.file:
-    path: "{{ automation_root_dir }}/lg"
-    state: directory
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-
 - name: Check existing lg server binary
   ansible.builtin.stat:
     path: "{{ automation_root_dir }}/lg/lg-server"

@@ -51,7 +51,7 @@
 
 - name: Remove wg-show wrapper and source
   ansible.builtin.file:
-    path: 
+    path:
       - "{{ automation_root_dir }}/wg-show"
       - "{{ automation_root_dir }}/wg-show.c"
     state: absent
