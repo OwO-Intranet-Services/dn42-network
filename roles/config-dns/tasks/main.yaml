@@ -1,4 +1,13 @@
 ---
+- name: Run Cleanup
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  when: remove_node | default(false)
+
+- name: End play if removing node
+  ansible.builtin.meta: end_host
+  when: remove_node | default(false)
+
 - name: Install BIND9
   ansible.builtin.apt:
     name: "{{ dns_service.packages }}"

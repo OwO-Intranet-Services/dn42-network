@@ -2,7 +2,11 @@
 - name: Cleanup Looking Glass configuration
   ansible.builtin.include_tasks:
     file: cleanup.yaml
-  when: target is defined and target == 'cleanup'
+  when: remove_node | default(false)
+
+- name: End play if removing node
+  ansible.builtin.meta: end_host
+  when: remove_node | default(false)
 
 - name: Configure Looking Glass proxy component
   ansible.builtin.include_tasks:
