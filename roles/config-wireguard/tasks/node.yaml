@@ -7,38 +7,49 @@
   ansible.builtin.set_fact:
     wg_node_self_order: "{{ node_hosts.index(inventory_hostname) + 1 }}"
 
-- name: Generate WireGuard PSKs
+- name: Ensure PSK directory exists on controller
+  become: false
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/.wireguard_psks/{{ node_group }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  run_once: true
+
+- name: Generate WireGuard PSKs on controller
+  become: false
   ansible.builtin.shell:
     cmd: |
-      umask 077
-      if [ ! -f /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key ]; then
-        wg genpsk > /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key
+      if [ ! -f "{{ playbook_dir }}/.wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key" ]; then
+        wg genpsk > "{{ playbook_dir }}/.wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
+        chmod 600 "{{ playbook_dir }}/.wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
       fi
-      cat /etc/wireguard/psk_{{ item.0 }}_{{ item.1 }}.key
-  delegate_to: "{{ item.0 }}"
+      cat "{{ playbook_dir }}/.wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
+  delegate_to: localhost
   loop: "{{ node_hosts | product(node_hosts) | list }}"
   loop_control:
     label: "{{ item.0 }} -> {{ item.1 }}"
   when:
     - item.0 < item.1
-    - (inventory_hostname == item.0 and item.1 in node_hosts) or (inventory_hostname == item.1 and item.0 in node_hosts)
     - item.0 != item.1
-  register: wg_psk_results
+  register: wg_psk_generation
   changed_when: false
   no_log: true
+  run_once: true
 
-- name: Parse WireGuard PSKs
+- name: Parse WireGuard PSKs for this host
   ansible.builtin.set_fact:
     wg_peer_psks: >-
       {{ wg_peer_psks | default({}) | combine({
         (item.item.0 if inventory_hostname == item.item.1 else item.item.1): item.stdout
       }) }}
-  loop: "{{ wg_psk_results.results }}"
+  loop: "{{ wg_psk_generation.results }}"
   loop_control:
     label: "{{ item.item.0 }} -> {{ item.item.1 }}"
   when:
     - item.skipped is not defined or not item.skipped
     - item.stdout is defined
+    - inventory_hostname == item.item.0 or inventory_hostname == item.item.1
 
 - name: Build WireGuard peer descriptors
   ansible.builtin.set_fact:

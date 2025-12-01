@@ -2,3 +2,4 @@
 .vscode
 *.retry
 vault_pass.txt
+.wireguard_psks
