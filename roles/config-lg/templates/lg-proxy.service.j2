@@ -9,7 +9,8 @@ After=network.target
 ExecStart={{ lg_proxy_exec }} -c {{ lg_working_dir }}/proxy-config.json
 WorkingDirectory={{ lg_working_dir }}
 User={{ automation_user }}
-Group=bird
+Group={{ automation_user }}
+SupplementalGroups=bird
 Restart=on-failure
 
 [Install]
