@@ -5,6 +5,7 @@ asn: "4242421023"
 network_comment: |
   Peering is welcome. All nodes support MP-BGP and IPv4 Extended Next Hop.
   s/svc.moe/iris.dn42/g for DN42 domains.
+  Default port is the last 5 digits of the AS number (e.g., 4242421023 -> 21023).
 
 network_contacts:
   Email: 0.0@owo.li
