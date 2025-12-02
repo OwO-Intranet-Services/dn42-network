@@ -1,0 +1,18 @@
+roa4 table dn42_roa;
+roa6 table dn42_roa_v6;
+
+{% if bird_rpki_servers | default([]) %}
+{%   for server in bird_rpki_servers %}
+protocol rpki roa_dn42_{{ loop.index }} {
+  roa4 { table dn42_roa; };
+  roa6 { table dn42_roa_v6; };
+  remote "{{ server.host }}";
+  port {{ server.port | default(8082) }};
+  refresh {{ server.refresh | default(bird_rpki_refresh | default(600)) }};
+  retry {{ server.retry | default(bird_rpki_retry | default(300)) }};
+  expire {{ server.expire | default(bird_rpki_expire | default(7200)) }};
+}
+{%   endfor %}
+{% else %}
+# No RPKI servers configured
+{% endif %}

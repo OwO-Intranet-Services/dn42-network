@@ -46,34 +46,6 @@
   changed_when: false
   failed_when: false
 
-- name: Setup ROA script
-  block:
-    - name: Copy ROA update script
-      ansible.builtin.copy:
-        src: update-dn42-roas.sh
-        dest: /opt/dn42/update-dn42-roas.sh
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Setup cron job for ROA updates
-      ansible.builtin.cron:
-        name: "Update DN42 ROAs"
-        minute: "15"
-        hour: "*"
-        job: "{{ automation_root_dir }}/update-dn42-roas.sh"
-        user: bird
-
-    - name: Run ROA update script once if not exists
-      ansible.builtin.command: "{{ automation_root_dir }}/update-dn42-roas.sh"
-      become: true
-      become_user: bird
-      failed_when: false
-      args:
-        creates: /etc/bird/roa_dn42.conf
-      when: not ansible_check_mode
-      changed_when: false
-
 - name: Create /etc/bird/nodes directory
   ansible.builtin.file:
     path: /etc/bird/nodes
@@ -127,6 +99,15 @@
     owner: bird
     group: bird
     mode: "0644"
+
+- name: Render BIRD RPKI configuration
+  ansible.builtin.template:
+    src: rpki.conf.j2
+    dest: /etc/bird/rpki.conf
+    owner: bird
+    group: bird
+    mode: "0644"
+  notify: Reload BIRD configuration
 
 - name: Copy BIRD main configuration
   ansible.builtin.copy:

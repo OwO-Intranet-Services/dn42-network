@@ -19,6 +19,16 @@ automation_user: dn42-automation
 automation_root_dir: /opt/dn42
 automation_user_home: /opt/dn42/automation/
 
+bird_rpki_servers:
+  - host: rpki.akae.re
+    port: 8082
+  - host: rpki.dn42.launchpadx.top
+    port: 8082
+
+bird_rpki_refresh: 600
+bird_rpki_retry: 300
+bird_rpki_expire: 7200
+
 node_group: nodes
 dn42_group: dn42
 
