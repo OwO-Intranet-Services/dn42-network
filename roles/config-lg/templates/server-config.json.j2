@@ -18,7 +18,10 @@
     "network": {
     "name": network_name | mandatory,
     "asn": asn | mandatory,
-    "comment": network_comment | default(None)
+    "comment": network_comment | default(None),
+    "contacts": network_contacts | default(None),
+    "ipv4_prefix": [ownnet4],
+    "ipv6_prefix": [ownnet6]
     },
     "nodes": nodes.items,
 } -%}
