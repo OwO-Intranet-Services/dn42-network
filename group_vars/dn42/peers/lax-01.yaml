@@ -143,3 +143,31 @@ lax-01:
       community:
         latency: 3
         bandwidth: 24
+  - comment: potat0
+    wg:
+      endpoint: las.node.potat0.cc:21023
+      wg_pubkey: "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU="
+      peer6: fe80::1816
+    bgp:
+      asn: 4242421816
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: Nisbett
+    wg:
+      endpoint: lax.dn42.boletus.icu:21023
+      wg_pubkey: "oAPy0U2qVuSR8PyPLmVLEgWLBKrOq4kcLNLAOVZL10M="
+      peer6: fe80::398
+    bgp:
+      asn: 4242420398
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

@@ -160,3 +160,17 @@ tyo-01:
       community:
         latency: 2
         bandwidth: 24
+  - comment: Nisbett
+    wg:
+      endpoint: nrt.dn42.boletus.icu:21023
+      wg_pubkey: "QQecM/0eCbRu5TNdyRxGpJTCo6aGolMb0kZAqLH5Oho="
+      peer6: fe80::398
+    bgp:
+      asn: 4242420398
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

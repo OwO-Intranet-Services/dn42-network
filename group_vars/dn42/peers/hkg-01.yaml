@@ -1,197 +1,227 @@
 hkg-01:
   peers:
-    - comment: HExpNetwork
-      wg:
-        endpoint: node2.ox5.cc:21023
-        wg_pubkey: "pS0Xt7cbWU6Pjfq7+OCKQkpT9sSrI3y4gIUY8WdaLhM="
-        psk: "{{ hkg_01_dn42_0298_psk }}"
-        peer6: fe80::298
-      bgp:
-        asn: 4242420298
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: HExpNetwork
+    wg:
+      endpoint: node2.ox5.cc:21023
+      wg_pubkey: "pS0Xt7cbWU6Pjfq7+OCKQkpT9sSrI3y4gIUY8WdaLhM="
+      psk: "{{ hkg_01_dn42_0298_psk }}"
+      peer6: fe80::298
+    bgp:
+      asn: 4242420298
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: Stevie
-      wg:
-        endpoint: hkg01.dn42.wwrr.ru:21023
-        wg_pubkey: "jQAdLlfZ0mQBAAxIfSnltEBQQRIlf9/jMGWWPIOZY0Q="
-        peer6: fe80::337
-      bgp:
-        asn: 4242420337
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: Stevie
+    wg:
+      endpoint: hkg01.dn42.wwrr.ru:21023
+      wg_pubkey: "jQAdLlfZ0mQBAAxIfSnltEBQQRIlf9/jMGWWPIOZY0Q="
+      peer6: fe80::337
+    bgp:
+      asn: 4242420337
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 2
         bandwidth: 24
-    - comment: yuyuko
-      wg:
-        endpoint: hk01.dn42.yuyuko.com:21023
-        wg_pubkey: "gqwdC9p6jdSy80oRxdatr9QdSrNMLCvRMadaCeOBqDY="
-        peer6: fe80::1117
-      bgp:
-        asn: 4242421117
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: yuyuko
+    wg:
+      endpoint: hk01.dn42.yuyuko.com:21023
+      wg_pubkey: "gqwdC9p6jdSy80oRxdatr9QdSrNMLCvRMadaCeOBqDY="
+      peer6: fe80::1117
+    bgp:
+      asn: 4242421117
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: iedon
-      wg:
-        endpoint: hk-hkg.dn42.iedon.net:47122
-        wg_pubkey: "OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34="
-        peer6: fe80::2189:120
-      bgp:
-        asn: 4242422189
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-      removed: true
-    - comment: potat0
-      wg:
-        endpoint: hkg.node.potat0.cc:21023
-        wg_pubkey: "Tv1+HniELrS4Br2i7oQgwqBJFXQKculsW8r+UOqQXH0="
-        peer6: fe80::1816
-      bgp:
-        asn: 4242421816
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: iedon
+    wg:
+      endpoint: hk-hkg.dn42.iedon.net:47122
+      wg_pubkey: "OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34="
+      peer6: fe80::2189:120
+    bgp:
+      asn: 4242422189
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    removed: true
+  - comment: potat0
+    wg:
+      endpoint: hkg.node.potat0.cc:21023
+      wg_pubkey: "Tv1+HniELrS4Br2i7oQgwqBJFXQKculsW8r+UOqQXH0="
+      peer6: fe80::1816
+    bgp:
+      asn: 4242421816
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: iyoroy
-      wg:
-        endpoint: hkg02-cn.ecs.iyoroy-infra.top:21023
-        wg_pubkey: "bg+KnzVupBrOQntHFFVzvBx+3sqYVoyJRantT6m5fm8="
-        peer6: fe80::2024
-      bgp:
-        asn: 4242422024
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: iyoroy
+    wg:
+      endpoint: hkg02-cn.ecs.iyoroy-infra.top:21023
+      wg_pubkey: "bg+KnzVupBrOQntHFFVzvBx+3sqYVoyJRantT6m5fm8="
+      peer6: fe80::2024
+    bgp:
+      asn: 4242422024
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: BingxinBaka
-      wg:
-        endpoint: hk01.dn42.baka.pub:21023
-        wg_pubkey: "zcxhWeI3SrJtqlHuqdeNaCeWSwJIYOTjAraXm655+VY="
-        peer6: fe80::2999:225
-      bgp:
-        asn: 4242423374
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: BingxinBaka
+    wg:
+      endpoint: hk01.dn42.baka.pub:21023
+      wg_pubkey: "zcxhWeI3SrJtqlHuqdeNaCeWSwJIYOTjAraXm655+VY="
+      peer6: fe80::2999:225
+    bgp:
+      asn: 4242423374
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: cowgl
-      wg:
-        endpoint: v6.hkg.node.cowgl.xyz:31023
-        wg_pubkey: "mGGBczSVKW+7UKRquI2GkbKrfxiATv9r4uF5WTP+vWI="
-        peer6: fe80::3999
-      bgp:
-        asn: 4242423999
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: cowgl
+    wg:
+      endpoint: v6.hkg.node.cowgl.xyz:31023
+      wg_pubkey: "mGGBczSVKW+7UKRquI2GkbKrfxiATv9r4uF5WTP+vWI="
+      peer6: fe80::3999
+    bgp:
+      asn: 4242423999
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: qiuxin
-      wg:
-        endpoint: hkg1.exploro.one:32615
-        wg_pubkey: "hsEWaH80s3f0+PNsfLbyHUnFTNOwdqoJMHHyhOUqdFs="
-        peer6: fe80::1771
-      bgp:
-        asn: 4242421771
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: qiuxin
+    wg:
+      endpoint: hkg1.exploro.one:32615
+      wg_pubkey: "hsEWaH80s3f0+PNsfLbyHUnFTNOwdqoJMHHyhOUqdFs="
+      peer6: fe80::1771
+    bgp:
+      asn: 4242421771
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 6
         bandwidth: 24
-    - comment: mhr
-      wg:
-        endpoint: 6.hk-hkg1.bb.mhr.hk:21023
-        wg_pubkey: "PUjqyQ3ATLp8Cxp3YFVQ44QLoZEpoPgdXsbMfXhDMRk="
-        peer6: fe80::2279
-      bgp:
-        asn: 4242422279
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: mhr
+    wg:
+      endpoint: 6.hk-hkg1.bb.mhr.hk:21023
+      wg_pubkey: "PUjqyQ3ATLp8Cxp3YFVQ44QLoZEpoPgdXsbMfXhDMRk="
+      peer6: fe80::2279
+    bgp:
+      asn: 4242422279
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: darkpoint
-      wg:
-        endpoint: sin.darkpoint.xyz:21023
-        wg_pubkey: "LbAFxxPonoNUzWiaxa/ulNYfv0d729DG6qAmg2X5egc="
-        peer6: fe80::150
-      bgp:
-        asn: 4242420150
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: darkpoint
+    wg:
+      endpoint: sin.darkpoint.xyz:21023
+      wg_pubkey: "LbAFxxPonoNUzWiaxa/ulNYfv0d729DG6qAmg2X5egc="
+      peer6: fe80::150
+    bgp:
+      asn: 4242420150
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 4
         bandwidth: 24
-    - comment: sun
-      wg:
-        endpoint: v6.hk1-hk.dn42.6700.cc:21023
-        wg_pubkey: "rBTH+JyZB0X/DkwHByrCjCojxBKr/kEOm1dTAFGHR1w="
-        peer6: fe80::3088:192
-      bgp:
-        asn: 4242423088
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: sun
+    wg:
+      endpoint: v6.hk1-hk.dn42.6700.cc:21023
+      wg_pubkey: "rBTH+JyZB0X/DkwHByrCjCojxBKr/kEOm1dTAFGHR1w="
+      peer6: fe80::3088:192
+    bgp:
+      asn: 4242423088
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: factor2431
-      wg:
-        endpoint: hk-hkg.factor2431.com:21023
-        wg_pubkey: "VncCNj0rfJ8xF4ms7yqvt+WzAS0ePC+pLiiG4FPPHkw="
-        peer6: fe80::1534
-      bgp:
-        asn: 4242421534
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: factor2431
+    wg:
+      endpoint: hk-hkg.factor2431.com:21023
+      wg_pubkey: "VncCNj0rfJ8xF4ms7yqvt+WzAS0ePC+pLiiG4FPPHkw="
+      peer6: fe80::1534
+    bgp:
+      asn: 4242421534
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    community:
+      latency: 1
+      bandwidth: 24
+  - comment: highdef.network
+    wg:
+      endpoint: hkg.peer.highdef.network:21023
+      wg_pubkey: "eedTHubyl5caiHH50GkknQa8SQtAF8q7aqmL26w5qSs="
+      peer6: fe80::1080:38
+    bgp:
+      asn: 4242421080
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: highdef.network
-      wg:
-        endpoint: hkg.peer.highdef.network:21023
-        wg_pubkey: "eedTHubyl5caiHH50GkknQa8SQtAF8q7aqmL26w5qSs="
-        peer6: fe80::1080:38
-      bgp:
-        asn: 4242421080
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 1
-          bandwidth: 24
+  - comment: kioubit
+    wg:
+      endpoint: hk1.g-load.eu:21023
+      wg_pubkey: "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8="
+      psk: null
+      peer4: null
+      peer6: fe80::ade0
+    bgp:
+      asn: 4242423914
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: Nisbett
+    wg:
+      endpoint: hkl.dn42.boletus.icu:21023
+      wg_pubkey: "XD66eoHp06VmDUNFUguJeOY8gFLiLZ7Lkyz/WsMQSWU="
+      peer6: fe80::398
+    bgp:
+      asn: 4242420398
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24

@@ -1,100 +1,145 @@
 ams-01:
   peers:
-    - comment: qiuxin
-      wg:
-        endpoint: ams1.exploro.one:21023
-        wg_pubkey: "v0aE4+VXOMccNcG5Lfz9VC5giWxOkYRXrLGEdJNgBiY="
-        peer6: fe80::1771
-      bgp:
-        asn: 4242421771
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 1
-          bandwidth: 24
-    - comment: mhr
-      wg:
-        endpoint: 6.nl-ams1.bb.mhr.hk:21023
-        wg_pubkey: "cXdcdBVi0Yt78jmwGhnv+ju6dxSQ9YKX6xL7O91tmVw="
-        peer6: fe80::2279
-      bgp:
-        asn: 4242422279
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 1
-          bandwidth: 24
-    - comment: darkpoint
-      wg:
-        endpoint: fra.darkpoint.xyz:21023
-        wg_pubkey: "nfoxTtmJdBdxNR3TmfVLG13KA5E+ZtU+uIGCegxrxxw="
-        peer6: fe80::150
-      bgp:
-        asn: 4242420150
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 3
-          bandwidth: 24
-    - comment: sun
-      wg:
-        endpoint: v6.ams1-nl.dn42.6700.cc:21023
-        wg_pubkey: "AgXewx4akBG9QI9ClbJMcflmDY1rsdOslRTI/CL4PHk="
-        peer6: fe80::3088:194
-      bgp:
-        asn: 4242423088
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 1
-          bandwidth: 24
-    - comment: factor2431
-      wg:
-        endpoint: de-nue.factor2431.com:21023
-        wg_pubkey: "I9ph8+xOycyma708SXY1ajm9/zMSBsz6eIKxF41jiHI="
-        peer6: fe80::1534
-      bgp:
-        asn: 4242421534
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 3
-          bandwidth: 24
-    - comment: Stevie
-      wg:
-        endpoint: ams01.dn42.wwrr.ru:21023
-        wg_pubkey: "ijO/ApO4Vnl2U7egsdGSIOpaeS1A22Jj0uHjsqv24Ak="
-        peer6: fe80::337
-      bgp:
-        asn: 4242420337
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
+  - comment: qiuxin
+    wg:
+      endpoint: ams1.exploro.one:21023
+      wg_pubkey: "v0aE4+VXOMccNcG5Lfz9VC5giWxOkYRXrLGEdJNgBiY="
+      peer6: fe80::1771
+    bgp:
+      asn: 4242421771
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
       community:
         latency: 1
         bandwidth: 24
-    - comment: highdef.network
-      wg:
-        endpoint: ams.peer.highdef.network:21023
-        wg_pubkey: "oiSSSOMYxiiM0eQP9p8klwEfNn34hkNNv4S289WUciU="
-        peer6: fe80::117
-      bgp:
-        asn: 4242421080
-        ipv4: false
-        ipv6: true
-        extended_next_hop: true
-        mp_bgp: true
-        community:
-          latency: 1
-          bandwidth: 24
+  - comment: mhr
+    wg:
+      endpoint: 6.nl-ams1.bb.mhr.hk:21023
+      wg_pubkey: "cXdcdBVi0Yt78jmwGhnv+ju6dxSQ9YKX6xL7O91tmVw="
+      peer6: fe80::2279
+    bgp:
+      asn: 4242422279
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: darkpoint
+    wg:
+      endpoint: fra.darkpoint.xyz:21023
+      wg_pubkey: "nfoxTtmJdBdxNR3TmfVLG13KA5E+ZtU+uIGCegxrxxw="
+      peer6: fe80::150
+    bgp:
+      asn: 4242420150
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: sun
+    wg:
+      endpoint: v6.ams1-nl.dn42.6700.cc:21023
+      wg_pubkey: "AgXewx4akBG9QI9ClbJMcflmDY1rsdOslRTI/CL4PHk="
+      peer6: fe80::3088:194
+    bgp:
+      asn: 4242423088
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: factor2431
+    wg:
+      endpoint: de-nue.factor2431.com:21023
+      wg_pubkey: "I9ph8+xOycyma708SXY1ajm9/zMSBsz6eIKxF41jiHI="
+      peer6: fe80::1534
+    bgp:
+      asn: 4242421534
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: Stevie
+    wg:
+      endpoint: ams01.dn42.wwrr.ru:21023
+      wg_pubkey: "ijO/ApO4Vnl2U7egsdGSIOpaeS1A22Jj0uHjsqv24Ak="
+      peer6: fe80::337
+    bgp:
+      asn: 4242420337
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: highdef.network
+    wg:
+      endpoint: ams.peer.highdef.network:21023
+      wg_pubkey: "oiSSSOMYxiiM0eQP9p8klwEfNn34hkNNv4S289WUciU="
+      peer6: fe80::117
+    bgp:
+      asn: 4242421080
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
+  - comment: kioubit
+    wg:
+      port: 23914
+      endpoint: fr1.g-load.eu:21023
+      wg_pubkey: "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8="
+      psk: null
+      peer4: null
+      peer6: fe80::ade0
+    bgp:
+      asn: 4242423914
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: potat0
+    wg:
+      endpoint: fra.node.potat0.cc:21023
+      wg_pubkey: "H6HdsuQsav9puKyo8SJaML0vPU/a2lLQjTRc7dmiqjs="
+      peer6: fe80::1816
+    bgp:
+      asn: 4242421816
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
+  - comment: Nisbett
+    wg:
+      endpoint: fra.dn42.boletus.icu:21023
+      wg_pubkey: "HDe0cq/D1TLW11m7d5ub4+dlM8fXeUSyZOujJemaOUM="
+      peer6: fe80::398
+    bgp:
+      asn: 4242420398
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 3
+        bandwidth: 24
