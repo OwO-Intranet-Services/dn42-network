@@ -1,6 +1,3 @@
-roa4 table dn42_roa;
-roa6 table dn42_roa_v6;
-
 {% if bird_rpki_servers | default([]) %}
 {%   for server in bird_rpki_servers %}
 protocol rpki roa_dn42_{{ loop.index }} {
