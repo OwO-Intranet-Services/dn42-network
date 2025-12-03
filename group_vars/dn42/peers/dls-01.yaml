@@ -1,2 +1,16 @@
 dls-01:
-  peers: []
+  peers: 
+    - comment: highdef.network
+      wg:
+        endpoint: yvr.peer.highdef.network:21023
+        wg_pubkey: "O4qWRgbJVdOM8ktyUQyT1s11WkR16JTgtnn42m9A2R8="
+        peer6: fe80::1080:35
+      bgp:
+        asn: 4242421080
+        ipv4: false
+        ipv6: true
+        extended_next_hop: true
+        mp_bgp: true
+        community:
+          latency: 3
+          bandwidth: 24

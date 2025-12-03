@@ -84,3 +84,17 @@ ams-01:
       community:
         latency: 1
         bandwidth: 24
+    - comment: highdef.network
+      wg:
+        endpoint: ams.peer.highdef.network:21023
+        wg_pubkey: "oiSSSOMYxiiM0eQP9p8klwEfNn34hkNNv4S289WUciU="
+        peer6: fe80::117
+      bgp:
+        asn: 4242421080
+        ipv4: false
+        ipv6: true
+        extended_next_hop: true
+        mp_bgp: true
+        community:
+          latency: 1
+          bandwidth: 24

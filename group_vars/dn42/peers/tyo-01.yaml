@@ -146,3 +146,17 @@ tyo-01:
       community:
         latency: 1
         bandwidth: 24
+  - comment: highdef.network
+    wg:
+      endpoint: tyo.peer.highdef.network:21023
+      wg_pubkey: "iJXjwJGGrUTQy/P3OXmZ5lM4cjrDAd9K+vonZVUZjxY="
+      peer6: fe80::124
+    bgp:
+      asn: 4242421080
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      community:
+        latency: 2
+        bandwidth: 24
