@@ -1,5 +1,4 @@
 ---
-# Network Information
 network_name: IRIS-AS
 asn: "4242421023"
 network_comment: |
@@ -11,11 +10,9 @@ network_contacts:
   Email: 0.0@owo.li
   Telegram: "@Iridoideae"
 
-# IP Address Assignments
 ownnet4: 172.21.111.64/26
 ownnet6: fd42:4242:1023::/48
 
-# Automation Settings
 automation_user: dn42-automation
 automation_root_dir: /opt/dn42
 automation_user_home: /opt/dn42/automation/
@@ -29,6 +26,9 @@ bird_rpki_servers:
 bird_rpki_refresh: 600
 bird_rpki_retry: 300
 bird_rpki_expire: 7200
+
+bird_dn42_grc_enabled:
+  - ams-01
 
 node_group: nodes
 dn42_group: dn42

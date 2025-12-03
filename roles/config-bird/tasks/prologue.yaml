@@ -107,7 +107,14 @@
     owner: bird
     group: bird
     mode: "0644"
-  notify: Reload BIRD configuration
+
+- name: Render DN42 GRC configuration
+  ansible.builtin.template:
+    src: dn42_grc.conf.j2
+    dest: /etc/bird/dn42_grc.conf
+    owner: bird
+    group: bird
+    mode: "0644"
 
 - name: Copy BIRD main configuration
   ansible.builtin.copy:
