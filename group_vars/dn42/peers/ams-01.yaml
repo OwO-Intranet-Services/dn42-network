@@ -70,3 +70,17 @@ ams-01:
         community:
           latency: 3
           bandwidth: 24
+    - comment: Stevie
+      wg:
+        endpoint: ams01.dn42.wwrr.ru:21023
+        wg_pubkey: "ijO/ApO4Vnl2U7egsdGSIOpaeS1A22Jj0uHjsqv24Ak="
+        peer6: fe80::337
+      bgp:
+        asn: 4242420337
+        ipv4: false
+        ipv6: true
+        extended_next_hop: true
+        mp_bgp: true
+      community:
+        latency: 1
+        bandwidth: 24
