@@ -35,3 +35,10 @@ dn42_group: dn42
 
 node_prefix: node_
 dn42_prefix: dn42_
+
+# by the time logging in at least one key should already work
+ssh_keys:
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJzmyIYtzsXMPZ5YxV6CTwM4ntgi8oSXNusH9Tqewkys"
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHy+oWn8woMH2iYpcvAR+eeset79TIE6YJaUUM2F0Wlz"
+  # this for GitHub Actions
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBEFpLa4DkkXQ0ZxHIwxCX4wGq4zKb797KEuHdBKsP0c"

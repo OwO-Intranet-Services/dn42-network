@@ -1,4 +1,11 @@
 ---
+- name: Add SSH keys for access
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ item }}"
+  loop: "{{ ssh_keys }}"
+
 - name: Install packages
   ansible.builtin.apt:
     name:
