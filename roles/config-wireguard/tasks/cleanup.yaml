@@ -34,4 +34,3 @@
     path: "/etc/wireguard/{{ item }}.conf"
     state: absent
   loop: "{{ wg_all_cleanup_interfaces }}"
-

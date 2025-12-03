@@ -143,3 +143,14 @@ ams-01:
       community:
         latency: 3
         bandwidth: 24
+  - comment: iedon
+    wg:
+      endpoint: de-fra.dn42.iedon.net:47122
+      wg_pubkey: "FHp0OR4UpAS8/Ra0FUNffTk18soUYCa6NcvZdOgxY0k="
+      peer6: fe80::2189:e9
+    bgp:
+      asn: 4242422189
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
