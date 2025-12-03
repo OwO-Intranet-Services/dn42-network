@@ -1,28 +1,19 @@
 ---
-# Ansible Lint Configuration
-# See: https://ansible-lint.readthedocs.io/
-
-# Exclude paths from linting
 exclude_paths:
   - .ansible/
   - .vscode/
-  - config/peers/  # Third-party peer configs may not follow our standards
 
-# Enable specific rule sets
 enable_list:
   - no-handler
   - no-log-password
 
-# Skip specific rules where needed
 skip_list:
   - ignore-errors
-  - yaml[line-length]  # Allow longer lines for readability in some cases
+  - yaml[line-length]
 
-# Warn only (don't fail) for these rules
 warn_list:
   - experimental
   - role-name
 
-# Use YAML file extension
 use_default_rules: true
 parseable: true

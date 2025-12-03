@@ -4,5 +4,4 @@
   become: true
   gather_facts: true
   roles:
-    - config-system # required for dn42 interface setup
     - config-dns
