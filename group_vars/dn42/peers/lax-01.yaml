@@ -135,3 +135,15 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: Maraun
+    wg:
+      endpoint: dn42-us1.maraun.de:21023
+      wg_pubkey: "J+c8pHMjDVBanpg2kLLmEkVSYSo5vCUGNLPdGcNoJRw="
+      peer6: fe80::2225
+      own6: fe80::1023
+    bgp:
+      asn: 4242422225
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
