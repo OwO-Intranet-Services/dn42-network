@@ -1,0 +1,19 @@
+---
+bird_rpki_servers:
+  - host: rpki.akae.re
+    port: 8082
+  - host: rpki.dn42.launchpadx.top
+    port: 8082
+
+bird_rpki_refresh: 600
+bird_rpki_retry: 300
+bird_rpki_expire: 7200
+
+bird_dn42_grc_enabled:
+  - ams-01
+
+dn42_latency_ping_count: 5
+dn42_latency_ping_timeout: 2
+
+dn42_latency_community_default: 9
+dn42_bandwidth_community_default: 24

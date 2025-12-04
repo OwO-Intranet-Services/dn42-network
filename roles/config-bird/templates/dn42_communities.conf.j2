@@ -6,18 +6,18 @@ define DN42_COMM = 64511;
 
 # Latency Communities (1-9)
 # Exponential ranges: [exp(x-1), exp(x)] ms
-{% for id, range in latency_communities.items() %}
+{% for id, range in dn42_latency_communities.items() %}
 define LATENCY_{{ id }} = (DN42_COMM, {{ id }});
 {% endfor %}
 
 # Bandwidth Communities (21-29)
 # Bandwidth >= 10^(x-2) mbit
-{% for id, mbps in bandwidth_communities.items() %}
+{% for id, mbps in dn42_bandwidth_communities.items() %}
 define BANDWIDTH_{{ id }} = (DN42_COMM, {{ id }});
 {% endfor %}
 
 # Encryption Communities (31-34)
-{% for id, name in encryption_communities.items() %}
+{% for id, name in dn42_encryption_communities.items() %}
 define ENCRYPTION_{{ name | upper }} = (DN42_COMM, {{ id }});
 {% endfor %}
 

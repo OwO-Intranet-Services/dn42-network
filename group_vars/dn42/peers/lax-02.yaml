@@ -12,9 +12,6 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: iedon
     wg:
       port: 22189
@@ -27,9 +24,6 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: iyoroy
     wg:
       port: 21023
@@ -42,9 +36,6 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 4
-        bandwidth: 24
   - comment: HExpNetwork
     wg:
       port: 20298
@@ -58,9 +49,6 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 3
-        bandwidth: 24
   - comment: qiuxin
     wg:
       endpoint: lax1.exploro.one:32641
@@ -72,6 +60,3 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24

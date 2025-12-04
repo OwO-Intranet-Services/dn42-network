@@ -11,6 +11,3 @@ dls-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 3
-        bandwidth: 24

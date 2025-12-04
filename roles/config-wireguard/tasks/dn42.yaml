@@ -37,6 +37,7 @@
   loop_control:
     label: "{{ item.bgp.asn }}"
   when:
+    - remove | default(false)
     - item.removed | default(false)
     - target is undefined or
       target == peer_name or

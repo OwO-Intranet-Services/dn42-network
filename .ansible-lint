@@ -10,6 +10,7 @@ enable_list:
 skip_list:
   - ignore-errors
   - yaml[line-length]
+  - command-instead-of-shell
 
 warn_list:
   - experimental

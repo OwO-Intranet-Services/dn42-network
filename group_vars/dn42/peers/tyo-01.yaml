@@ -15,9 +15,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: tech9
     wg:
       endpoint: jp-tyo01.dn42.tech9.io:52923
@@ -30,9 +27,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: iyoroy
     wg:
       endpoint: tyo-jp.ecs.iyoroy-infra.top:21023
@@ -45,9 +39,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: iedon
     wg:
       endpoint: jp-ty2.dn42.iedon.net:57739
@@ -59,9 +50,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: lare
     wg:
       endpoint: jp01.dn42.lare.cc:21023
@@ -73,9 +61,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: cowgl
     wg:
       endpoint: tyo.node.cowgl.xyz:31023
@@ -87,9 +72,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: Stevie
     wg:
       endpoint: tyo01.dn42.wwrr.ru:21023
@@ -101,9 +83,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: qiuxin
     wg:
       endpoint: tyo1.exploro.one:32619
@@ -115,9 +94,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: mhr
     wg:
       endpoint: jp-nrt1.bb.mhr.hk:21023
@@ -129,9 +105,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: sun
     wg:
       endpoint: v6.tyo1-jp.dn42.6700.cc:21023
@@ -143,9 +116,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: highdef.network
     wg:
       endpoint: tyo.peer.highdef.network:21023
@@ -157,9 +127,6 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: Nisbett
     wg:
       endpoint: nrt.dn42.boletus.icu:21023
@@ -171,6 +138,3 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24

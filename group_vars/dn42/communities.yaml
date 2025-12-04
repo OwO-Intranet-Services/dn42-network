@@ -4,7 +4,7 @@
 
 # Latency communities (64511, 1-9)
 # Ranges: [exp(x-1), exp(x)] ms
-latency_communities:
+dn42_latency_communities:
   1: [0, 2.7] # 0-2.7ms
   2: [2.7, 7.3] # 2.7-7.3ms
   3: [7.3, 20] # 7.3-20ms
@@ -17,7 +17,7 @@ latency_communities:
 
 # Bandwidth communities (64511, 21-29)
 # bw >= 10^(x-2) mbit
-bandwidth_communities:
+dn42_bandwidth_communities:
   21: 0.1 # >=0.1mbit
   22: 1 # >=1mbit
   23: 10 # >=10mbit
@@ -25,7 +25,7 @@ bandwidth_communities:
   25: 1000 # >=1000mbit
 
 # Encryption communities (64511, 31-34)
-encryption_communities:
+dn42_encryption_communities:
   31: "unencrypted"
   32: "unsafe" # Unsafe VPN solution
   33: "encrypted" # Safe VPN (no PFS) - standard OpenVPN P2P

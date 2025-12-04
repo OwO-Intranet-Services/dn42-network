@@ -12,9 +12,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: Stevie
     wg:
       endpoint: hkg01.dn42.wwrr.ru:21023
@@ -26,9 +23,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 2
-        bandwidth: 24
   - comment: yuyuko
     wg:
       endpoint: hk01.dn42.yuyuko.com:21023
@@ -40,9 +34,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: iedon
     wg:
       endpoint: hk-hkg.dn42.iedon.net:47122
@@ -66,9 +57,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: iyoroy
     wg:
       endpoint: hkg02-cn.ecs.iyoroy-infra.top:21023
@@ -80,9 +68,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: BingxinBaka
     wg:
       endpoint: hk01.dn42.baka.pub:21023
@@ -94,9 +79,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: cowgl
     wg:
       endpoint: v6.hkg.node.cowgl.xyz:31023
@@ -108,9 +90,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: qiuxin
     wg:
       endpoint: hkg1.exploro.one:32615
@@ -122,9 +101,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 6
-        bandwidth: 24
   - comment: mhr
     wg:
       endpoint: 6.hk-hkg1.bb.mhr.hk:21023
@@ -136,9 +112,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: darkpoint
     wg:
       endpoint: sin.darkpoint.xyz:21023
@@ -150,9 +123,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 4
-        bandwidth: 24
   - comment: sun
     wg:
       endpoint: v6.hk1-hk.dn42.6700.cc:21023
@@ -164,9 +134,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: factor2431
     wg:
       endpoint: hk-hkg.factor2431.com:21023
@@ -178,9 +145,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-    community:
-      latency: 1
-      bandwidth: 24
   - comment: highdef.network
     wg:
       endpoint: hkg.peer.highdef.network:21023
@@ -192,9 +156,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: kioubit
     wg:
       endpoint: hk1.g-load.eu:21023
@@ -208,9 +169,6 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
   - comment: Nisbett
     wg:
       endpoint: hkl.dn42.boletus.icu:21023
@@ -222,6 +180,3 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-      community:
-        latency: 1
-        bandwidth: 24
