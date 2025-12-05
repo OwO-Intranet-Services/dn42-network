@@ -1,55 +1,54 @@
 ---
-- name: Stop and disable lg-proxy service
-  ansible.builtin.systemd:
-    name: lg-proxy.service
-    state: stopped
-    enabled: false
+- name: Cleanup lg-proxy
   when: lg_configure_proxy | default(false)
-  ignore_errors: true
+  block:
+    - name: Stop and disable lg-proxy service
+      ansible.builtin.systemd:
+        name: lg-proxy.service
+        state: stopped
+        enabled: false
+      ignore_errors: true
 
-- name: Stop and disable lg-server service
-  ansible.builtin.systemd:
-    name: lg-server.service
-    state: stopped
-    enabled: false
+    - name: Remove lg-proxy systemd service file
+      ansible.builtin.file:
+        path: /etc/systemd/system/lg-proxy.service
+        state: absent
+
+    - name: Remove wg-show wrapper and source
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ automation_root_dir }}/wg-show"
+        - "{{ automation_root_dir }}/wg-show.c"
+
+- name: Cleanup lg-server
   when: lg_configure_server | default(false)
-  ignore_errors: true
+  block:
+    - name: Stop and disable lg-server service
+      ansible.builtin.systemd:
+        name: lg-server.service
+        state: stopped
+        enabled: false
+      ignore_errors: true
 
-- name: Remove lg-proxy systemd service file
-  ansible.builtin.file:
-    path: /etc/systemd/system/lg-proxy.service
-    state: absent
-  when: lg_configure_proxy | default(false)
+    - name: Remove lg-server systemd service file
+      ansible.builtin.file:
+        path: /etc/systemd/system/lg-server.service
+        state: absent
 
-- name: Remove lg-server systemd service file
-  ansible.builtin.file:
-    path: /etc/systemd/system/lg-server.service
-    state: absent
-  when: lg_configure_server | default(false)
+    - name: Disable lg-server nginx site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/lg-server.conf
+        state: absent
+      notify: Reload nginx
 
-- name: Disable lg-server nginx site
-  ansible.builtin.file:
-    path: /etc/nginx/sites-enabled/lg-server.conf
-    state: absent
-  notify: Reload nginx
-  when: lg_configure_server | default(false)
+    - name: Remove lg-server nginx configuration
+      ansible.builtin.file:
+        path: /etc/nginx/sites-available/lg-server.conf
+        state: absent
 
-- name: Remove lg-server nginx configuration
-  ansible.builtin.file:
-    path: /etc/nginx/sites-available/lg-server.conf
-    state: absent
-  when: lg_configure_server | default(false)
-
-- name: Remove lg workspace directory
-  ansible.builtin.file:
-    path: "{{ automation_root_dir }}/lg"
-    state: absent
-  when: lg_configure_server | default(false)
-
-- name: Remove wg-show wrapper and source
-  ansible.builtin.file:
-    path:
-      - "{{ automation_root_dir }}/wg-show"
-      - "{{ automation_root_dir }}/wg-show.c"
-    state: absent
-  when: lg_configure_proxy | default(false)
+    - name: Remove lg workspace directory
+      ansible.builtin.file:
+        path: "{{ automation_root_dir }}/lg"
+        state: absent
