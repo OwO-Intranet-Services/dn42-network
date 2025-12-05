@@ -19,7 +19,112 @@
 - name: Run prologue setup
   ansible.builtin.include_tasks:
     file: prologue.yaml
-  when: target is undefined
+  when:
+    - target is undefined
+    - task_type is undefined
+    - not (remove | default(false))
+    - not (remove_node | default(false))
+
+- name: Cache DN42 peer definitions for this node
+  ansible.builtin.set_fact:
+    dn42_peers: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+
+- name: Standardize DN42 peer list
+  ansible.builtin.set_fact:
+    bird_dn42_peers_processed: "{{ bird_dn42_peers_processed | default([]) + [item | combine({'name': peer_name})] }}"
+  vars:
+    peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
+  loop: "{{ dn42_peers }}"
+  loop_control:
+    label: "{{ item.bgp.asn }}"
+
+- name: Filter lists
+  ansible.builtin.set_fact:
+    bird_node_peers_configure: >-
+      {{
+        node_hosts
+        | select('ne', inventory_hostname)
+        | select('in', target_list_node)
+        | list
+      }}
+    bird_node_peers_remove: >-
+      {{
+        node_hosts
+        | select('ne', inventory_hostname)
+        | select('in', target_list_node)
+        | list
+      }}
+    bird_dn42_peers_configure: >-
+      {{
+        bird_dn42_peers_processed
+        | selectattr('name', 'in', target_list_dn42)
+        | rejectattr('removed', 'defined')
+        | list
+        +
+        bird_dn42_peers_processed
+        | selectattr('name', 'in', target_list_dn42)
+        | selectattr('removed', 'defined')
+        | rejectattr('removed', 'equalto', true)
+        | list
+      }}
+    bird_dn42_peers_remove: >-
+      {{
+        bird_dn42_peers_processed
+        | selectattr('name', 'in', target_list_dn42)
+        | selectattr('removed', 'defined')
+        | selectattr('removed', 'equalto', true)
+        | list
+      }}
+  vars:
+    target_list_node: >-
+      {{
+        [target | replace(node_prefix, '') | replace('_', '-')]
+        if target is defined and target.startswith(node_prefix)
+        else (
+          [] if target is defined and not target.startswith(node_prefix)
+          else node_hosts
+        )
+      }}
+    target_list_dn42: >-
+      {{
+        [target]
+        if target is defined
+        else (bird_dn42_peers_processed | map(attribute='name') | list)
+      }}
+
+- name: Apply global flags to lists
+  ansible.builtin.set_fact:
+    bird_node_peers_configure: >-
+      {{
+        [] if (remove | default(false)) or (task_type is defined and task_type != 'node')
+        else bird_node_peers_configure
+      }}
+    bird_node_peers_remove: >-
+      {{
+        [] if (not (remove | default(false))) or (task_type is defined and task_type != 'node')
+        else bird_node_peers_remove
+      }}
+    bird_dn42_peers_configure: >-
+      {{
+        [] if (remove | default(false)) or (task_type is defined and task_type != 'dn42')
+        else bird_dn42_peers_configure
+      }}
+    bird_dn42_peers_remove: >-
+      {{
+        bird_dn42_peers_processed | selectattr('name', 'in', target_list_dn42) | list
+        if (remove | default(false)) and (task_type is undefined or task_type == 'dn42')
+        else (
+          [] if (task_type is defined and task_type != 'dn42')
+          else bird_dn42_peers_remove
+        )
+      }}
+  vars:
+    target_list_dn42: >-
+      {{
+        [target]
+        if target is defined
+        else (bird_dn42_peers_processed | map(attribute='name') | list)
+      }}
 
 - name: Render per-node BIRD configurations
   ansible.builtin.template:
@@ -28,35 +133,19 @@
     owner: bird
     group: bird
     mode: '0644'
-  loop: "{{ node_hosts }}"
+  loop: "{{ bird_node_peers_configure }}"
   loop_control:
     loop_var: peer
     label: "{{ peer }}"
-  when:
-    - peer != inventory_hostname
-    - target is undefined
-      or target == (node_prefix ~ peer | replace('-', '_'))
-    - not (remove | default(false))
-    - task_type is undefined or task_type == 'node'
 
 - name: Remove per-node BIRD configurations
   ansible.builtin.file:
     path: "/etc/bird/nodes/{{ node_prefix }}{{ peer | replace('-', '_') }}.conf"
     state: absent
-  loop: "{{ node_hosts }}"
+  loop: "{{ bird_node_peers_remove }}"
   loop_control:
     loop_var: peer
     label: "{{ peer }}"
-  when:
-    - peer != inventory_hostname
-    - target is undefined
-      or target == (node_prefix ~ peer | replace('-', '_'))
-    - remove | default(false)
-    - task_type is undefined or task_type == 'node'
-
-- name: Cache DN42 peer definitions for this node
-  ansible.builtin.set_fact:
-    dn42_peers: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
 
 - name: Set empty DN42 peer latency map
   ansible.builtin.set_fact:
@@ -66,6 +155,7 @@
 - name: Measure DN42 peer latency communities
   when:
     - task_type is undefined or task_type == 'dn42'
+    - bird_dn42_peers_configure | length > 0
   block:
     - name: Copy latency probe script
       ansible.builtin.copy:
@@ -79,12 +169,9 @@
       async: "{{ ((dn42_latency_ping_count | int) * (dn42_latency_ping_timeout | int)) + 10 }}"
       poll: 0
       register: dn42_peer_latency_async_jobs
-      loop: "{{ dn42_peers }}"
+      loop: "{{ bird_dn42_peers_configure }}"
       loop_control:
-        label: "{{ dn42_prefix ~ (item.bgp.asn | string)[-4:] }}"
-      when:
-        - target is undefined or
-          target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
+        label: "{{ item.name }}"
       changed_when: false
       failed_when: false
 
@@ -97,7 +184,7 @@
       delay: 1
       loop: "{{ dn42_peer_latency_async_jobs.results | default([]) }}"
       loop_control:
-        label: "{{ dn42_prefix ~ (item.item.bgp.asn | string)[-4:] }}"
+        label: "{{ item.item.name }}"
       when:
         - dn42_peer_latency_async_jobs is defined
         - not (item.skipped | default(false))
@@ -109,8 +196,10 @@
         dn42_peer_latency_summary: "{{ (dn42_peer_latency_summary | default([])) + [{'peer': _peer_name, 'stdout': _raw_stdout}] }}"
       vars:
         _raw_stdout: "{{ item.stdout | default('failed:0') }}"
-        _peer_name: "{{ dn42_prefix ~ (item.item.item.bgp.asn | string)[-4:] }}"
+        _peer_name: "{{ item.item.item.name }}"
       loop: "{{ dn42_peer_latency_results.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item.item.name }}"
       when:
         - dn42_peer_latency_results is defined
         - not (item.skipped | default(false))
@@ -137,52 +226,30 @@
           {{ dn42_latency_community_default }}
           {% endif %}
       loop: "{{ dn42_peer_latency_summary | default([]) }}"
+      loop_control:
+        label: "{{ item.peer }}"
       when:
         - dn42_peer_latency_summary is defined
         - dn42_peer_latency_summary | length > 0
-        - target is undefined or
-          target == item.peer
 
 - name: Render DN42 peer configurations
   ansible.builtin.template:
     src: dn42_peer.conf.j2
-    dest: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
+    dest: "/etc/bird/peers/{{ item.name }}.conf"
     owner: bird
     group: bird
     mode: '0644'
-  loop: "{{ dn42_peers | default([]) }}"
-  when:
-    - dn42_peers is defined
-    - target is undefined or
-      target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
-    - not (remove | default(false))
-    - not (item.removed | default(false))
-    - task_type is undefined or task_type == 'dn42'
-
-- name: Remove removed DN42 peer configurations
-  ansible.builtin.file:
-    path: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
-    state: absent
-  loop: "{{ dn42_peers | default([]) }}"
-  when:
-    - dn42_peers is defined
-    - target is undefined
-      or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
-    - remove | default(false)
-    - item.removed | default(false)
-    - task_type is undefined or task_type == 'dn42'
+  loop: "{{ bird_dn42_peers_configure }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Remove DN42 peer configurations
   ansible.builtin.file:
-    path: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
+    path: "/etc/bird/peers/{{ item.name }}.conf"
     state: absent
-  loop: "{{ dn42_peers | default([]) }}"
-  when:
-    - dn42_peers is defined
-    - target is undefined
-      or target == (dn42_prefix ~ (item.bgp.asn | string)[-4:])
-    - remove | default(false)
-    - task_type is undefined or task_type == 'dn42'
+  loop: "{{ bird_dn42_peers_remove }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Reload BIRD configurations
   ansible.builtin.command: birdc configure
