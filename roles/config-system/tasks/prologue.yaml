@@ -5,6 +5,8 @@
     state: present
     key: "{{ item }}"
   loop: "{{ ssh_keys }}"
+  loop_control:
+    label: "{{ item | regex_replace('^.* (.*)$', '\\1') }}"
 
 - name: Install packages
   ansible.builtin.apt:

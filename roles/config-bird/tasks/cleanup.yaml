@@ -34,6 +34,8 @@
     path: "/etc/bird/peers/{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}.conf"
     state: absent
   loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+  loop_control:
+    label: "{{ item.bgp.asn }}"
   when: lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
 
 - name: Remove BIRD main configuration files
@@ -44,6 +46,8 @@
     - /etc/bird/bird.conf
     - /etc/bird/node.conf
     - /etc/bird/babel.conf
+  loop_control:
+    label: "{{ item }}"
 
 - name: Remove DN42 dummy interface
   ansible.builtin.shell: |

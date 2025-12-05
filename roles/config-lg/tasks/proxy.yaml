@@ -17,12 +17,16 @@
 - name: Resolve lg_server hostnames (IPv4)
   ansible.builtin.command: "dig +short A {{ hostvars[item].ansible_host | default(item) }}"
   loop: "{{ groups['lg_server'] | default([]) }}"
+  loop_control:
+    label: "{{ item }}"
   register: lg_server_v4
   changed_when: false
 
 - name: Resolve lg_server hostnames (IPv6)
   ansible.builtin.command: "dig +short AAAA {{ hostvars[item].ansible_host | default(item) }}"
   loop: "{{ groups['lg_server'] | default([]) }}"
+  loop_control:
+    label: "{{ item }}"
   register: lg_server_v6
   changed_when: false
 

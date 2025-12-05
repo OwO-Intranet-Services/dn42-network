@@ -32,6 +32,8 @@
   run_once: true
   delegate_to: "{{ item }}"
   loop: "{{ ansible_play_hosts }}"
+  loop_control:
+    label: "{{ item }}"
   notify: Restart bind9
 
 - name: Render DNS zone files

@@ -9,12 +9,15 @@
   loop: "{{ node_hosts }}"
   loop_control:
     loop_var: peer
+    label: "{{ peer }}"
   when: peer != inventory_hostname
 
 - name: Build DN42 WireGuard peer list for cleanup
   ansible.builtin.set_fact:
     wg_cleanup_dn42_interfaces: "{{ (wg_cleanup_dn42_interfaces | default([])) + [dn42_prefix ~ (item.bgp.asn | string)[-4:]] }}"
   loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+  loop_control:
+    label: "{{ item.bgp.asn }}"
   when: lookup('vars', inventory_hostname) is defined and lookup('vars', inventory_hostname).peers is defined
 
 - name: Combine all interfaces to cleanup
@@ -27,6 +30,8 @@
     state: stopped
     enabled: false
   loop: "{{ wg_all_cleanup_interfaces }}"
+  loop_control:
+    label: "{{ item }}"
   ignore_errors: true
 
 - name: Remove WireGuard configuration files
@@ -34,3 +39,5 @@
     path: "/etc/wireguard/{{ item }}.conf"
     state: absent
   loop: "{{ wg_all_cleanup_interfaces }}"
+  loop_control:
+    label: "{{ item }}"
