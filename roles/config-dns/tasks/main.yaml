@@ -32,17 +32,85 @@
     - not (remove | default(false))
     - not (remove_node | default(false))
 
-- name: Gather DNS binding settings for host
+- name: Set Anycast IPs for Anycast nodes
   ansible.builtin.set_fact:
-    dns_host_binding: "{{ dns_nameserver_bindings.get(inventory_hostname, {}) }}"
+    dns_anycast_ips_v4: "{{ dns_nameservers | map(attribute='ipv4') | list }}"
+    dns_anycast_ips_v6: "{{ dns_nameservers | map(attribute='ipv6') | list }}"
+  when: inventory_hostname in groups.get('anycast', [])
 
-- name: Merge host-specific DNS listen addresses
+- name: Set Anycast IPs for non-Anycast nodes (empty)
+  ansible.builtin.set_fact:
+    dns_anycast_ips_v4: []
+    dns_anycast_ips_v6: []
+  when: inventory_hostname not in groups.get('anycast', [])
+
+- name: Generate DNS serial number
+  ansible.builtin.set_fact:
+    dns_auto_serial: "{{ ansible_date_time.date | regex_replace('-', '') }}01"
+
+- name: Normalize master zones with defaults
+  ansible.builtin.set_fact:
+    normalized_master_zones: >-
+      {%- set res = [] -%}
+      {%- for zone in dns_master_zones -%}
+        {%- set zone_soa = zone.soa | default({}) -%}
+        {%- set updated_soa = zone_soa | combine({'serial': zone_soa.serial | default(dns_auto_serial)}) -%}
+        {%- set safe_filename = zone.file | default('db.' + zone.name) | regex_replace('/', '_') -%}
+        {%- set _ = res.append(zone | combine({
+          'type': 'master',
+          'file': safe_filename,
+          'origin': zone.origin | default(zone.name + '.'),
+          'soa': updated_soa
+        })) -%}
+      {%- endfor -%}
+      {{ res }}
+
+- name: Construct DNS zones list
+  ansible.builtin.set_fact:
+    dns_zones: "{{ normalized_master_zones + extra_zones + forward_zones }}"
+  vars:
+    extra_zones: >-
+      {%- set res = [] -%}
+      {%- for domain in dns_extra_domains -%}
+        {%- set _ = res.append({
+          'name': domain,
+          'type': 'master',
+          'file': ('db.' + domain) | regex_replace('/', '_'),
+          'ttl': 3600,
+          'origin': domain + '.',
+          'notify': true,
+          'allow_transfer': _transfer_defaults,
+          'allow_query': ['any'],
+          'soa': _soa_defaults
+        }) -%}
+      {%- endfor -%}
+      {{ res }}
+    forward_zones: >-
+      {%- set res = [] -%}
+      {%- for zone in dns_forward_zones_list -%}
+        {%- set _ = res.append(
+          {'name': zone} | combine(forward_zone_defaults)
+        ) -%}
+      {%- endfor -%}
+      {{ res }}
+
+- name: Generate validate-except block
+  ansible.builtin.set_fact:
+    dns_validate_except_block: |
+      validate-except {
+        {% for zone in dns_forward_zones_list %}
+        "{{ zone }}";
+        {% endfor %}
+      };
+
+- name: Merge host-specific DNS listen addresses and extra statements
   ansible.builtin.set_fact:
     dns_named_options_rendered: >-
       {{ dns_named_options | combine(
           {
-            'listen_on_v4': (dns_named_options.listen_on_v4 | default([])) + (dns_host_binding.listen_on_v4 | default([])),
-            'listen_on_v6': (dns_named_options.listen_on_v6 | default([])) + (dns_host_binding.listen_on_v6 | default([]))
+            'listen_on_v4': (dns_named_options.listen_on_v4 | default([])) + dns_anycast_ips_v4,
+            'listen_on_v6': (dns_named_options.listen_on_v6 | default([])) + dns_anycast_ips_v6,
+            'extra_statements': (dns_named_options.extra_statements | default([])) + [dns_validate_except_block]
           },
           recursive=True
         )

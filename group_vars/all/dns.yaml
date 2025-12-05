@@ -10,14 +10,17 @@ dns_service:
   config_dir: /etc/bind
   zone_dir: /etc/bind/zones
 
-# --- Variables & Anchors (Definitions) ---
 domain_name: iris.dn42
 reverse_zone_ipv4: 64/26.111.21.172.in-addr.arpa
 reverse_zone_ipv6: 3.2.0.1.2.4.2.4.2.4.d.f.ip6.arpa
-dns_anycast_ns1_v4: 172.21.111.100
-dns_anycast_ns1_v6: "fd42:4242:1023::53:0"
-dns_anycast_ns2_v4: 172.21.111.101
-dns_anycast_ns2_v6: "fd42:4242:1023::53:1"
+
+dns_nameservers:
+  - name: ns1
+    ipv4: 172.21.111.100
+    ipv6: fd42:4242:1023::53:0
+  - name: ns2
+    ipv4: 172.21.111.101
+    ipv6: fd42:4242:1023::53:1
 
 _dn42_forwarders: &dn42_forwarders
   - 172.20.0.53
@@ -34,7 +37,6 @@ _dns_allowed_clients: &dns_allowed_clients
 _soa_defaults: &soa_defaults
   primary_ns: ns1.iris.dn42.
   contact: hostmaster.iris.dn42.
-  serial: 2025112601
   refresh: 7200
   retry: 3600
   expire: 1209600
@@ -45,12 +47,10 @@ _transfer_defaults: &transfer_defaults
   - fd42:4242:1023:66::53:1
   - any
 
-_forward_zone_defaults: &forward_zone_defaults
+forward_zone_defaults:
   type: forward
   forward_policy: only
   forwarders: *dn42_forwarders
-
-# --- Main Configuration ---
 
 dns_named_options:
   directory: /var/cache/bind
@@ -71,136 +71,40 @@ dns_named_options:
   version: none
   extra_statements:
     - empty-zones-enable no;
-    - |
-      validate-except {
-        "dn42";
-        "20.172.in-addr.arpa";
-        "21.172.in-addr.arpa";
-        "22.172.in-addr.arpa";
-        "23.172.in-addr.arpa";
-        "10.in-addr.arpa";
-        "d.f.ip6.arpa";
-      };
 
-dns_nameserver_bindings:
-  lax-01: &anycast_binding
-    interface: dn42-dummy
-    listen_on_v4:
-      - 127.0.0.1
-      - 172.21.111.100
-      - 172.21.111.101
-    listen_on_v6:
-      - ::1
-      - fd42:4242:1023::53:0
-      - fd42:4242:1023::53:1
-
-  hkg-01: *anycast_binding
-  tyo-01: *anycast_binding
-
-dns_zones:
-  # --- Master Zones ---
-  - name: iris.dn42
-    type: master
-    file: db.iris.dn42
+dns_master_zones:
+  - name: "{{ domain_name }}"
     ttl: 3600
-    origin: iris.dn42.
     notify: true
     allow_transfer: *transfer_defaults
     allow_query:
       - any
     soa: *soa_defaults
-    records:
-      - name: "@"
-        type: NS
-        value: ns1.iris.dn42.
-      - name: "@"
-        type: NS
-        value: ns2.iris.dn42.
-      # Anycast IPs
-      - name: ns1
-        type: A
-        value: 172.21.111.100
-      - name: ns1
-        type: AAAA
-        value: fd42:4242:1023::53:0
-      - name: ns2
-        type: A
-        value: 172.21.111.101
-      - name: ns2
-        type: AAAA
-        value: fd42:4242:1023::53:1
 
-  - name: 64/26.111.21.172.in-addr.arpa
-    type: master
-    file: db.64-26.111.21.172.in-addr.arpa
+  - name: "{{ reverse_zone_ipv4 }}"
     ttl: 3600
-    origin: 64/26.111.21.172.in-addr.arpa.
     notify: true
     allow_transfer: *transfer_defaults
     allow_query:
       - any
     soa: *soa_defaults
-    records:
-      - name: "@"
-        type: NS
-        value: ns1.iris.dn42.
-      - name: "@"
-        type: NS
-        value: ns2.iris.dn42.
-      # PTRs for Anycast
-      - name: "100"
-        type: PTR
-        value: ns1.iris.dn42.
-      - name: "101"
-        type: PTR
-        value: ns2.iris.dn42.
 
-  - name: 3.2.0.1.2.4.2.4.2.4.d.f.ip6.arpa
-    type: master
-    file: db.3.2.0.1.2.4.2.4.2.4.d.f.ip6.arpa
+  - name: "{{ reverse_zone_ipv6 }}"
     ttl: 3600
-    origin: 3.2.0.1.2.4.2.4.2.4.d.f.ip6.arpa.
     notify: true
     allow_transfer: *transfer_defaults
     allow_query:
       - any
     soa:
       <<: *soa_defaults
-      # TODO auto increment
-      # TODO suppress warning
-      serial: 2025112602
-    records:
-      - name: "@"
-        type: NS
-        value: ns1.iris.dn42.
-      - name: "@"
-        type: NS
-        value: ns2.iris.dn42.
-      # PTRs for Anycast
-      - name: 0.0.0.0.3.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0
-        type: PTR
-        value: ns1.iris.dn42.
-      - name: 1.0.0.0.3.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0
-        type: PTR
-        value: ns2.iris.dn42.
 
-  - name: dn42
-    <<: *forward_zone_defaults
+dns_extra_domains: []
 
-  - name: 20.172.in-addr.arpa
-    <<: *forward_zone_defaults
-
-  - name: 21.172.in-addr.arpa
-    <<: *forward_zone_defaults
-
-  - name: 22.172.in-addr.arpa
-    <<: *forward_zone_defaults
-
-  - name: 23.172.in-addr.arpa
-    <<: *forward_zone_defaults
-
-  - name: 10.in-addr.arpa
-    <<: *forward_zone_defaults
-
-  - name: d.f.ip6.arpa
-    <<: *forward_zone_defaults
+dns_forward_zones_list:
+  - dn42
+  - 20.172.in-addr.arpa
+  - 21.172.in-addr.arpa
+  - 22.172.in-addr.arpa
+  - 23.172.in-addr.arpa
+  - 10.in-addr.arpa
+  - d.f.ip6.arpa

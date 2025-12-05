@@ -73,9 +73,16 @@ all:
           region: EUROPE
           country: NL
 
+    anycast:
+      hosts:
+        lax-01:
+        tyo-01:
+        ams-01:
+
     lg_server:
       hosts:
         lax-01:
+
     dn42:
       hosts:
         lax-01:

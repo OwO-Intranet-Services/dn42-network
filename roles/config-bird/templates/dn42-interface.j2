@@ -5,19 +5,21 @@ iface dn42-dummy inet static
     pre-up ip link add dn42-dummy type dummy || true
     address {{ ownip }}
     netmask 255.255.255.255
-    # Anycast NS1 (IPv4)
-    up ip addr add {{ dns_anycast_ns1_v4 }}/32 dev dn42-dummy label dn42-dummy:ns1 || true
-    down ip addr del {{ dns_anycast_ns1_v4 }}/32 dev dn42-dummy label dn42-dummy:ns1 || true
-    # Anycast NS2 (IPv4)
-    up ip addr add {{ dns_anycast_ns2_v4 }}/32 dev dn42-dummy label dn42-dummy:ns2 || true
-    down ip addr del {{ dns_anycast_ns2_v4 }}/32 dev dn42-dummy label dn42-dummy:ns2 || true
+{% if inventory_hostname in groups.get('anycast', []) %}
+    # Anycast Nameservers (IPv4)
+{%   for ns in dns_nameservers %}
+    up ip addr add {{ ns.ipv4 }}/32 dev dn42-dummy label dn42-dummy:{{ ns.name }} || true
+    down ip addr del {{ ns.ipv4 }}/32 dev dn42-dummy label dn42-dummy:{{ ns.name }} || true
+{%   endfor %}
+{% endif %}
 
 iface dn42-dummy inet6 static
     address {{ ownip6 }}
     netmask 128
-    # Anycast NS1 (IPv6)
-    up ip -6 addr add {{ dns_anycast_ns1_v6 }}/128 dev dn42-dummy || true
-    down ip -6 addr del {{ dns_anycast_ns1_v6 }}/128 dev dn42-dummy || true
-    # Anycast NS2 (IPv6)
-    up ip -6 addr add {{ dns_anycast_ns2_v6 }}/128 dev dn42-dummy || true
-    down ip -6 addr del {{ dns_anycast_ns2_v6 }}/128 dev dn42-dummy || true
+{% if inventory_hostname in groups.get('anycast', []) %}
+    # Anycast Nameservers (IPv6)
+{%   for ns in dns_nameservers %}
+    up ip -6 addr add {{ ns.ipv6 }}/128 dev dn42-dummy || true
+    down ip -6 addr del {{ ns.ipv6 }}/128 dev dn42-dummy || true
+{%   endfor %}
+{% endif %}
