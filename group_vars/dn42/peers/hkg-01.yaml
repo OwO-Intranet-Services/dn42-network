@@ -180,3 +180,15 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: Maraun
+    wg:
+      endpoint: dn42-sg.maraun.de:21023
+      wg_pubkey: "rWTIK93+XJaP4sRvrk1gqXxAZgkz6y/axLC4mjuay1I="
+      peer6: fe80::2225
+      own6: fe80::1023
+    bgp:
+      asn: 4242422225
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
