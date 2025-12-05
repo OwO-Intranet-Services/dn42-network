@@ -13,20 +13,35 @@
   roles:
     - fetch-wg-keys
 
-- name: Network Configuration
+- name: Wireguard Configuration
   hosts: nodes
   become: true
   gather_facts: true
   roles:
     - config-wireguard
+
+- name: Bird Configuration
+  hosts: nodes
+  become: true
+  gather_facts: true
+  roles:
     - config-bird
 
-- name: Services Configuration
+- name: DNS Configuration
   hosts: dn42
   become: true
   gather_facts: true
   roles:
     - config-dns
+    - role: config-lg
+      lg_configure_proxy: true
+      lg_configure_server: false
+
+- name: Looking Glass Proxy
+  hosts: dn42
+  become: true
+  gather_facts: true
+  roles:
     - role: config-lg
       lg_configure_proxy: true
       lg_configure_server: false

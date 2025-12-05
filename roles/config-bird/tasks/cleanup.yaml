@@ -68,9 +68,3 @@
     name: "Update DN42 ROAs"
     state: absent
     user: bird
-
-- name: Remove automation user
-  ansible.builtin.user:
-    name: "{{ automation_user }}"
-    state: absent
-    remove: true

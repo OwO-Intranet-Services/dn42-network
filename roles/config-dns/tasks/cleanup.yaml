@@ -1,13 +1,13 @@
 ---
 - name: Stop BIND service
   ansible.builtin.systemd:
-    name: bind9
+    name: "{{ dns_service.service_name }}"
     state: stopped
   ignore_errors: true
 
 - name: Disable BIND service
   ansible.builtin.systemd:
-    name: bind9
+    name: "{{ dns_service.service_name }}"
     enabled: false
   ignore_errors: true
 

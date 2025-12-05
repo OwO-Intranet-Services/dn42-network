@@ -20,6 +20,11 @@
     group: root
     mode: "0755"
 
+- name: Create automation group for dn42 scripts
+  ansible.builtin.group:
+    name: "{{ automation_user }}"
+    system: false
+
 - name: Create automation account for dn42 scripts
   ansible.builtin.user:
     name: "{{ automation_user }}"

@@ -4,7 +4,7 @@ dns_service:
     - bind9
     - bind9utils
     - bind9-doc
-  service_name: bind9
+  service_name: named
   user: bind
   group: bind
   config_dir: /etc/bind
