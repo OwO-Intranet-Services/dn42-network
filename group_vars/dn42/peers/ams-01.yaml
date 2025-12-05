@@ -136,3 +136,14 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: lare
+    wg:
+      endpoint: de02.dn42.lare.cc:21023
+      wg_pubkey: "dwtxXvpgWCGtX/QKFDaLXsWYRPd08Tg1JGsvzLudgjw="
+      peer6: fe80::3035:131
+    bgp:
+      asn: 4242423035
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

@@ -61,6 +61,7 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    removed: true
   - comment: cowgl
     wg:
       endpoint: tyo.node.cowgl.xyz:31023
