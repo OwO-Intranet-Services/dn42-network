@@ -53,7 +53,7 @@
 
 - name: Build WireGuard peer descriptors
   ansible.builtin.set_fact:
-    wg_node_peer_list: "{{ (wg_node_peer_list | default([])) + [peer_entry] }}"
+    wg_node_peers_configure: "{{ (wg_node_peers_configure | default([])) + [peer_entry] }}"
   vars:
     peer_hostvars: "{{ hostvars[peer] | default({}) }}"
     peer_public_key: >-
@@ -80,6 +80,21 @@
       target == (node_prefix ~ peer | replace('-', '_')) or
       target == (node_prefix ~ inventory_hostname | replace('-', '_'))
 
+- name: Filter WireGuard peers for removal
+  ansible.builtin.set_fact:
+    wg_node_peers_remove: >-
+      {{
+        wg_node_peers_configure
+        if (remove | default(false))
+        else []
+      }}
+    wg_node_peers_configure: >-
+      {{
+        []
+        if (remove | default(false))
+        else wg_node_peers_configure
+      }}
+
 - name: Render per-peer WireGuard configurations
   ansible.builtin.template:
     src: node_tunnel.conf.j2
@@ -87,26 +102,21 @@
     owner: root
     group: root
     mode: "0600"
-  loop: "{{ wg_node_peer_list | default([]) }}"
+  loop: "{{ wg_node_peers_configure | default([]) }}"
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"
   register: node_peer_templates
-  when:
-    - (wg_node_peer_list | default([])) | length > 0
-    - not (remove | default(false))
 
 - name: Remove per-peer WireGuard configurations
   ansible.builtin.file:
     path: "/etc/wireguard/{{ peer.interface_name }}.conf"
     state: absent
-  loop: "{{ wg_node_peer_list | default([]) }}"
+  loop: "{{ wg_node_peers_remove | default([]) }}"
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"
-  when:
-    - (wg_node_peer_list | default([])) | length > 0
-    - remove | default(false)
+  register: node_peer_removals
 
 - name: Set fact for rendered WireGuard peers
   ansible.builtin.set_fact:
@@ -117,7 +127,5 @@
 - name: Set fact for removed WireGuard peers
   ansible.builtin.set_fact:
     wg_removed_peers: >-
-      {{ (wg_removed_peers | default([])) + node_peer_templates.results }}
-  when:
-    - node_peer_templates is defined
-    - remove | default(false)
+      {{ (wg_removed_peers | default([])) + node_peer_removals.results }}
+  when: node_peer_removals is defined

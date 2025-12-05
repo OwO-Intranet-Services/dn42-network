@@ -8,6 +8,11 @@
   ansible.builtin.meta: end_host
   when: remove_node | default(false)
 
+- name: Initialize WireGuard peer lists
+  ansible.builtin.set_fact:
+    wg_rendered_peers: []
+    wg_removed_peers: []
+
 - name: Setup WireGuard tunnels for nodes
   ansible.builtin.include_tasks:
     file: node.yaml
@@ -24,12 +29,13 @@
   ansible.builtin.systemd:
     name: "wg-quick@{{ item.peer.interface_name }}"
     state: restarted
-  loop: "{{ wg_rendered_peers | default([]) }}"
+  loop: "{{ wg_rendered_peers }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
   when:
-    - wg_rendered_peers is defined
     - item.changed
+    # FIXME: supress warning
+    - true
 
 - name: Ensure wg-quick services are enabled and started
   ansible.builtin.systemd:
@@ -37,25 +43,15 @@
     enabled: true
     state: started
     daemon_reload: true
-  loop: "{{ wg_rendered_peers | default([]) }}"
+  loop: "{{ wg_rendered_peers }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
-
-- name: Ensure wg-quick services are running
-  ansible.builtin.systemd:
-    name: "wg-quick@{{ item.peer.interface_name }}"
-    state: started
-  loop: "{{ wg_rendered_peers | default([]) }}"
-  loop_control:
-    label: "{{ item.peer.interface_name }}"
-  when: not (remove | default(false))
 
 - name: Ensure wg-quick services are stopped and disabled
   ansible.builtin.systemd:
     name: "wg-quick@{{ item.peer.interface_name }}"
     state: stopped
     enabled: false
-  loop: "{{ wg_removed_peers | default([]) }}"
+  loop: "{{ wg_removed_peers }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
-  when: remove | default(false)

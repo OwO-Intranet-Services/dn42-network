@@ -1,7 +1,7 @@
 ---
 - name: Build DN42 peer descriptors
   ansible.builtin.set_fact:
-    wg_dn42_peer_list: "{{ (wg_dn42_peer_list | default([])) + [peer_entry] }}"
+    wg_dn42_peers_processed: "{{ (wg_dn42_peers_processed | default([])) + [peer_entry] }}"
   vars:
     peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
     peer_entry:
@@ -16,54 +16,53 @@
       psk: "{{ item.wg.psk | default(none) }}"
       keepalive: "{{ item.wg.keepalive | default(none) }}"
       mtu: "{{ item.wg.mtu | default(wireguard_peer_default_mtu | default(none)) }}"
-  loop: "{{ vars[inventory_hostname].peers | default([]) }}"
+      removed: "{{ item.removed | default(false) }}"
+  loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
   loop_control:
     label: "{{ item.bgp.asn }}"
-  when:
-    - not (item.removed | default(false))
-    - target is undefined or
-      target == peer_name or
-      target == (node_prefix ~ inventory_hostname | replace('-', '_'))
 
-- name: Build removed DN42 peer descriptors
+- name: Filter DN42 peers
   ansible.builtin.set_fact:
-    wg_dn42_removed_peer_list: "{{ (wg_dn42_removed_peer_list | default([])) + [peer_entry] }}"
+    wg_dn42_peers_configure: >-
+      {{
+        wg_dn42_peers_processed
+        | rejectattr('removed')
+        | selectattr('name', 'match', target_regex)
+        | list
+      }}
+    wg_dn42_peers_remove: >-
+      {{
+        wg_dn42_peers_processed
+        | selectattr('removed')
+        | selectattr('name', 'match', target_regex)
+        | list
+      }}
   vars:
-    peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
-    peer_entry:
-      name: "{{ peer_name }}"
-      interface_name: "{{ peer_name }}"
-  loop: "{{ vars[inventory_hostname].peers | default([]) }}"
-  loop_control:
-    label: "{{ item.bgp.asn }}"
-  when:
-    - remove | default(false)
-    - item.removed | default(false)
-    - target is undefined or
-      target == peer_name or
-      target == (node_prefix ~ inventory_hostname | replace('-', '_'))
+    target_regex: >-
+      {{
+        ('^' ~ target | replace(dn42_prefix, '') ~ '$')
+        if target is defined and target.startswith(dn42_prefix)
+        else (
+          ('^' ~ target ~ '$')
+          if target is defined
+          else '.*'
+        )
+      }}
 
-- name: Remove WireGuard configurations for removed DN42 peers
-  ansible.builtin.file:
-    path: "/etc/wireguard/{{ peer.name }}.conf"
-    state: absent
-  loop: "{{ wg_dn42_removed_peer_list | default([]) }}"
-  loop_control:
-    loop_var: peer
-    label: "{{ peer.name }}"
-  when: (wg_dn42_removed_peer_list | default([])) | length > 0
-
-- name: Stop and disable WireGuard services for removed DN42 peers
-  ansible.builtin.systemd:
-    name: "wg-quick@{{ peer.interface_name }}"
-    state: stopped
-    enabled: false
-  loop: "{{ wg_dn42_removed_peer_list | default([]) }}"
-  loop_control:
-    loop_var: peer
-    label: "{{ peer.interface_name }}"
-  when: (wg_dn42_removed_peer_list | default([])) | length > 0
-  failed_when: false
+- name: Apply global removal to DN42 peers
+  ansible.builtin.set_fact:
+    wg_dn42_peers_remove: >-
+      {{
+        wg_dn42_peers_remove + wg_dn42_peers_configure
+        if (remove | default(false))
+        else wg_dn42_peers_remove
+      }}
+    wg_dn42_peers_configure: >-
+      {{
+        []
+        if (remove | default(false))
+        else wg_dn42_peers_configure
+      }}
 
 - name: Render per-peer WireGuard configurations for DN42 peers
   ansible.builtin.template:
@@ -72,26 +71,21 @@
     owner: root
     group: root
     mode: "0600"
-  loop: "{{ wg_dn42_peer_list | default([]) }}"
+  loop: "{{ wg_dn42_peers_configure | default([]) }}"
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"
   register: dn42_peer_templates
-  when:
-    - (wg_dn42_peer_list | default([])) | length > 0
-    - not (remove | default(false))
 
 - name: Remove per-peer WireGuard configurations
   ansible.builtin.file:
     path: "/etc/wireguard/{{ peer.name }}.conf"
     state: absent
-  loop: "{{ wg_dn42_peer_list | default([]) }}"
+  loop: "{{ wg_dn42_peers_remove | default([]) }}"
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"
-  when:
-    - (wg_dn42_peer_list | default([])) | length > 0
-    - remove | default(false)
+  register: dn42_peer_removals
 
 - name: Set fact for rendered WireGuard peers
   ansible.builtin.set_fact:
@@ -102,7 +96,5 @@
 - name: Set fact for removed WireGuard peers
   ansible.builtin.set_fact:
     wg_removed_peers: >-
-      {{ (wg_removed_peers | default([])) + dn42_peer_templates.results }}
-  when:
-    - dn42_peer_templates is defined
-    - remove | default(false)
+      {{ (wg_removed_peers | default([])) + dn42_peer_removals.results }}
+  when: dn42_peer_removals is defined
