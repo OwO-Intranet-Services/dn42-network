@@ -193,13 +193,14 @@
 
     - name: Simplify DN42 latency probe stdout
       ansible.builtin.set_fact:
-        dn42_peer_latency_summary: "{{ (dn42_peer_latency_summary | default([])) + [{'peer': _peer_name, 'stdout': _raw_stdout}] }}"
+        dn42_peer_latency_summary: "{{ (dn42_peer_latency_summary | default([])) + [_summary] }}"
       vars:
         _raw_stdout: "{{ item.stdout | default('failed:0') }}"
         _peer_name: "{{ item.item.item.name }}"
+        _summary: "{{ {'peer': _peer_name, 'stdout': _raw_stdout} }}"
       loop: "{{ dn42_peer_latency_results.results | default([]) }}"
       loop_control:
-        label: "{{ item.item.item.name }}"
+        label: "{{ _summary }}"
       when:
         - dn42_peer_latency_results is defined
         - not (item.skipped | default(false))

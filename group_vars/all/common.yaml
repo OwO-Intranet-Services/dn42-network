@@ -15,7 +15,7 @@ ownnet6: fd42:4242:1023::/48
 
 automation_user: dn42-automation
 automation_root_dir: /opt/dn42
-automation_user_home: /opt/dn42/automation/
+automation_user_home: /opt/dn42/automation
 
 node_group: nodes
 dn42_group: dn42
