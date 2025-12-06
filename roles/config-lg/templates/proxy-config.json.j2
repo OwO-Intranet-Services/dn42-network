@@ -16,7 +16,7 @@
 	'bind_socket': (lg_proxy_bind_socket | default('/var/run/bird/bird.ctl')),
 	'listen': (lg_proxy_listen | mandatory),
 	'allowed_ips': ns.allowed_ip_entries | unique,
-	'shared_secret': (lg_proxy_shared_secret | mandatory),
+	'shared_secret': (lg_shared_secret | default(None)),
 	'traceroute_bin': (lg_proxy_traceroute_bin | default('/usr/sbin/traceroute')),
 	'traceroute_args': (lg_proxy_traceroute_args | default('-q1 -N32 -w2')),
 	'peering': {

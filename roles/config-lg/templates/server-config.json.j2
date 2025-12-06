@@ -1,15 +1,11 @@
-{%- set first_listen_addr = lg_proxy_listen[0] if lg_proxy_listen is iterable and lg_proxy_listen is not string else lg_proxy_listen -%}
-{%- set listen_port = first_listen_addr.split(':')[-1] -%}
-{%- set shared_secret = lg_server_shared_secret | mandatory -%}
 {%- set nodes = namespace(items=[]) -%}
 
 {%- for lg_proxy in groups.get(dn42_group, []) -%}
-{%-   set host_entry = hostvars[lg_proxy] | default({}) -%}
-{%-   set hostname = host_entry.ansible_host | default(lg_proxy) -%}
+{%-   set lg_proxy_domain = lg_proxy_domain_fmt | format(lg_proxy) -%}
 {%-   set nodes.items = nodes.items + [{
     "name": lg_proxy,
-    "url": "http://%s:%s" % (hostname, listen_port),
-    "shared_secret": shared_secret
+    "url": "https://%s" % lg_proxy_domain,
+    "shared_secret": (lg_shared_secret | default(None))
     }] -%}
 {%- endfor -%}
 

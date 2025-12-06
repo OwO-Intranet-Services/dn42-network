@@ -37,11 +37,19 @@
     owner: root
     group: nogroup
     mode: "0644"
-  notify: Restart lg-proxy
+
+- name: Build lg-proxy binary
+  ansible.builtin.command:
+    cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p proxy -r
+    chdir: "{{ playbook_dir }}/bird-lg-rs"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: true
 
 - name: Copy lg proxy binary
   ansible.builtin.copy:
-    src: lg-proxy
+    src: "{{ playbook_dir }}/bird-lg-rs/target/x86_64-unknown-linux-musl/release/proxy"
     dest: "{{ automation_root_dir }}/lg/lg-proxy"
     owner: root
     group: nogroup
@@ -57,9 +65,31 @@
     group: root
     mode: "0644"
 
-- name: Enable and start lg-proxy service
+- name: Ensure lg-proxy service is enabled and running
   ansible.builtin.systemd:
     name: lg-proxy.service
     enabled: true
     state: started
     daemon_reload: true
+
+- name: Copy wg-show wrapper source
+  ansible.builtin.copy:
+    src: wg-show.c
+    dest: "{{ automation_root_dir }}/wg-show.c"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Compile wg-show wrapper
+  ansible.builtin.command:
+    cmd: gcc -o wg-show wg-show.c
+    chdir: "{{ automation_root_dir }}"
+  changed_when: false
+
+- name: Set permissions on wg-show wrapper
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/wg-show"
+    owner: root
+    group: "{{ automation_user }}"
+    mode: "4750"
+  changed_when: false

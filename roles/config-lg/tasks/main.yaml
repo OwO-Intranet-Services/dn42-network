@@ -21,39 +21,11 @@
     file: proxy.yaml
   when:
     - target is undefined
-    - (lg_configure_proxy | default(inventory_hostname in groups.get(dn42_group, []), true)) | bool
+    - lg_configure_proxy | default(false)
 
 - name: Configure Looking Glass server component
   ansible.builtin.include_tasks:
     file: server.yaml
   when:
     - target is undefined
-    - (lg_configure_server | default(inventory_hostname in groups.get('lg_server', []), true)) | bool
-
-- name: Install build dependencies
-  ansible.builtin.apt:
-    name: build-essential
-    state: present
-    update_cache: true
-
-- name: Copy wg-show wrapper source
-  ansible.builtin.copy:
-    src: wg-show.c
-    dest: "{{ automation_root_dir }}/wg-show.c"
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Compile wg-show wrapper
-  ansible.builtin.command:
-    cmd: gcc -o wg-show wg-show.c
-    chdir: "{{ automation_root_dir }}"
-  changed_when: false
-
-- name: Set permissions on wg-show wrapper
-  ansible.builtin.file:
-    path: "{{ automation_root_dir }}/wg-show"
-    owner: root
-    group: "{{ automation_user }}"
-    mode: "4750"
-  changed_when: false
+    - lg_configure_server | default(false)

@@ -21,11 +21,19 @@
     owner: root
     group: nogroup
     mode: "0644"
-  notify: Restart lg-server
+
+- name: Build lg-server binary
+  ansible.builtin.command:
+    cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p server -r
+    chdir: "{{ playbook_dir }}/bird-lg-rs"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: true
 
 - name: Copy lg server binary
   ansible.builtin.copy:
-    src: lg-server
+    src: "{{ playbook_dir }}/bird-lg-rs/target/x86_64-unknown-linux-musl/release/server"
     dest: "{{ automation_root_dir }}/lg/lg-server"
     owner: root
     group: nogroup
@@ -47,29 +55,3 @@
     enabled: true
     state: started
     daemon_reload: true
-
-- name: Install nginx
-  ansible.builtin.package:
-    name: nginx
-    state: present
-
-- name: Configure nginx for lg server
-  ansible.builtin.template:
-    src: lg-server-nginx.conf.j2
-    dest: /etc/nginx/sites-available/lg-server.conf
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Enable lg server nginx site
-  ansible.builtin.file:
-    src: /etc/nginx/sites-available/lg-server.conf
-    dest: /etc/nginx/sites-enabled/lg-server.conf
-    state: link
-  notify: Reload nginx
-
-- name: Ensure nginx service is enabled and running
-  ansible.builtin.systemd:
-    name: nginx
-    enabled: true
-    state: started
