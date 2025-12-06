@@ -1,0 +1,3 @@
+[submodule "bird-lg-rs"]
+	path = bird-lg-rs
+	url = git@github.com:el-ev/bird-lg-rs.git

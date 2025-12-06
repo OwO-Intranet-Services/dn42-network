@@ -5,3 +5,5 @@ vault_pass.txt
 .secrets/
 # FIXME
 bird-lg-web/
+dist-network-site/
+bird-lg-rs/target/
