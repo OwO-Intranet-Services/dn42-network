@@ -5,21 +5,25 @@ iface dn42-dummy inet static
     pre-up ip link add dn42-dummy type dummy || true
     address {{ ownip }}
     netmask 255.255.255.255
-{% if inventory_hostname in groups.get('anycast', []) %}
+{% if inventory_hostname in groups.get(anycast_group, []) %}
     # Anycast Nameservers (IPv4)
-{%   for ns in dns_nameservers %}
-    up ip addr add {{ ns.ipv4 }}/32 dev dn42-dummy label dn42-dummy:{{ ns.name }} || true
-    down ip addr del {{ ns.ipv4 }}/32 dev dn42-dummy label dn42-dummy:{{ ns.name }} || true
+{%   for record in dns_anycast_records %}
+{%     if record.ipv4 is defined and record.ipv4 %}
+    up ip addr add {{ record.ipv4 }}/32 dev dn42-dummy || true
+    down ip addr del {{ record.ipv4 }}/32 dev dn42-dummy || true
+{%     endif %}
 {%   endfor %}
 {% endif %}
 
 iface dn42-dummy inet6 static
     address {{ ownip6 }}
     netmask 128
-{% if inventory_hostname in groups.get('anycast', []) %}
+{% if inventory_hostname in groups.get(anycast_group, []) %}
     # Anycast Nameservers (IPv6)
-{%   for ns in dns_nameservers %}
-    up ip -6 addr add {{ ns.ipv6 }}/128 dev dn42-dummy || true
-    down ip -6 addr del {{ ns.ipv6 }}/128 dev dn42-dummy || true
+{%   for record in dns_anycast_records %}
+{%     if record.ipv6 is defined and record.ipv6 %}
+    up ip -6 addr add {{ record.ipv6 }}/128 dev dn42-dummy || true
+    down ip -6 addr del {{ record.ipv6 }}/128 dev dn42-dummy || true
+{%     endif %}
 {%   endfor %}
 {% endif %}

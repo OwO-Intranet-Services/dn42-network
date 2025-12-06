@@ -32,21 +32,20 @@
     - not (remove | default(false))
     - not (remove_node | default(false))
 
+# ============================================================================
+# ANYCAST NODES - Full authoritative DNS server with master zones
+# ============================================================================
+
 - name: Set Anycast IPs for Anycast nodes
   ansible.builtin.set_fact:
-    dns_anycast_ips_v4: "{{ dns_nameservers | map(attribute='ipv4') | list }}"
-    dns_anycast_ips_v6: "{{ dns_nameservers | map(attribute='ipv6') | list }}"
-  when: inventory_hostname in groups.get('anycast', [])
-
-- name: Set Anycast IPs for non-Anycast nodes (empty)
-  ansible.builtin.set_fact:
-    dns_anycast_ips_v4: []
-    dns_anycast_ips_v6: []
-  when: inventory_hostname not in groups.get('anycast', [])
+    dns_anycast_ips_v4: "{{ dns_anycast_records | selectattr('ipv4', 'defined') | map(attribute='ipv4') | list }}"
+    dns_anycast_ips_v6: "{{ dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list }}"
+  when: inventory_hostname in groups.get(anycast_group, [])
 
 - name: Generate DNS serial number
   ansible.builtin.set_fact:
-    dns_auto_serial: "{{ ansible_date_time.date | regex_replace('-', '') }}01"
+    dns_auto_serial: "{{ ansible_date_time.epoch }}"
+  when: inventory_hostname in groups.get(anycast_group, [])
 
 - name: Normalize master zones with defaults
   ansible.builtin.set_fact:
@@ -64,8 +63,9 @@
         })) -%}
       {%- endfor -%}
       {{ res }}
+  when: inventory_hostname in groups.get(anycast_group, [])
 
-- name: Construct DNS zones list
+- name: Construct DNS zones list for anycast nodes
   ansible.builtin.set_fact:
     dns_zones: "{{ normalized_master_zones + extra_zones + forward_zones }}"
   vars:
@@ -93,8 +93,9 @@
         ) -%}
       {%- endfor -%}
       {{ res }}
+  when: inventory_hostname in groups.get(anycast_group, [])
 
-- name: Generate validate-except block
+- name: Generate validate-except block for anycast nodes
   ansible.builtin.set_fact:
     dns_validate_except_block: |
       validate-except {
@@ -102,8 +103,9 @@
         "{{ zone }}";
         {% endfor %}
       };
+  when: inventory_hostname in groups.get(anycast_group, [])
 
-- name: Merge host-specific DNS listen addresses and extra statements
+- name: Merge host-specific DNS listen addresses and extra statements (anycast)
   ansible.builtin.set_fact:
     dns_named_options_rendered: >-
       {{ dns_named_options | combine(
@@ -115,12 +117,152 @@
           recursive=True
         )
       }}
+  when: inventory_hostname in groups.get(anycast_group, [])
 
-- name: Run prologue setup
-  ansible.builtin.include_tasks:
-    file: prologue.yaml
-  when:
-    - target is undefined
-    - task_type is undefined
-    - not (remove | default(false))
-    - not (remove_node | default(false))
+- name: Render named.conf.options (anycast)
+  ansible.builtin.template:
+    src: named.conf.options.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.options"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  when: inventory_hostname in groups.get(anycast_group, [])
+  notify: Restart bind9
+
+- name: Render named.conf.local (anycast)
+  ansible.builtin.template:
+    src: named.conf.local.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.local"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  when: inventory_hostname in groups.get(anycast_group, [])
+  notify: Restart bind9
+
+- name: Render DNS zone files (anycast)
+  ansible.builtin.template:
+    src: zone.db.j2
+    dest: "{{ dns_service.zone_dir }}/{{ zone.file }}"
+    owner: "{{ dns_service.user }}"
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  vars:
+    zone: "{{ item }}"
+  loop: "{{ dns_zones | selectattr('type', 'equalto', 'master') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: inventory_hostname in groups.get(anycast_group, [])
+  notify: Restart bind9
+
+# ============================================================================
+# NON-ANYCAST NODES - Simple forwarding resolver
+# Forwards to: anycast nodes (own zones), DN42 anycast DNS, clearnet DNS
+# ============================================================================
+
+- name: Build forwarder list for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_non_anycast_forwarders: >-
+      {{
+        (dns_nameservers | map(attribute='ipv4') | list) +
+        (dns_nameservers | map(attribute='ipv6') | list) +
+        _dn42_forwarders +
+        dns_named_options.forwarders
+      }}
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Construct DNS zones list for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_zones: "{{ forward_zones }}"
+    internal_forwarders: "{{ (dns_anycast_records | selectattr('ipv4', 'defined') | map(attribute='ipv4') | list) + (dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list) }}"
+    forward_zones: >-
+      {%- set res = [] -%}
+      {%- for zone in dns_forward_zones_list -%}
+        {%- set _ = res.append(
+          {'name': zone} | combine(forward_zone_defaults) | combine({'forwarders': internal_forwarders + _dn42_forwarders})
+        ) -%}
+      {%- endfor -%}
+      {{ res }}
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Generate validate-except block for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_validate_except_block: |
+      validate-except {
+        {% for zone in dns_forward_zones_list %}
+        "{{ zone }}";
+        {% endfor %}
+      };
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Build named options for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_named_options_rendered: >-
+      {{ dns_named_options | combine(
+          {
+            'forwarders': dns_non_anycast_forwarders,
+            'extra_statements': (dns_named_options.extra_statements | default([])) + [dns_validate_except_block]
+          },
+          recursive=True
+        )
+      }}
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Render named.conf.options (non-anycast)
+  ansible.builtin.template:
+    src: named.conf.options.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.options"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  when: inventory_hostname not in groups.get(anycast_group, [])
+  notify: Restart bind9
+
+- name: Render named.conf.local (non-anycast)
+  ansible.builtin.template:
+    src: named.conf.local.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.local"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  when: inventory_hostname not in groups.get(anycast_group, [])
+  notify: Restart bind9
+
+- name: Ensure BIND is enabled and started
+  ansible.builtin.service:
+    name: "{{ dns_service.service_name }}"
+    state: started
+    enabled: true
+
+- name: Disable systemd-resolved (if present)
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  failed_when: false
+
+- name: Remove immutable flag from resolv.conf (if present)
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    attributes: -i
+  ignore_errors: true
+  changed_when: false
+
+- name: Point system DNS to local BIND instance
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    content: |
+      # Managed by Ansible
+      nameserver 127.0.0.1
+      nameserver ::1
+      search iris.dn42 dn42
+      options timeout:2
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Lock resolv.conf
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    attributes: +i
+  changed_when: false

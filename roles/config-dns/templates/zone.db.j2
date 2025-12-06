@@ -13,7 +13,7 @@ $ORIGIN {{ zone.origin }}
 
 ; NS Records
 {% for ns in dns_nameservers %}
-@       IN      NS      {{ ns.name }}.{{ domain_name }}.
+@       IN      NS      {{ ns }}.{{ domain_name }}.
 {% endfor %}
 
 {% if zone.records is defined %}
@@ -25,11 +25,7 @@ $ORIGIN {{ zone.origin }}
 {% endif %}
 
 {% if zone.name == domain_name %}
-; Nameserver A/AAAA Records
-{%   for ns in dns_nameservers %}
-{{ ns.name }}    IN      A       {{ ns.ipv4 }}
-{{ ns.name }}    IN      AAAA    {{ ns.ipv6 }}
-{%   endfor %}
+
 
 ; Nodes (A / AAAA)
 {%   for host in groups['nodes'] %}
@@ -40,12 +36,35 @@ $ORIGIN {{ zone.origin }}
 {{ host }}.node  IN  AAAA  {{ hostvars[host].ownip6 }}
 {%     endif %}
 {%   endfor %}
+
+; Anycast Services
+{%   if dns_anycast_records is defined %}
+{%     for record in dns_anycast_records %}
+{%       if record.ipv4 is defined and record.ipv4 %}
+{{ record.name }}    IN      A       {{ record.ipv4 }}
+{%       endif %}
+{%       if record.ipv6 is defined and record.ipv6 %}
+{{ record.name }}    IN      AAAA    {{ record.ipv6 }}
+{%       endif %}
+{%     endfor %}
+{%   endif %}
+
+; CNAME Records
+{%   if dns_cname_records is defined %}
+{%     for record in dns_cname_records %}
+{{ record.name }}    IN      CNAME   {{ record.target }}
+{%     endfor %}
+{%   endif %}
+
 {% endif %}
 
 {% if zone.name == reverse_zone_ipv4 %}
 ; Nameserver PTR Records
 {%   for ns in dns_nameservers %}
-{{ ns.ipv4.split('.')[-1] }}    IN      PTR     {{ ns.name }}.{{ domain_name }}.
+{%     set ns_record = dns_anycast_records | selectattr('name', 'equalto', ns) | first %}
+{%     if ns_record.ipv4 is defined and ns_record.ipv4 %}
+{{ ns_record.ipv4.split('.')[-1] }}    IN      PTR     {{ ns }}.{{ domain_name }}.
+{%     endif %}
 {%   endfor %}
 
 {%   for host in groups['nodes'] %}
@@ -53,12 +72,24 @@ $ORIGIN {{ zone.origin }}
 {{ hostvars[host].ownip.split('.')[-1] }}  IN  PTR  {{ host }}.node.iris.dn42.
 {%     endif %}
 {%   endfor %}
+
+; Anycast PTR
+{%   if dns_anycast_records is defined %}
+{%     for record in dns_anycast_records %}
+{%       if record.ipv4 is defined and record.ipv4 %}
+{{ record.ipv4.split('.')[-1] }}  IN  PTR  {{ record.name }}.{{ domain_name }}.
+{%       endif %}
+{%     endfor %}
+{%   endif %}
 {% endif %}
 
 {% if zone.name == reverse_zone_ipv6 %}
 ; Nameserver PTR Records
 {%   for ns in dns_nameservers %}
-{{ (ns.ipv6 | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}    IN      PTR     {{ ns.name }}.{{ domain_name }}.
+{%     set ns_record = dns_anycast_records | selectattr('name', 'equalto', ns) | first %}
+{%     if ns_record.ipv6 is defined and ns_record.ipv6 %}
+{{ (ns_record.ipv6 | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}    IN      PTR     {{ ns }}.{{ domain_name }}.
+{%     endif %}
 {%   endfor %}
 
 {%   for host in groups['nodes'] %}
@@ -66,4 +97,13 @@ $ORIGIN {{ zone.origin }}
 {{ (hostvars[host].ownip6 | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}  IN  PTR  {{ host }}.node.iris.dn42.
 {%     endif %}
 {%   endfor %}
+
+; Anycast PTR
+{%   if dns_anycast_records is defined %}
+{%     for record in dns_anycast_records %}
+{%       if record.ipv6 is defined and record.ipv6 %}
+{{ (record.ipv6 | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}  IN  PTR  {{ record.name }}.{{ domain_name }}.
+{%       endif %}
+{%     endfor %}
+{%   endif %}
 {% endif %}

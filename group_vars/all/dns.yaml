@@ -14,13 +14,24 @@ domain_name: iris.dn42
 reverse_zone_ipv4: 64/26.111.21.172.in-addr.arpa
 reverse_zone_ipv6: 3.2.0.1.2.4.2.4.2.4.d.f.ip6.arpa
 
-dns_nameservers:
+dns_anycast_records:
   - name: ns1
     ipv4: 172.21.111.100
     ipv6: fd42:4242:1023::53:0
   - name: ns2
     ipv4: 172.21.111.101
     ipv6: fd42:4242:1023::53:1
+  - name: anycast
+    ipv4: 172.21.111.111
+    ipv6: fd42:4242:1023::1111:1
+
+dns_cname_records:
+  - name: network
+    target: anycast
+
+dns_nameservers:
+  - ns1
+  - ns2
 
 _dn42_forwarders: &dn42_forwarders
   - 172.20.0.53
@@ -43,9 +54,7 @@ _soa_defaults: &soa_defaults
   minimum: 3600
 
 _transfer_defaults: &transfer_defaults
-  - 172.21.111.66
-  - fd42:4242:1023:66::53:1
-  - any
+  - none
 
 forward_zone_defaults:
   type: forward
