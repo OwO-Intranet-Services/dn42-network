@@ -36,6 +36,21 @@ $ORIGIN {{ zone.origin }}
 {%     endif %}
 {%   endfor %}
 
+; LG Proxy
+{%   for host in groups['dn42'] %}
+lg-proxy.{{ host }}.node  IN  CNAME  {{ hostvars[host].ansible_host }}.
+{%   endfor %}
+
+; LG Server Domains
+{%   if lg_server_domains is defined %}
+{%     for domain in lg_server_domains %}
+{%       if domain.endswith(domain_name) %}
+{{ domain | replace('.' + domain_name, '') }}  IN  A     {{ hostvars[groups['lg_server'][0]].ownip }}
+{{ domain | replace('.' + domain_name, '') }}  IN  AAAA  {{ hostvars[groups['lg_server'][0]].ownip6 }}
+{%       endif %}
+{%     endfor %}
+{%   endif %}
+
 ; Anycast Services
 {%   if dns_anycast_records is defined %}
 {%     for record in dns_anycast_records %}

@@ -1,0 +1,22 @@
+server {
+    listen {{ item.listen_ipv4 }}:80;
+    listen [{{ item.listen_ipv6 }}]:80;
+    listen {{ item.listen_ipv4 }}:443 ssl;
+    listen [{{ item.listen_ipv6 }}]:443 ssl;
+
+    server_name {{ item.server_name }};
+    root {{ item.root }};
+    index index.html;
+
+    ssl_certificate {{ automation_user_home }}/certs/{{ item.server_name }}/signed.crt;
+    ssl_certificate_key {{ automation_user_home }}/certs/{{ item.server_name }}/server.key;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /visitor-info {
+        add_header Content-Type application/json;
+        return 200 '{"node": "{{ inventory_hostname }}", "ip": "$remote_addr"}';
+    }
+}

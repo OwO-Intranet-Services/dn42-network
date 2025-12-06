@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name {{ item.server_name }};
+    root {{ item.root | default('/var/www/html/' + item.server_name) }};
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+{% if item.dn42_cert | default(false) %}
+
+    listen 443 ssl;
+    ssl_certificate {{ automation_user_home }}/certs/{{ item.server_name }}/signed.crt;
+    ssl_certificate_key {{ automation_user_home }}/certs/{{ item.server_name }}/server.key;
+{% endif %}
+}

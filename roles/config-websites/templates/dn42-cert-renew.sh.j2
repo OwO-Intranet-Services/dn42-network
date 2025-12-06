@@ -1,0 +1,50 @@
+#!/bin/sh
+# DN42 Certificate Renewal Script
+# Managed by Ansible - Do not edit manually
+
+set -eu
+
+CERT_DIR="{{ automation_user_home }}/certs"
+CERT_CLIENT="{{ automation_user_home }}/bin/dn42-cert-client"
+
+{% for site in dn42_websites %}
+# Renew {{ site.server_name }}
+cd "$CERT_DIR/{{ site.server_name }}" || { echo "Failed to change directory to $CERT_DIR/{{ site.server_name }}"; exit 1; }
+
+TOKEN_FILE="{{ automation_user_home }}/certs/token.txt"
+
+RETRY_ATTEMPTS=0
+MAX_ATTEMPTS=3
+SUCCESS=0
+
+# Check if certificate exists and is valid for > 30 days
+if [ -f "signed.crt" ] && openssl x509 -checkend $((86400 * 30)) -in signed.crt > /dev/null; then
+    echo "Certificate for {{ site.server_name }} is valid for more than 30 days. Skipping."
+    continue
+fi
+
+echo "Certificate for {{ site.server_name }} is missing or expiring soon. Renewing..."
+
+while [ $RETRY_ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+    if "$CERT_CLIENT" -t "$TOKEN_FILE" get_certificate "{{ site.server_name }}"; then
+        SUCCESS=1
+        if sudo /usr/bin/systemctl reload nginx; then
+            echo "Nginx reloaded successfully."
+        else
+            echo "Failed to reload Nginx."
+        fi
+        break
+    else
+        echo "Attempt $((RETRY_ATTEMPTS + 1)) failed for {{ site.server_name }}. Retrying..."
+        RETRY_ATTEMPTS=$((RETRY_ATTEMPTS + 1))
+        sleep 2
+    fi
+done
+
+if [ $SUCCESS -eq 0 ]; then
+    echo "Failed to renew {{ site.server_name }} after $MAX_ATTEMPTS attempts."
+fi
+
+sleep 2
+
+{% endfor %}
