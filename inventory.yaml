@@ -94,13 +94,24 @@ all:
           peering_comment: "Likely will down before 2026-02"
           region: ASIA_S
           country: IN
-
+        mxp-01:
+          ansible_host: mxp-01.node.svc.moe
+          ownip: 172.21.111.73
+          ownip6: fd42:4242:1023:73::1
+          ownip6block: fd42:4242:1023:72::/64
+          wg_pubkey: "1v5AT9RYbApaY6lnPgasEOejKzN/RHNdNOHYLOiYwHs="
+          ip_support: dual
+          link_local_ipv6: fe80::1023:2
+          peering_comment: "Likely will down before 2026-02"
+          region: EUROPE
+          country: IT
     anycast:
       hosts:
         lax-01:
         tyo-01:
         ams-01:
-        tlv-01:
+        bom-01:
+        mxp-01:
 
     lg_server:
       hosts:
@@ -116,3 +127,4 @@ all:
         ams-01:
         tlv-01:
         bom-01:
+        mxp-01:

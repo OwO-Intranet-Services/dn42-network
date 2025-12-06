@@ -63,7 +63,7 @@
   ansible.builtin.user:
     name: "{{ automation_user }}"
     group: "{{ automation_user }}"
-    groups: 
+    groups:
       - bird
       - caddy
     append: true
