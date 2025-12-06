@@ -1,7 +1,11 @@
 ---
+- name: Ensure DN42 peer descriptors exist
+  ansible.builtin.set_fact:
+    wg_dn42_peers_processed: []
+
 - name: Build DN42 peer descriptors
   ansible.builtin.set_fact:
-    wg_dn42_peers_processed: "{{ (wg_dn42_peers_processed | default([])) + [peer_entry] }}"
+    wg_dn42_peers_processed: "{{ wg_dn42_peers_processed + [peer_entry] }}"
   vars:
     peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
     peer_entry:
