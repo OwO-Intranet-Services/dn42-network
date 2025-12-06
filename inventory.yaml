@@ -79,7 +79,9 @@ all:
           ownip6block: fd42:4242:1023:71::/64
           link_local_ipv6: fe80::1023:2
           wg_pubkey: "Q7pw+W8asRFxgDOu2cIIAlkffM0MyVrQPNI7Yd34wj0="
+          ip_support: dual
           region: ASIA_W
+          peering_comment: "Likely will down before 2026-02"
           country: IL
         bom-01:
           ansible_host: bom-01.node.svc.moe
@@ -87,7 +89,9 @@ all:
           ownip6: fd42:4242:1023:72::1
           ownip6block: fd42:4242:1023:72::/64
           wg_pubkey: "AmE6oB4DfqKDh8+FESH/cSWJ4D7ta1nhJ9r7cRhYsy0="
+          ip_support: dual
           link_local_ipv6: fe80::1023:2
+          peering_comment: "Likely will down before 2026-02"
           region: ASIA_S
           country: IN
 
