@@ -147,3 +147,26 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: yuyuko
+    wg:
+      endpoint: nl01.dn42.yuyuko.com:21023
+      wg_pubkey: "9oVGKPUnxykn9y/CeNmHbImnX2WRsHk6VzSIAQfy0hc="
+      peer6: fe80::1117
+    bgp:
+      asn: 4242421117
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: tech9
+    wg:
+      endpoint: nl-ams01.dn42.tech9.io:59768
+      wg_pubkey: "opEMCeB+Zepf/lMabVndWVOmKVHI3Bvc98hm55TAxGI="
+      peer6: fe80::1588
+      own6: fe80::100
+    bgp:
+      asn: 4242421588
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

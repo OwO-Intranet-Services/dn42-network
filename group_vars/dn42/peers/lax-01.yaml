@@ -158,3 +158,26 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: yuyuko
+    wg:
+      endpoint: us01.dn42.yuyuko.com:21023
+      wg_pubkey: "PW/+rv0B8e4tUJ9j1TWscx1sl36WwhPh9adEqoM7Jic="
+      peer6: fe80::1117
+    bgp:
+      asn: 4242421117
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: tech9
+    wg:
+      endpoint: us-dal01.dn42.tech9.io:54300
+      wg_pubkey: "iEZ71NPZge6wHKb6q4o2cvCopZ7PBDqn/b3FO56+Hkc="
+      peer6: fe80::1588
+      own6: fe80::100
+    bgp:
+      asn: 4242421588
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

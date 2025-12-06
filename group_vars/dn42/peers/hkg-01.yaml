@@ -199,3 +199,15 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: tech9
+    wg:
+      endpoint: sg-sin01.dn42.tech9.io:51143
+      wg_pubkey: "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY="
+      peer6: fe80::1588
+      own6: fe80::100
+    bgp:
+      asn: 4242421588
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
