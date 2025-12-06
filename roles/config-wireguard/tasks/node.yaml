@@ -84,7 +84,7 @@
   ansible.builtin.set_fact:
     wg_node_peers_remove: >-
       {{
-        wg_node_peers_configure
+        wg_node_peers_configure | default([])
         if (remove | default(false))
         else []
       }}
@@ -92,7 +92,7 @@
       {{
         []
         if (remove | default(false))
-        else wg_node_peers_configure
+        else wg_node_peers_configure | default([])
       }}
 
 - name: Render per-peer WireGuard configurations

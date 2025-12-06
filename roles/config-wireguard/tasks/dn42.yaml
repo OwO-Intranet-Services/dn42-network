@@ -40,28 +40,24 @@
   vars:
     target_regex: >-
       {{
-        ('^' ~ target | replace(dn42_prefix, '') ~ '$')
-        if target is defined and target.startswith(dn42_prefix)
-        else (
-          ('^' ~ target ~ '$')
-          if target is defined
-          else '.*'
-        )
+        ('^' ~ target ~ '$')
+        if target is defined
+        else '.*'
       }}
 
 - name: Apply global removal to DN42 peers
   ansible.builtin.set_fact:
     wg_dn42_peers_remove: >-
       {{
-        wg_dn42_peers_remove + wg_dn42_peers_configure
+        (wg_dn42_peers_remove | default([])) + (wg_dn42_peers_configure | default([]))
         if (remove | default(false))
-        else wg_dn42_peers_remove
+        else wg_dn42_peers_remove | default([])
       }}
     wg_dn42_peers_configure: >-
       {{
         []
         if (remove | default(false))
-        else wg_dn42_peers_configure
+        else wg_dn42_peers_configure | default([])
       }}
 
 - name: Render per-peer WireGuard configurations for DN42 peers
