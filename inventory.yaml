@@ -72,12 +72,31 @@ all:
           peering_comment: "IPv6 only"
           region: EUROPE
           country: NL
+        tlv-01:
+          ansible_host: tlv-01.node.svc.moe
+          ownip: 172.21.111.71
+          ownip6: fd42:4242:1023:71::1
+          ownip6block: fd42:4242:1023:71::/64
+          link_local_ipv6: fe80::1023:2
+          wg_pubkey: "Q7pw+W8asRFxgDOu2cIIAlkffM0MyVrQPNI7Yd34wj0="
+          region: ASIA_W
+          country: IL
+        bom-01:
+          ansible_host: bom-01.node.svc.moe
+          ownip: 172.21.111.72
+          ownip6: fd42:4242:1023:72::1
+          ownip6block: fd42:4242:1023:72::/64
+          wg_pubkey: "AmE6oB4DfqKDh8+FESH/cSWJ4D7ta1nhJ9r7cRhYsy0="
+          link_local_ipv6: fe80::1023:2
+          region: ASIA_S
+          country: IN
 
     anycast:
       hosts:
         lax-01:
         tyo-01:
         ams-01:
+        tlv-01:
 
     lg_server:
       hosts:
@@ -91,3 +110,5 @@ all:
         dls-01:
         lax-02:
         ams-01:
+        tlv-01:
+        bom-01:
