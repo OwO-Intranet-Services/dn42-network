@@ -170,10 +170,13 @@
       }}
   when: inventory_hostname not in groups.get(anycast_group, [])
 
-- name: Construct DNS zones list for non-anycast nodes
+- name: Set internal forwarders for non-anycast nodes
   ansible.builtin.set_fact:
-    dns_zones: "{{ forward_zones }}"
     internal_forwarders: "{{ (dns_anycast_records | selectattr('ipv4', 'defined') | map(attribute='ipv4') | list) + (dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list) }}"
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Construct forward zones list for non-anycast nodes
+  ansible.builtin.set_fact:
     forward_zones: >-
       {%- set res = [] -%}
       {%- for zone in dns_forward_zones_list -%}
@@ -182,6 +185,11 @@
         ) -%}
       {%- endfor -%}
       {{ res }}
+  when: inventory_hostname not in groups.get(anycast_group, [])
+
+- name: Set dns_zones for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_zones: "{{ forward_zones }}"
   when: inventory_hostname not in groups.get(anycast_group, [])
 
 - name: Generate validate-except block for non-anycast nodes

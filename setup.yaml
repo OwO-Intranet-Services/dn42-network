@@ -54,3 +54,10 @@
     - role: config-lg
       lg_configure_proxy: false
       lg_configure_server: true
+
+- name: Websites config
+  hosts: nodes
+  become: true
+  gather_facts: true
+  roles:
+    - config-websites

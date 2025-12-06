@@ -239,6 +239,9 @@
     - item.item.dn42_cert | default(false)
     - not item.stat.exists
   register: cert_request_result
+  until: cert_request_result.rc == 0
+  retries: 3
+  delay: 5
   changed_when: cert_request_result.rc == 0
 
 - name: Ensure web roots exist
