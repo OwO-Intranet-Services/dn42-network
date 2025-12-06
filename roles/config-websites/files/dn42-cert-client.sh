@@ -40,10 +40,12 @@ get_certificate() {
   if [ ! -f "request.csr" ] || [ ! -f "server.key" ]; then
       echo "Generating new CSR and Key..."
       openssl req -nodes -newkey rsa:4096 -keyout server.key -out request.csr -subj "/CN=${domain}" 2> /dev/null
+      chmod 640 server.key
   else
       echo "Using existing CSR and Key..."
   fi
   performRequest "$domain"
+  chmod 644 signed.crt
 }
 
 print_usage() {

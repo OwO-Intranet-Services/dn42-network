@@ -1,10 +1,9 @@
----
-- name: Reload nginx
+- name: Reload caddy
   ansible.builtin.service:
-    name: nginx
+    name: caddy
     state: reloaded
 
-- name: Restart nginx
+- name: Restart caddy
   ansible.builtin.service:
-    name: nginx
+    name: caddy
     state: restarted

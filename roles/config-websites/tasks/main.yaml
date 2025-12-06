@@ -1,14 +1,4 @@
 ---
-- name: Install nginx dependencies
-  ansible.builtin.apt:
-    name:
-      - nginx
-      - curl
-      - openssl
-      - ca-certificates
-    state: present
-    update_cache: true
-
 - name: Download DN42 CA root certificate
   ansible.builtin.get_url:
     url: https://ca.dn42/crt/root-ca.crt
@@ -56,32 +46,26 @@
     mode: "0600"
   when: kioubit_auth_code is defined
 
-- name: Ensure nginx is running
-  ansible.builtin.service:
-    name: nginx
-    state: started
-    enabled: true
-
 - name: Create SSL directory
   ansible.builtin.file:
-    path: /etc/nginx/ssl
+    path: /etc/caddy/ssl
     state: directory
-    owner: root
-    group: root
+    owner: caddy
+    group: caddy
     mode: '0755'
 
 - name: Deploy Clearnet SSL Certificates
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/.secrets/{{ item }}"
-    dest: "/etc/nginx/ssl/{{ item }}"
-    owner: root
-    group: root
+    dest: "/etc/caddy/ssl/{{ item }}"
+    owner: caddy
+    group: caddy
     mode: '0600'
   loop:
     - lg-api.svc.moe.crt
     - lg-api.svc.moe.pem
   when: "'lg-api.svc.moe' in lg_server_domains | default([]) and inventory_hostname in groups.get('lg_server', [])"
-  notify: Reload nginx
+  notify: Reload caddy
 
 # FIXME: hardcoded backend URL
 - name: Build network site frontend
@@ -92,10 +76,10 @@
       --username {{ ansible_user }}
       --output {{ playbook_dir }}/dist-network-site
   delegate_to: localhost
+  become: false
   run_once: true
   changed_when: true
   when: inventory_hostname in groups.get(anycast_group, [])
-
 
 - name: Create network site directory
   ansible.builtin.file:
@@ -106,17 +90,26 @@
     mode: '0755'
   when: inventory_hostname in groups.get(anycast_group, [])
 
-- name: Sync network site static files
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/dist-network-site/"
-    dest: /var/www/html/network.iris.dn42/
-    owner: www-data
-    group: www-data
-    mode: '0644'
-    directory_mode: '0755'
+- name: Deploy network site static files
   when: inventory_hostname in groups.get(anycast_group, [])
-  notify: Reload nginx
+  notify: Reload caddy
+  block:
+    - name: Compress network site assets # noqa: command-instead-of-module
+      ansible.builtin.command:
+        cmd: tar czf {{ playbook_dir }}/dist-network-site.tar.gz -C {{ playbook_dir }}/dist-network-site .
+      delegate_to: localhost
+      become: false
+      run_once: true
+      changed_when: false
 
+    - name: Unarchive network site assets
+      ansible.builtin.unarchive:
+        src: "{{ playbook_dir }}/dist-network-site.tar.gz"
+        dest: /var/www/html/network.iris.dn42/
+        owner: www-data
+        group: www-data
+
+# FIXME: just bad
 - name: Build websites list
   ansible.builtin.set_fact:
     all_websites: >-
@@ -125,7 +118,7 @@
       {%- set _ = res.append({
         'name': 'lg-proxy-' + inventory_hostname,
         'server_name': lg_proxy_domain,
-        'template': 'lg-proxy-nginx.conf.j2',
+        'type': 'lg-proxy',
         'dn42_cert': true,
         'upstream': lg_proxy_listen
       }) -%}
@@ -135,20 +128,20 @@
              {%- set _ = res.append({
                'name': 'lg-server-' + domain | regex_replace('[^a-zA-Z0-9]', '-'),
                'server_name': domain,
-               'template': 'lg-server-nginx.conf.j2',
+               'type': 'lg-server',
                'dn42_cert': true,
+               'upstream': lg_server_listen,
                'ssl_cert': automation_user_home + '/certs/' + domain + '/signed.crt',
-               'ssl_key': automation_user_home + '/certs/' + domain + '/server.key',
-               'upstream': lg_server_listen
+               'ssl_key': automation_user_home + '/certs/' + domain + '/server.key'
              }) -%}
           {%- elif domain == 'lg-api.svc.moe' -%}
              {%- set _ = res.append({
                'name': 'lg-server-' + domain | regex_replace('[^a-zA-Z0-9]', '-'),
                'server_name': domain,
-               'template': 'lg-server-nginx.conf.j2',
+               'type': 'lg-server',
                'dn42_cert': false,
-               'ssl_cert': '/etc/nginx/ssl/lg-api.svc.moe.crt',
-               'ssl_key': '/etc/nginx/ssl/lg-api.svc.moe.pem',
+               'ssl_cert': '/etc/caddy/ssl/lg-api.svc.moe.crt',
+               'ssl_key': '/etc/caddy/ssl/lg-api.svc.moe.pem',
                'upstream': lg_server_listen
              }) -%}
           {%- endif -%}
@@ -158,7 +151,7 @@
         {%- set _ = res.append({
           'name': 'network-iris-dn42',
           'server_name': 'network.iris.dn42',
-          'template': 'network-site.conf.j2',
+          'type': 'network-site',
           'dn42_cert': true,
           'root': '/var/www/html/network.iris.dn42',
           'listen_ipv4': '172.21.111.111',
@@ -191,26 +184,8 @@
     path: "{{ automation_user_home }}/certs/{{ item.server_name }}"
     state: directory
     owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-  loop: "{{ dn42_websites }}"
-  loop_control:
-    label: "{{ item.server_name }}"
-
-- name: Copy token to validation central location
-  ansible.builtin.copy:
-    src: "{{ automation_user_home }}/certs/token.txt"
-    dest: "{{ automation_user_home }}/certs/token.txt"
-    remote_src: true
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0600"
-  when: kioubit_auth_code is defined
-
-- name: Remove legacy distributed token files
-  ansible.builtin.file:
-    path: "{{ automation_user_home }}/certs/{{ item.server_name }}/token.txt"
-    state: absent
+    group: caddy
+    mode: "2750"
   loop: "{{ dn42_websites }}"
   loop_control:
     label: "{{ item.server_name }}"
@@ -224,15 +199,15 @@
     mode: "0755"
   when: dn42_websites | length > 0
 
-- name: Allow automation user to reload nginx
+- name: Allow automation user to reload caddy
   ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/dn42-automation-nginx
-    line: "{{ automation_user }} ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload nginx"
+    path: /etc/sudoers.d/dn42-automation-caddy
+    line: "{{ automation_user }} ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload caddy"
     create: true
     mode: "0440"
     validate: visudo -cf %s
 
-- name: Set up cron job for DN42 cert renewal
+- name: Set up cron job for DN42 cert renewal (Caddy)
   ansible.builtin.cron:
     name: "DN42 certificate renewal"
     user: "{{ automation_user }}"
@@ -277,7 +252,7 @@
   loop_control:
     label: "{{ item.server_name }}"
   when:
-    - item.template == 'static-site.conf.j2'
+    - item.type == 'static-site'
 
 - name: Create default index.html for static sites
   ansible.builtin.copy:
@@ -290,26 +265,27 @@
   loop: "{{ all_websites }}"
   loop_control:
     label: "{{ item.server_name }}"
-  when: item.template == 'static-site.conf.j2'
+  when: item.type == 'static-site'
 
-- name: Configure websites
-  ansible.builtin.template:
-    src: "{{ item.template }}"
-    dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
+- name: Create Caddy conf.d directory
+  ansible.builtin.file:
+    path: /etc/caddy/conf.d
+    state: directory
     owner: root
     group: root
-    mode: "0644"
-  loop: "{{ all_websites }}"
-  loop_control:
-    label: "{{ item.name }}"
-  notify: Reload nginx
+    mode: '0755'
 
-- name: Enable websites
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/{{ item.name }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
-    state: link
-  loop: "{{ all_websites }}"
-  loop_control:
-    label: "{{ item.name }}"
-  notify: Reload nginx
+- name: Deploy Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload caddy
+
+- name: Ensure caddy is running and enabled
+  ansible.builtin.service:
+    name: caddy
+    state: started
+    enabled: true

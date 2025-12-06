@@ -28,10 +28,10 @@ echo "Certificate for {{ site.server_name }} is missing or expiring soon. Renewi
 while [ $RETRY_ATTEMPTS -lt $MAX_ATTEMPTS ]; do
     if "$CERT_CLIENT" -t "$TOKEN_FILE" get_certificate "{{ site.server_name }}"; then
         SUCCESS=1
-        if sudo /usr/bin/systemctl reload nginx; then
-            echo "Nginx reloaded successfully."
+        if sudo /usr/bin/systemctl reload caddy; then
+            echo "Caddy reloaded successfully."
         else
-            echo "Failed to reload Nginx."
+            echo "Failed to reload Caddy."
         fi
         break
     else

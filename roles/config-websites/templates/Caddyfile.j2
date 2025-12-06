@@ -1,0 +1,64 @@
+{
+    # Global options
+    # email {{ cert_email | default('0.0@iris.dn42') }}
+    # admin off # specific admin config if needed
+}
+
+# Snippet for DN42 certificates
+(dn42_tls) {
+    tls {args.0} {args.1}
+}
+
+{% for site in all_websites %}
+# {{ site.name }}
+{% if site.server_name is string %}
+{{ site.server_name }} {
+{% else %}
+{{ site.server_name | join(', ') }} {
+{% endif %}
+    {% if site.dn42_cert | default(false) %}
+    import dn42_tls {{ automation_user_home }}/certs/{{ site.server_name if site.server_name is string else site.server_name[0] }}/signed.crt {{ automation_user_home }}/certs/{{ site.server_name if site.server_name is string else site.server_name[0] }}/server.key
+    {% elif site.ssl_cert is defined %}
+    tls {{ site.ssl_cert }} {{ site.ssl_key }}
+    {% endif %}
+
+    {% if site.type == 'lg-proxy' %}
+    # Logic for LG Proxy
+    reverse_proxy http://{{ site.upstream }} {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+    {% elif site.type == 'lg-server' %}
+    # Logic for LG Server
+    handle /api/ws {
+        reverse_proxy http://{{ site.upstream }}
+    }
+    handle /api/* {
+        reverse_proxy http://{{ site.upstream }} {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+    {% elif site.type == 'network-site' %}
+    # Logic for Network Site
+    root * {{ site.root }}
+    
+    # JSON visitor info
+    handle /visitor-info {
+        header Content-Type application/json
+        respond `{"node": "{{ inventory_hostname }}", "ip": "{remote_host}"}` 200
+    }
+
+    # Static file serving
+    file_server
+    try_files {path} {path}/ /index.html
+    {% elif site.type == 'static-site' %}
+    # Logic for Static Site
+    root * {{ site.root | default('/var/www/html/' + site.server_name) }}
+    file_server
+    try_files {path} {path}/ =404
+    {% endif %}
+}
+{% endfor %}
+
+import /etc/caddy/conf.d/*

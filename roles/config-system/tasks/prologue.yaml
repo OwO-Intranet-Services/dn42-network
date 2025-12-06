@@ -27,6 +27,28 @@
       - ifupdown
       - bind9-dnsutils
       - bind9
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+      - curl
+    state: present
+    update_cache: true
+
+- name: Add Caddy GPG key
+  ansible.builtin.get_url:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+    dest: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+    mode: '0644'
+
+- name: Add Caddy repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main"
+    state: present
+    filename: caddy-stable
+
+- name: Install Caddy
+  ansible.builtin.apt:
+    name: caddy
     state: present
     update_cache: true
 
@@ -41,13 +63,23 @@
   ansible.builtin.user:
     name: "{{ automation_user }}"
     group: "{{ automation_user }}"
-    groups: bird
+    groups: 
+      - bird
+      - caddy
     append: true
     system: false
     password: "!"
     home: "{{ automation_user_home }}"
     state: present
   failed_when: false
+
+- name: Set automation user home permissions
+  ansible.builtin.file:
+    path: "{{ automation_user_home }}"
+    state: directory
+    owner: "{{ automation_user }}"
+    group: "{{ automation_user }}"
+    mode: "0755"
 
 - name: Setup wireguard
   block:
