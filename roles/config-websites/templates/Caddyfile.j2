@@ -40,8 +40,11 @@
         respond `{"node": "{{ inventory_hostname }}", "ip": "{remote_host}"}` 200
     }
 
-    file_server
-    try_files {path} {path}/ /index.html
+    handle {
+        file_server
+        try_files {path} {path}/ /index.html
+    }
+
     {% elif site.type == 'static-site' %}
     root * {{ site.root | default('/var/www/html/' + site.server_name) }}
     file_server
