@@ -163,8 +163,8 @@
   ansible.builtin.set_fact:
     dns_non_anycast_forwarders: >-
       {{
-        (dns_nameservers | map(attribute='ipv4') | list) +
-        (dns_nameservers | map(attribute='ipv6') | list) +
+        (dns_anycast_records | selectattr('name', 'in', dns_nameservers) | map(attribute='ipv4') | list) +
+        (dns_anycast_records | selectattr('name', 'in', dns_nameservers) | map(attribute='ipv6') | list) +
         _dn42_forwarders +
         dns_named_options.forwarders
       }}

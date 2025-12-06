@@ -29,9 +29,13 @@
   ansible.builtin.set_fact:
     dn42_peers: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
 
+- name: Initialize bird_dn42_peers_processed
+  ansible.builtin.set_fact:
+    bird_dn42_peers_processed: []
+
 - name: Standardize DN42 peer list
   ansible.builtin.set_fact:
-    bird_dn42_peers_processed: "{{ bird_dn42_peers_processed | default([]) + [item | combine({'name': peer_name})] }}"
+    bird_dn42_peers_processed: "{{ bird_dn42_peers_processed + [item | combine({'name': peer_name})] }}"
   vars:
     peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
   loop: "{{ dn42_peers }}"
