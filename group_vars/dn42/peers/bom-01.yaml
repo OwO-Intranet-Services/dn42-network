@@ -1,2 +1,13 @@
 bom-01:
-  peers: []
+  peers:
+  - comment: RoutedBits
+    wg:
+      endpoint: router.mum1.routedbits.com:51023
+      wg_pubkey: "RgwTfRAivLpvkeenTQMwNyLU55W5EZfYnXGjWTAY5yw="
+      peer6: fe80::207
+    bgp:
+      asn: 4242420207
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

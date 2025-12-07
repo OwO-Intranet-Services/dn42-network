@@ -170,3 +170,14 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: RoutedBits
+    wg:
+      endpoint: router.fra1.routedbits.com:51023
+      wg_pubkey: "FIk95vqIJxf2ZH750lsV1EybfeC9+V8Bnhn8YWPy/l8="
+      peer6: fe80::207
+    bgp:
+      asn: 4242420207
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

@@ -29,10 +29,9 @@ tyo-01:
       mp_bgp: true
   - comment: iyoroy
     wg:
-      endpoint: tyo-jp.ecs.iyoroy-infra.top:21023
+      endpoint: ipv4.tyo-jp.ecs.iyoroy-infra.top:21023
       wg_pubkey: "Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4="
       peer6: fe80::2024
-      mtu: 1280
     bgp:
       asn: 4242422024
       ipv4: false
@@ -166,6 +165,28 @@ tyo-01:
       peer6: fe80::1117
     bgp:
       asn: 4242421117
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: Minty
+    wg:
+      endpoint: jp.nodes.stella.observer:4242
+      wg_pubkey: "Cbefg96Owv1Xk/jrUExO3i5OeUSlsdirv4ONenEnNXc="
+      peer4: 172.20.193.67
+    bgp:
+      asn: 4242422172
+      ipv4: true
+      ipv6: false
+      extended_next_hop: false
+      mp_bgp: false
+  - comment: RoutedBits
+    wg:
+      endpoint: router.tyo1.routedbits.com:51023
+      wg_pubkey: "Urnj0In2/ba5zBJ0+TvGN6/A3JFXZwWfJ3EVkc5A4Cs="
+      peer6: fe80::207
+    bgp:
+      asn: 4242420207
       ipv4: false
       ipv6: true
       extended_next_hop: true

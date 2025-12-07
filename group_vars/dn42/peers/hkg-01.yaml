@@ -211,3 +211,14 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: RoutedBits
+    wg:
+      endpoint: router.sin1.routedbits.com:51023
+      wg_pubkey: "8sTnWN7ykPaDe1WIZOlnqECiGMJzwXB8TXWHcT7qnEw="
+      peer6: fe80::207
+    bgp:
+      asn: 4242420207
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
