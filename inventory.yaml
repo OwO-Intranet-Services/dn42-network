@@ -105,6 +105,18 @@ all:
           peering_comment: "Likely will down before 2026-02"
           region: EUROPE
           country: IT
+    dn42:
+      hosts:
+        lax-01:
+        hkg-01:
+        tyo-01:
+        dls-01:
+        lax-02:
+        ams-01:
+        tlv-01:
+        bom-01:
+        mxp-01:
+
     anycast:
       hosts:
         lax-01:
@@ -117,14 +129,6 @@ all:
       hosts:
         lax-01:
 
-    dn42:
+    flapalerted:
       hosts:
-        lax-01:
-        hkg-01:
-        tyo-01:
-        dls-01:
-        lax-02:
         ams-01:
-        tlv-01:
-        bom-01:
-        mxp-01:

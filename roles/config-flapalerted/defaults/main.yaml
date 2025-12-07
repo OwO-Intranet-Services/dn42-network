@@ -1,0 +1,14 @@
+---
+flapalerted_enabled: false
+flapalerted_user: flapalerted
+flapalerted_group: flapalerted
+flapalerted_binary_path: /usr/local/bin/flapalerted
+flapalerted_config_dir: /etc/flapalerted
+flapalerted_data_dir: /var/lib/flapalerted
+flapalerted_env_file: "{{ flapalerted_config_dir }}/flapalerted.env"
+flapalerted_systemd_unit: /etc/systemd/system/flapalerted.service
+flapalerted_service_name: flapalerted
+flapalerted_working_dir: "{{ flapalerted_data_dir }}"
+flapalerted_extra_args: ""
+flapalerted_env: {}
+flapalerted_env_overrides: {}

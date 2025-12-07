@@ -1,0 +1,18 @@
+[Unit]
+Description=FlapAlerted BGP Monitor
+After=network.target bird.service
+Requires=bird.service
+
+[Service]
+User={{ flapalerted_user }}
+Group={{ flapalerted_group }}
+EnvironmentFile={{ flapalerted_env_file }}
+WorkingDirectory={{ flapalerted_working_dir }}
+ExecStart={{ flapalerted_binary_path }} {{ flapalerted_extra_args | default('') }}
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

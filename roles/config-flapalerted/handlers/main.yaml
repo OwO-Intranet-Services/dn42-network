@@ -1,0 +1,9 @@
+---
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart flapalerted
+  ansible.builtin.systemd:
+    name: "{{ flapalerted_service_name }}"
+    state: restarted

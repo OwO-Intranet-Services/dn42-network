@@ -158,6 +158,15 @@
           'listen_ipv6': 'fd42:4242:1023::1111:1'
         }) -%}
       {%- endif -%}
+      {%- if flapalerted_enabled | default(false) and flapalerted_domain is defined -%}
+        {%- set _ = res.append({
+          'name': 'flapalerted',
+          'server_name': flapalerted_domain,
+          'type': 'flapalerted',
+          'dn42_cert': true,
+          'upstream': flapalerted_http_upstream | default('127.0.0.1:8699')
+        }) -%}
+      {%- endif -%}
       {{ res }}
 
 - name: Build DN42 websites list for cron

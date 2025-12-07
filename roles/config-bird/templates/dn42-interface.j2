@@ -27,3 +27,9 @@ iface dn42-dummy inet6 static
 {%     endif %}
 {%   endfor %}
 {% endif %}
+
+{% if flapalerted_listener_ip is defined %}
+    # FlapAlerted service endpoint
+    up ip -6 addr add {{ flapalerted_listener_ip }}/128 dev dn42-dummy || true
+    down ip -6 addr del {{ flapalerted_listener_ip }}/128 dev dn42-dummy || true
+{% endif %}

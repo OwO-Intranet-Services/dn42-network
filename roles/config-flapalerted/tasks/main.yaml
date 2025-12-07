@@ -1,0 +1,64 @@
+---
+- name: Configure FlapAlerted service
+  when: flapalerted_enabled | bool
+  block:
+    - name: Ensure FlapAlerted group exists
+      ansible.builtin.group:
+        name: "{{ flapalerted_group }}"
+        system: true
+
+    - name: Ensure FlapAlerted user exists
+      ansible.builtin.user:
+        name: "{{ flapalerted_user }}"
+        group: "{{ flapalerted_group }}"
+        shell: /usr/sbin/nologin
+        system: true
+        create_home: false
+
+    - name: Create FlapAlerted directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "{{ flapalerted_config_dir }}", owner: root, group: "{{ flapalerted_group }}", mode: '0750' }
+        - { path: "{{ flapalerted_data_dir }}", owner: "{{ flapalerted_user }}", group: "{{ flapalerted_group }}", mode: '0750' }
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Install FlapAlerted binary
+      ansible.builtin.copy:
+        src: "flapalerted"
+        dest: "{{ flapalerted_binary_path }}"
+        owner: root
+        group: root
+        mode: '0755'
+      notify: Restart flapalerted
+
+    - name: Render FlapAlerted environment file
+      ansible.builtin.template:
+        src: flapalerted.env.j2
+        dest: "{{ flapalerted_env_file }}"
+        owner: "{{ flapalerted_user }}"
+        group: "{{ flapalerted_group }}"
+        mode: '0640'
+      notify: Restart flapalerted
+
+    - name: Install FlapAlerted systemd unit
+      ansible.builtin.template:
+        src: flapalerted.service.j2
+        dest: "{{ flapalerted_systemd_unit }}"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd daemon
+        - Restart flapalerted
+
+    - name: Ensure FlapAlerted service is enabled and running
+      ansible.builtin.systemd:
+        name: "{{ flapalerted_service_name }}"
+        enabled: true
+        state: started

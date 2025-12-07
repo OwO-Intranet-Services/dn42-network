@@ -1,0 +1,15 @@
+---
+flapalerted_enabled: true
+flapalerted_domain: flapalerted.iris.dn42
+flapalerted_http_upstream: "127.0.0.1:8699"
+# FIXME: Hardcoded
+flapalerted_listener_ip: "fd42:4242:1023:70::1790"
+
+flapalerted_env:
+  FA_ASN: "{{ asn }}"
+  FA_routerID: "0.0.0.51"
+  FA_bgpListenAddress: "[{{ flapalerted_listener_ip }}]:{{ flapalerted_bgp_port }}"
+  FA_routeChangeCounter: 600
+  FA_expiryRouteChangeCounter: 600
+  FA_overThresholdTarget: 10
+  FA_underThresholdTarget: 15

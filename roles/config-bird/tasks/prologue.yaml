@@ -93,7 +93,7 @@
     group: bird
     mode: "0644"
 
-- name: Render BIRD RPKI configuration
+- name: Render DN42 RPKI configuration
   ansible.builtin.template:
     src: rpki.conf.j2
     dest: /etc/bird/rpki.conf
@@ -101,10 +101,10 @@
     group: bird
     mode: "0644"
 
-- name: Render DN42 GRC configuration
+- name: Render DN42 misc configuration
   ansible.builtin.template:
-    src: dn42_grc.conf.j2
-    dest: /etc/bird/dn42_grc.conf
+    src: dn42_misc.conf.j2
+    dest: /etc/bird/dn42_misc.conf
     owner: bird
     group: bird
     mode: "0644"

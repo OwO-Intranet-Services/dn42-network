@@ -28,6 +28,8 @@ dns_anycast_records:
 dns_cname_records:
   - name: network
     target: anycast
+  - name: flapalerted
+    target: ams-01.node
 
 dns_nameservers:
   - ns1

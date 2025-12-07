@@ -1,0 +1,4 @@
+---
+flapalerted_peer_enabled: true
+flapalerted_bgp_neighbor: "fd42:4242:1023:70::1790"
+flapalerted_bgp_port: 1790

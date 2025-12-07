@@ -32,6 +32,12 @@
             header_up X-Forwarded-Proto {scheme}
         }
     }
+    {% elif site.type == 'flapalerted' %}
+    reverse_proxy http://{{ site.upstream }} {
+        header_up Host {http.request.host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
     {% elif site.type == 'network-site' %}
     root * {{ site.root }}
     
