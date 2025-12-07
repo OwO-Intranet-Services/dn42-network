@@ -6,12 +6,29 @@ set -eu
 
 CERT_DIR="{{ automation_user_home }}/certs"
 CERT_CLIENT="{{ automation_user_home }}/bin/dn42-cert-client"
+RELOAD_TIMEOUT=5
 
 {% for site in dn42_websites %}
 # Renew {{ site.server_name }}
 cd "$CERT_DIR/{{ site.server_name }}" || { echo "Failed to change directory to $CERT_DIR/{{ site.server_name }}"; exit 1; }
 
 TOKEN_FILE="{{ automation_user_home }}/certs/token.txt"
+CSR_FILE="request.csr"
+KEY_FILE="server.key"
+
+# Ensure CSR and private key describe the same keypair; otherwise regenerate.
+if [ -f "$CSR_FILE" ] && [ -f "$KEY_FILE" ]; then
+    if CSR_MOD=$(openssl req -in "$CSR_FILE" -noout -modulus 2> /dev/null) && \
+       KEY_MOD=$(openssl rsa -in "$KEY_FILE" -noout -modulus 2> /dev/null); then
+        if [ "$CSR_MOD" != "$KEY_MOD" ]; then
+            echo "CSR/private key mismatch detected for {{ site.server_name }}. Regenerating credentials."
+            rm -f "$CSR_FILE" "$KEY_FILE"
+        fi
+    else
+        echo "Unable to inspect CSR or key for {{ site.server_name }}. Regenerating credentials."
+        rm -f "$CSR_FILE" "$KEY_FILE"
+    fi
+fi
 
 RETRY_ATTEMPTS=0
 MAX_ATTEMPTS=3
@@ -20,29 +37,37 @@ SUCCESS=0
 # Check if certificate exists and is valid for > 30 days
 if [ -f "signed.crt" ] && openssl x509 -checkend $((86400 * 30)) -in signed.crt > /dev/null; then
     echo "Certificate for {{ site.server_name }} is valid for more than 30 days. Skipping."
-    continue
-fi
+else
+    echo "Certificate for {{ site.server_name }} is missing or expiring soon. Renewing..."
 
-echo "Certificate for {{ site.server_name }} is missing or expiring soon. Renewing..."
-
-while [ $RETRY_ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-    if "$CERT_CLIENT" -t "$TOKEN_FILE" get_certificate "{{ site.server_name }}"; then
-        SUCCESS=1
-        if sudo /usr/bin/systemctl reload caddy; then
-            echo "Caddy reloaded successfully."
+    while [ $RETRY_ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+        if "$CERT_CLIENT" -t "$TOKEN_FILE" get_certificate "{{ site.server_name }}"; then
+            SUCCESS=1
+            if sudo /usr/bin/systemctl is-active --quiet caddy; then
+                if /usr/bin/timeout "${RELOAD_TIMEOUT}s" sudo /usr/bin/systemctl reload caddy; then
+                    echo "Caddy reloaded successfully."
+                else
+                    rc=$?
+                    if [ "$rc" -eq 124 ]; then
+                        echo "Caddy reload timed out after ${RELOAD_TIMEOUT}s."
+                    else
+                        echo "Failed to reload Caddy (exit code $rc)."
+                    fi
+                fi
+            else
+                echo "caddy.service is not active; skipping reload."
+            fi
+            break
         else
-            echo "Failed to reload Caddy."
+            echo "Attempt $((RETRY_ATTEMPTS + 1)) failed for {{ site.server_name }}. Retrying..."
+            RETRY_ATTEMPTS=$((RETRY_ATTEMPTS + 1))
+            sleep 2
         fi
-        break
-    else
-        echo "Attempt $((RETRY_ATTEMPTS + 1)) failed for {{ site.server_name }}. Retrying..."
-        RETRY_ATTEMPTS=$((RETRY_ATTEMPTS + 1))
-        sleep 2
-    fi
-done
+    done
 
-if [ $SUCCESS -eq 0 ]; then
-    echo "Failed to renew {{ site.server_name }} after $MAX_ATTEMPTS attempts."
+    if [ $SUCCESS -eq 0 ]; then
+        echo "Failed to renew {{ site.server_name }} after $MAX_ATTEMPTS attempts."
+    fi
 fi
 
 sleep 2
