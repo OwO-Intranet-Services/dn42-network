@@ -4,11 +4,11 @@ wireguard_allowed_ips:
   - 172.20.0.0/14
   - 172.31.0.0/16
   - fd00::/8
-  - fe80::/10
+  - fe80::/64
 
 wireguard_allowed_ips_internal:
   - ff02::/16
 
 inter_node_lla_prefix: "fe80::1023:"
 
-wireguard_peer_default_mtu: 1360
+# wireguard_peer_default_mtu: 1360
