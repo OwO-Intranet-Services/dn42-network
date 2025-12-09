@@ -68,18 +68,52 @@
   notify: Reload caddy
 
 # FIXME: hardcoded backend URL
-- name: Build network site frontend
-  ansible.builtin.command:
-    cmd: >-
-      {{ playbook_dir }}/bird-lg-rs/frontend/build.sh
-      --backend-url https://lg-api.iris.dn42
-      --username {{ ansible_user }}
-      --output {{ playbook_dir }}/dist-network-site
+- name: Get current commit hash for bird-lg-rs
+  ansible.builtin.command: git rev-parse HEAD
+  args:
+    chdir: "{{ playbook_dir }}/bird-lg-rs"
   delegate_to: localhost
   become: false
   run_once: true
-  changed_when: true
+  register: current_commit
+  changed_when: false
   when: inventory_hostname in groups.get(anycast_group, [])
+
+- name: Read last built commit hash for frontend
+  ansible.builtin.slurp:
+    src: "{{ playbook_dir }}/.last_build_commit_frontend"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  register: last_build_commit_frontend
+  ignore_errors: true
+  when: inventory_hostname in groups.get(anycast_group, [])
+
+- name: Build network site frontend
+  when:
+    - inventory_hostname in groups.get(anycast_group, [])
+    - (last_build_commit_frontend.failed | default(true)) or (last_build_commit_frontend['content'] | b64decode | trim != current_commit.stdout)
+  block:
+    - name: Run frontend build script
+      ansible.builtin.command:
+        cmd: >-
+          {{ playbook_dir }}/bird-lg-rs/frontend/build.sh
+          --backend-url https://lg-api.iris.dn42
+          --username {{ ansible_user }}
+          --output {{ playbook_dir }}/dist-network-site
+      delegate_to: localhost
+      become: false
+      run_once: true
+      changed_when: true
+
+    - name: Save current commit hash for frontend
+      ansible.builtin.copy:
+        content: "{{ current_commit.stdout }}"
+        dest: "{{ playbook_dir }}/.last_build_commit_frontend"
+        mode: "0644"
+      delegate_to: localhost
+      become: false
+      run_once: true
 
 - name: Create network site directory
   ansible.builtin.file:

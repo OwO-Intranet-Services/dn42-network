@@ -8,3 +8,4 @@ bird-lg-web/
 dist-network-site/
 dist-network-site.tar.gz
 bird-lg-rs/target/
+.last_build_commit_*

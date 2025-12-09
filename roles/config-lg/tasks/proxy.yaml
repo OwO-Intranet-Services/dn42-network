@@ -38,14 +38,44 @@
     group: nogroup
     mode: "0644"
 
-- name: Build lg-proxy binary
-  ansible.builtin.command:
-    cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p proxy -r
+- name: Get current commit hash for bird-lg-rs
+  ansible.builtin.command: git rev-parse HEAD
+  args:
     chdir: "{{ playbook_dir }}/bird-lg-rs"
   delegate_to: localhost
   become: false
   run_once: true
-  changed_when: true
+  register: current_commit
+  changed_when: false
+
+- name: Read last built commit hash for proxy
+  ansible.builtin.slurp:
+    src: "{{ playbook_dir }}/.last_build_commit_proxy"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  register: last_build_commit_proxy
+  ignore_errors: true
+
+- name: Build lg-proxy binary
+  when: (last_build_commit_proxy.failed | default(true)) or (last_build_commit_proxy['content'] | b64decode | trim != current_commit.stdout)
+  block:
+    - name: Run cargo build for proxy
+      ansible.builtin.command:
+        cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p proxy -r
+        chdir: "{{ playbook_dir }}/bird-lg-rs"
+      delegate_to: localhost
+      become: false
+      run_once: true
+      changed_when: true
+
+    - name: Save current commit hash for proxy
+      ansible.builtin.copy:
+        content: "{{ current_commit.stdout }}"
+        dest: "{{ playbook_dir }}/.last_build_commit_proxy"
+      delegate_to: localhost
+      become: false
+      run_once: true
 
 - name: Copy lg proxy binary
   ansible.builtin.copy:
