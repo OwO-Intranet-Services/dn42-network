@@ -43,9 +43,10 @@
     - ansible_distribution_major_version | int == 12
 
 - name: Add Caddy GPG key
-  ansible.builtin.apt_key:
+  ansible.builtin.get_url:
     url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
-    state: present
+    dest: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+    mode: '0644'
 
 - name: Add Caddy repository
   ansible.builtin.apt_repository:
