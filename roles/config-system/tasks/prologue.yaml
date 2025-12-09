@@ -12,33 +12,40 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
-- name: Install packages
+- name: Upgrade apt packages # noqa: package-latest
   ansible.builtin.apt:
     name:
-      - wireguard
-      - wireguard-tools
-      - bird2
-      - build-essential
-      - git
-      - cron
-      - acl
-      - iptables
-      - rsync
-      - ifupdown
-      - bind9-dnsutils
-      - bind9
       - debian-keyring
       - debian-archive-keyring
       - apt-transport-https
       - curl
-    state: present
+      - ca-certificates
+      - wget
+    state: latest
     update_cache: true
 
-- name: Add Caddy GPG key
+- name: Add CZ.NIC Labs GPG key for bird2 (Debian 12 only)
   ansible.builtin.get_url:
-    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
-    dest: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+    url: https://pkg.labs.nic.cz/gpg
+    dest: /usr/share/keyrings/cznic-labs-pkg.gpg
     mode: '0644'
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version | int == 12
+
+- name: Add CZ.NIC Labs bird2 repository (Debian 12 only)
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird2 bookworm main"
+    state: present
+    filename: cznic-labs-bird2
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version | int == 12
+
+- name: Add Caddy GPG key
+  ansible.builtin.apt_key:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+    state: present
 
 - name: Add Caddy repository
   ansible.builtin.apt_repository:
@@ -46,9 +53,23 @@
     state: present
     filename: caddy-stable
 
-- name: Install Caddy
+- name: Install packages
   ansible.builtin.apt:
-    name: caddy
+    name:
+      - wireguard
+      - wireguard-tools
+      - bird2
+      - build-essential
+      - caddy
+      - git
+      - cron
+      - acl
+      - iptables
+      - rsync
+      - ifupdown
+      - traceroute
+      - bind9-dnsutils
+      - bind9
     state: present
     update_cache: true
 
