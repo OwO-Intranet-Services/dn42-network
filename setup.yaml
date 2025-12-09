@@ -27,6 +27,13 @@
   roles:
     - config-bird
 
+- name: FlapAlerted Deployment
+  hosts: flapalerted
+  become: true
+  gather_facts: true
+  roles:
+    - config-flapalerted
+
 - name: DNS Configuration
   hosts: dn42
   become: true
