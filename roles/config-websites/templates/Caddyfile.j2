@@ -50,7 +50,19 @@
         file_server
         try_files {path} {path}/ /index.html
     }
-
+    {% elif site.type == 'anycast-site' %}
+    handle / {
+        header Content-Type text/html
+        respond `
+            <html>
+            <body>
+                <h1>{{site.server_name}}</h1>
+                <h2>{{site.listen_ipv4}} - {{site.listen_ipv6}}</h2>
+                <p>{{ inventory_hostname }}</p>
+            </body>
+            </html>
+        ` 200
+    }
     {% elif site.type == 'static-site' %}
     root * {{ site.root | default('/var/www/html/' + site.server_name) }}
     file_server
