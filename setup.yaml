@@ -6,13 +6,6 @@
   roles:
     - config-system
 
-- name: Fetch WireGuard Keys
-  hosts: nodes
-  become: true
-  gather_facts: false
-  roles:
-    - fetch-wg-keys
-
 - name: Wireguard Configuration
   hosts: nodes
   become: true

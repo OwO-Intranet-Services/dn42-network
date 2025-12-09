@@ -1,0 +1,73 @@
+---
+- name: Ensure local WireGuard key directory exists
+  delegate_to: localhost
+  become: false
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
+    state: directory
+    mode: '0700'
+
+- name: Check if local WireGuard private key exists
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+  register: local_wg_private_key
+
+- name: Generate WireGuard keys locally if missing
+  delegate_to: localhost
+  become: false
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      wg genkey | tee privatekey | wg pubkey > publickey
+    chdir: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
+    creates: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+
+- name: Read local WireGuard private key
+  delegate_to: localhost
+  become: false
+  ansible.builtin.slurp:
+    src: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+  register: local_wg_private_key_content
+
+- name: Read local WireGuard public key
+  delegate_to: localhost
+  become: false
+  ansible.builtin.slurp:
+    src: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+  register: local_wg_public_key_content
+
+- name: Set WireGuard key facts
+  ansible.builtin.set_fact:
+    wireguard_private_key: "{{ local_wg_private_key_content.content | b64decode | trim }}"
+    wireguard_public_key: "{{ local_wg_public_key_content.content | b64decode | trim }}"
+
+- name: Print WireGuard public key
+  ansible.builtin.debug:
+    msg: "Pubkey: {{ wireguard_public_key }}"
+
+- name: Ensure remote WireGuard directory exists
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Copy WireGuard private key to remote
+  ansible.builtin.copy:
+    content: "{{ wireguard_private_key }}"
+    dest: "{{ wireguard_private_key_path }}"
+    mode: '0600'
+    owner: root
+    group: root
+  no_log: true
+
+- name: Copy WireGuard public key to remote
+  ansible.builtin.copy:
+    content: "{{ wireguard_public_key }}"
+    dest: "{{ wireguard_public_key_path }}"
+    mode: '0644'
+    owner: root
+    group: root
