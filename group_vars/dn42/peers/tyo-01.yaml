@@ -173,12 +173,13 @@ tyo-01:
     wg:
       endpoint: jp.nodes.stella.observer:4242
       wg_pubkey: "Cbefg96Owv1Xk/jrUExO3i5OeUSlsdirv4ONenEnNXc="
+      peer4: 172.20.193.67
       peer6: fd55:dead:beef::3
     bgp:
       asn: 4242422172
-      ipv4: false
+      ipv4: true
       ipv6: true
-      extended_next_hop: true
+      extended_next_hop: false
       mp_bgp: true
   - comment: RoutedBits
     wg:
