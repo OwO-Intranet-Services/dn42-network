@@ -36,6 +36,7 @@
     - item.changed
     # FIXME: supress warning
     - true
+  timeout: 10
 
 - name: Ensure wg-quick services are enabled and started
   ansible.builtin.systemd:
