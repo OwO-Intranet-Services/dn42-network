@@ -9,7 +9,7 @@ flapalerted_env:
   FA_ASN: "{{ asn }}"
   FA_routerID: "0.0.0.51"
   FA_bgpListenAddress: "[{{ flapalerted_listener_ip }}]:{{ flapalerted_bgp_port }}"
-  FA_routeChangeCounter: 600
-  FA_expiryRouteChangeCounter: 600
-  FA_overThresholdTarget: 10
-  FA_underThresholdTarget: 15
+  FA_routeChangeCounter: 50
+  FA_expiryRouteChangeCounter: 10
+  FA_overThresholdTarget: 3
+  FA_underThresholdTarget: 5
