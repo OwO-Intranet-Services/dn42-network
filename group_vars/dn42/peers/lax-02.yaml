@@ -67,3 +67,15 @@ lax-02:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: launchpadx
+    wg:
+      endpoint: svz.s.launchpadx.top:51023
+      wg_pubkey: "VVQeVruKQ50/KTUo8k5PF3Y7mR4Jvro7j39pBRZMI28="
+      peer6: fe80::3702
+      mtu: 1392
+    bgp:
+      asn: 4242423702
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

@@ -181,3 +181,36 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: moraxyc
+    wg:
+      endpoint: de-nbg2.dn42.moraxyc.com:21023
+      wg_pubkey: "QWZAXwLNX+n+SpQbA0Xg4ntPnExnDX2R7DNLL8loJDY="
+      peer6: fe80::3011
+    bgp:
+      asn: 4242423011
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: moe233
+    wg:
+      endpoint: ams.dn42.moe233.net:21023
+      wg_pubkey: "vRRfNnGL7jpKGBJjLZg612vHQulDOtICkgXCC++1+2g="
+      peer6: fe80::253
+    bgp:
+      asn: 4242420253
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: MoonWX
+    wg:
+      endpoint: dn42.nl01.moonwx.net:21023
+      wg_pubkey: "iVEhIFApknLWLeW7LwY1Vr69KupbyLBFaxAAmCcRuy8="
+      peer6: fe80::985
+    bgp:
+      asn: 4242420985
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

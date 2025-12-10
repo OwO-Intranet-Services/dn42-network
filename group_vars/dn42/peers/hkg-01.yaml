@@ -222,3 +222,36 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: allnet
+    wg:
+      endpoint: 156.226.173.78:21023
+      wg_pubkey: "krJb3l8hypXbDs8h6zNw5QQy5zdwVsRKRm1g30KnYBU="
+      peer6: fe80::387
+    bgp:
+      asn: 4242420387
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: moraxyc
+    wg:
+      endpoint: hk4.dn42.moraxyc.com:21023
+      wg_pubkey: "VLapquicGRZmdMAamgQ19jyo7LbmK3X3nNCffGo6ID4="
+      peer6: fe80::3011
+    bgp:
+      asn: 4242423011
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: MoonWX
+    wg:
+      endpoint: 6.dn42.hk01.moonwx.net:21023
+      wg_pubkey: "NfLhJvm5GiJ7emKFtRRLMM68H+tAkzSVrOAqfQJY1Ts="
+      peer6: fe80::985:1
+    bgp:
+      asn: 4242420985
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

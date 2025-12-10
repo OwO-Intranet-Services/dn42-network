@@ -11,3 +11,14 @@ dls-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: nedifinita
+    wg:
+      endpoint: dn42a.nedifinita.com:37528
+      wg_pubkey: "8EXT6zciVdil3Zg6dqB0YT2SssTh2OTKDeBBfrVGUkE="
+      peer6: fe80::454
+    bgp:
+      asn: 4242420454
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

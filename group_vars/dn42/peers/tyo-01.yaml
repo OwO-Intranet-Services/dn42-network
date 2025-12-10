@@ -192,3 +192,47 @@ tyo-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: moraxyc
+    wg:
+      endpoint: jp2.dn42.moraxyc.com:21023
+      wg_pubkey: "5Sq33dQ6Hox8lpda0wve08scNBc7BSDjaP4EPYKjdVk="
+      peer6: fe80::3011
+    bgp:
+      asn: 4242423011
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: launchpadx
+    wg:
+      endpoint: iij.s.launchpadx.top:51023
+      wg_pubkey: "G5v93xQO15JtNMKJehB2HFMB/ACX0ec6u6EUFbKblBY="
+      peer6: fe80::3702
+    bgp:
+      asn: 4242423702
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: MoonWX
+    wg:
+      endpoint: dn42.jp01.moonwx.net:21023
+      wg_pubkey: "bRDjdLlbPExg+q4Sqr+fCKYeHiMfIiTKCk6GolVXKho="
+      peer6: fe80::985:4
+    bgp:
+      asn: 4242420985
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: cloudc
+    wg:
+      endpoint: jp.cloudc.dev:21023
+      wg_pubkey: "TRsJBPvVUXBCDuiBDwte+YCbkjkIglfVm+M5NxOFfwk="
+      peer6: fe80::3777
+    bgp:
+      asn: 4242423777
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

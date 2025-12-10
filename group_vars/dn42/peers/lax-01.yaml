@@ -192,3 +192,58 @@ lax-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: allnet
+    wg:
+      endpoint: 216.238.52.53:21023
+      wg_pubkey: "G/Q9uh8hyI/ozTPlyV0uM7XrZe2xzxORWWVKbgv6jQo="
+      peer6: fe80::4:387
+    bgp:
+      asn: 4242420387
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: moraxyc
+    wg:
+      endpoint: us-lax3.dn42.moraxyc.com:21023
+      wg_pubkey: "eB+NSqo26tqITGZhMdVkJ0aZ+ZANELjzstdF1MfzRRw="
+      peer6: fe80::3011
+    bgp:
+      asn: 4242423011
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: moe233
+    wg:
+      endpoint: lv.dn42.moe233.net:21023
+      wg_pubkey: "C3SneO68SmagisYQ3wi5tYI2R9g5xedKkB56Y7rtPUo="
+      peer6: fe80::253
+    bgp:
+      asn: 4242420253
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: MoonWX
+    wg:
+      endpoint: dn42.us01.moonwx.net:21023
+      wg_pubkey: "vjYlHWWzaJUL3NytOye9htNURBvZSY4IzVMIsEftZHo="
+      peer6: fe80::985:2
+    bgp:
+      asn: 4242420985
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: cloudc
+    wg:
+      endpoint: us.cloudc.dev:21023
+      wg_pubkey: "H7LRdH2HlvsKM/ftF7CEHIja8AnFV5c5tYJ1OSyrlnQ="
+      peer6: fe80::3777
+    bgp:
+      asn: 4242423777
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
