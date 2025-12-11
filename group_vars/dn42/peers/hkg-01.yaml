@@ -249,6 +249,7 @@ hkg-01:
       endpoint: 6.dn42.hk01.moonwx.net:21023
       wg_pubkey: "NfLhJvm5GiJ7emKFtRRLMM68H+tAkzSVrOAqfQJY1Ts="
       peer6: fe80::985:1
+      mtu: 1340
     bgp:
       asn: 4242420985
       ipv4: false
