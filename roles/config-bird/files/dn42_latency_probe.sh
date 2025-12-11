@@ -30,12 +30,40 @@ if [ -z "$host" ]; then
   exit 0
 fi
 
-if output=$(ping -n -c "$count" -W "$timeout" "$host" 2>&1); then
-  avg=$(printf '%s\n' "$output" | tail -n 1 | awk -F '/' '{print $5}')
-  if [ -n "$avg" ]; then
-    printf 'success:%s\n' "$avg"
-    exit 0
+check_ping() {
+  local proto="$1"
+  local target="$2"
+  local output
+  local avg
+
+  if output=$(ping "$proto" -n -c "$count" -W "$timeout" "$target" 2>/dev/null); then
+    avg=$(printf '%s\n' "$output" | tail -n 1 | awk -F '/' '{print $5}')
+    echo "$avg"
+  else
+    echo ""
   fi
+}
+
+res4=$(check_ping "-4" "$host")
+res6=$(check_ping "-6" "$host")
+
+final_res=""
+
+if [ -n "$res4" ] && [ -n "$res6" ]; then
+  if awk "BEGIN {exit !($res4 < $res6)}"; then
+    final_res="$res4"
+  else
+    final_res="$res6"
+  fi
+elif [ -n "$res4" ]; then
+  final_res="$res4"
+elif [ -n "$res6" ]; then
+  final_res="$res6"
+fi
+
+if [ -n "$final_res" ]; then
+  printf 'success:%s\n' "$final_res"
+  exit 0
 fi
 
 echo "failed:0"
