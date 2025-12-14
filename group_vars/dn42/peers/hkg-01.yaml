@@ -256,3 +256,14 @@ hkg-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: PuduNet
+    wg:
+      endpoint: sin01.pudunet.net:61023
+      wg_pubkey: "prifvN1CEXmuOAM3I1ykzaa6vD97Hy84j4Ag99x9CmA="
+      peer6: fe80::2003
+    bgp:
+      asn: 4242422227
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

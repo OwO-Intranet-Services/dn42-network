@@ -22,3 +22,4 @@ dls-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    removed: true

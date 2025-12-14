@@ -11,3 +11,14 @@ mxp-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: PuduNet
+    wg:
+      endpoint: de01.pudunet.net:61023
+      wg_pubkey: "V6gBK64MAL+BacO14xAaG/Z2l5tXmPWbWNj0Q8yCP0Q="
+      peer6: fe80::2005
+    bgp:
+      asn: 4242422227
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
