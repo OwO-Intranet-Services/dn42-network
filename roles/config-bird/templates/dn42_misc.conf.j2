@@ -11,7 +11,7 @@ protocol bgp route_collector
   multihop;
 
   ipv4 {
-    add paths tx;
+    add paths on;
 
     import none;
     export filter {
@@ -24,7 +24,7 @@ protocol bgp route_collector
   };
 
   ipv6 {
-    add paths tx;
+    add paths on;
 
     import none;
     export filter {
