@@ -102,6 +102,7 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    removed: true
   - comment: Nisbett
     wg:
       endpoint: fra.dn42.boletus.icu:21023
@@ -214,3 +215,74 @@ ams-01:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - comment: BingxinBaka
+    wg:
+      endpoint: de01.dn42.baka.pub:21023
+      wg_pubkey: "xFZ0S57R5ykjq5lThYEvLLWHhv2+De5D26p4bX5wdSo="
+      peer6: fe80::2999:232
+    bgp:
+      asn: 4242423374
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: BingxinBaka
+    wg:
+      endpoint: de01.dn42.baka.pub:21023
+      wg_pubkey: "xFZ0S57R5ykjq5lThYEvLLWHhv2+De5D26p4bX5wdSo="
+      peer6: fe80::2999:232
+    bgp:
+      asn: 4242423374
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: Dimitry
+    wg:
+      endpoint: nue.nodes.dn42.signal9.eu:21023
+      wg_pubkey: "S9kBni6Id9RBiSn8RJzqw2g1c2pTkp3WbMKVfv17Eis="
+      peer6: fe80::155:1
+    bgp:
+      asn: 4242420155
+      ipv4: false
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: Minecon724
+    wg:
+      endpoint: nl1.420129.xyz:21023
+      wg_pubkey: "m724+s6dks1bHZbEj9JvQb17mAC45z1WkaHSTSgxcRk="
+      psk: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          30643465343331666637353763336262626165636233336133363964633239623233366134373331
+          3862356230393163313439336436653736393434363230610a623735623063383633663565336438
+          32333464333364386564363433643663613935316536343439326632363934303335633133306664
+          6134633365383639650a313430346331363933326339363930333038616435636532626565343930
+          32613166616631383064336631366163363238333561656435633334613430613765386361616163
+          3338633931363438663232633665396133363232613834613839
+      peer6: fe80::129:1
+    bgp:
+      asn: 4242420129
+      ipv4: false
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+  # - comment: C4TG1RL5
+  #   wg:
+  #     endpoint: frog.catgirls.systems
+  #     wg_pubkey: ""
+  #     psk: !vault |
+  #         $ANSIBLE_VAULT;1.1;AES256
+  #         31666265396661346534303630363633326361313464366230623934363332353936663634303838
+  #         3139376239333263626162333638306562653335373961320a643235303935613930353831613530
+  #         63616435643732626533346234333737343538663337663164643166623162303337666332353433
+  #         3662656264396437360a313365393766623938353563383135633661616566653636313239623536
+  #         64356236333239323434396366616333646137366334643335373332383031663131646564613734
+  #         6230663136396561353166306230363030383233633262353661
+  #     peer6: 
+  #   bgp:
+  #     asn: 
+  #     ipv4: false
+  #     ipv6: true
+  #     extended_next_hop: false
+  #     mp_bgp: false
