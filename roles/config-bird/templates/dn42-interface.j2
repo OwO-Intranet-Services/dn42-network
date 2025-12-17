@@ -33,3 +33,5 @@ iface dn42-dummy inet6 static
     up ip -6 addr add {{ flapalerted_listener_ip }}/128 dev dn42-dummy || true
     down ip -6 addr del {{ flapalerted_listener_ip }}/128 dev dn42-dummy || true
 {% endif %}
+
+up sysctl -w net.ipv4.conf.dn42-dummy.rp_filter=0

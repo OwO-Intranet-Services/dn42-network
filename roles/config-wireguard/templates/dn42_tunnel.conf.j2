@@ -19,6 +19,7 @@ PostUp = ip addr add {{ peer.own6 }} peer {{ peer.peer6 }} dev %i
 PostUp = ip addr add {{ link_local_ipv6 }} peer {{ peer.peer6 }} dev %i
 {%   endif %}
 {% endif %}
+PostUp = sysctl -w net.ipv4.conf.%i.rp_filter=0
 
 [Peer]
 PublicKey = {{ peer.wg_pubkey }}

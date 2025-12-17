@@ -8,7 +8,10 @@ Table = off
 {% if hostvars.get('wireguard_peer_default_mtu') is defined %}
 MTU = {{ wireguard_peer_default_mtu }}
 {% endif %}
+
 PostUp = ip addr add {{ inter_node_lla_prefix }}{{ order }}/64 dev %i
+
+PostUp = sysctl -w net.ipv4.conf.%i.rp_filter=0
 
 [Peer]
 PublicKey = {{ peer.public_key }}
