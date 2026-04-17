@@ -1,0 +1,163 @@
+---
+- name: Deploy clearnet SSL certificates
+  ansible.builtin.copy:
+    src: "{{ repository_root_dir }}/.secrets/{{ item }}"
+    dest: "/etc/caddy/ssl/{{ item }}"
+    owner: caddy
+    group: caddy
+    mode: "0600"
+  loop:
+    - lg-api.svc.moe.crt
+    - lg-api.svc.moe.pem
+  when: "'lg-api.svc.moe' in lg_server_domains | default([]) and inventory_hostname in groups.get('lg_server', [])"
+  notify: Reload caddy
+
+- name: Deploy shared DN42 certificates for anycast sites
+  ansible.builtin.copy:
+    src: "{{ repository_root_dir }}/.secrets/{{ item.cert_filename }}"
+    dest: "/etc/caddy/ssl/{{ item.cert_filename }}"
+    owner: caddy
+    group: caddy
+    mode: "0600"
+  loop: "{{ caddy_shared_dn42_site_credentials }}"
+  when: inventory_hostname in groups.get(anycast_group, [])
+  notify: Reload caddy
+
+- name: Deploy shared DN42 private keys for anycast sites
+  ansible.builtin.copy:
+    src: "{{ repository_root_dir }}/.secrets/{{ item.key_filename }}"
+    dest: "/etc/caddy/ssl/{{ item.key_filename }}"
+    owner: caddy
+    group: caddy
+    mode: "0600"
+  loop: "{{ caddy_shared_dn42_site_credentials }}"
+  when: inventory_hostname in groups.get(anycast_group, [])
+  notify: Reload caddy
+
+- name: Build websites list
+  ansible.builtin.set_fact:
+    all_websites: >-
+      {%- set res = websites | default([]) -%}
+      {%- set lg_proxy_domain = lg_proxy_domain_fmt | format(inventory_hostname) -%}
+      {%- set network_site_tls = (caddy_shared_dn42_site_credentials | selectattr('domain', 'equalto', 'network.iris.dn42') | list | first | default({}, true)) -%}
+      {%- set anycast_site_tls = (caddy_shared_dn42_site_credentials | selectattr('domain', 'equalto', 'anycast.iris.dn42') | list | first | default({}, true)) -%}
+      {%- set _ = res.append({
+        'name': 'lg-proxy-' + inventory_hostname,
+        'server_name': lg_proxy_domain,
+        'type': 'lg-proxy',
+        'dn42_cert': true,
+        'upstream': lg_proxy_listen
+      }) -%}
+      {%- if lg_server_domains is defined and inventory_hostname in groups.get('lg_server', []) -%}
+        {%- for domain in lg_server_domains -%}
+          {%- if domain is match('.*\\.dn42$') -%}
+             {%- set _ = res.append({
+               'name': 'lg-server-' + domain | regex_replace('[^a-zA-Z0-9]', '-'),
+               'server_name': domain,
+               'type': 'lg-server',
+               'dn42_cert': true,
+               'upstream': lg_server_listen
+             }) -%}
+          {%- elif domain == 'lg-api.svc.moe' -%}
+             {%- set _ = res.append({
+               'name': 'lg-server-' + domain | regex_replace('[^a-zA-Z0-9]', '-'),
+               'server_name': domain,
+               'type': 'lg-server',
+               'dn42_cert': false,
+               'ssl_cert': '/etc/caddy/ssl/lg-api.svc.moe.crt',
+               'ssl_key': '/etc/caddy/ssl/lg-api.svc.moe.pem',
+               'upstream': lg_server_listen
+             }) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if inventory_hostname in groups.get(anycast_group, []) -%}
+        {%- set network_site = {
+          'name': 'network-iris-dn42',
+          'server_name': 'network.iris.dn42',
+          'type': 'network-site',
+          'root': network_site_root,
+          'listen_ipv4': '172.21.111.111',
+          'listen_ipv6': 'fd42:4242:1023::1111:1'
+        } -%}
+        {%- if network_site_tls -%}
+          {%- set _ = network_site.update({
+            'dn42_cert': false,
+            'ssl_cert': '/etc/caddy/ssl/' ~ network_site_tls.cert_filename,
+            'ssl_key': '/etc/caddy/ssl/' ~ network_site_tls.key_filename
+          }) -%}
+        {%- else -%}
+          {%- set _ = network_site.update({'dn42_cert': true}) -%}
+        {%- endif -%}
+        {%- set _ = res.append(network_site) -%}
+      {%- endif -%}
+      {%- if flapalerted_enabled | default(false) and flapalerted_domain is defined -%}
+        {%- set _ = res.append({
+          'name': 'flapalerted',
+          'server_name': flapalerted_domain,
+          'type': 'flapalerted',
+          'dn42_cert': true,
+          'upstream': flapalerted_http_upstream | default('127.0.0.1:8699')
+        }) -%}
+      {%- endif -%}
+      {%- if inventory_hostname in groups.get(anycast_group, []) -%}
+        {%- set anycast_site = {
+          'name': 'anycast',
+          'server_name': 'anycast.iris.dn42',
+          'type': 'anycast-site',
+          'listen_ipv4': '172.21.111.111',
+          'listen_ipv6': 'fd42:4242:1023::1111:1'
+        } -%}
+        {%- if anycast_site_tls -%}
+          {%- set _ = anycast_site.update({
+            'dn42_cert': false,
+            'ssl_cert': '/etc/caddy/ssl/' ~ anycast_site_tls.cert_filename,
+            'ssl_key': '/etc/caddy/ssl/' ~ anycast_site_tls.key_filename
+          }) -%}
+        {%- else -%}
+          {%- set _ = anycast_site.update({'dn42_cert': true}) -%}
+        {%- endif -%}
+        {%- set _ = res.append(anycast_site) -%}
+      {%- endif -%}
+      {{ res }}
+
+- name: Ensure web roots exist
+  ansible.builtin.file:
+    path: "{{ item.root | default('/var/www/html/' + item.server_name) }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+  loop: "{{ all_websites }}"
+  loop_control:
+    label: "{{ item.server_name }}"
+  when:
+    - item.type == 'static-site'
+
+- name: Create default index.html for static sites
+  ansible.builtin.copy:
+    content: "<html><body><h1>Welcome to {{ item.server_name }}</h1></body></html>"
+    dest: "{{ item.root | default('/var/www/html/' + item.server_name) }}/index.html"
+    force: false
+    owner: www-data
+    group: www-data
+    mode: "0644"
+  loop: "{{ all_websites }}"
+  loop_control:
+    label: "{{ item.server_name }}"
+  when: item.type == 'static-site'
+
+- name: Deploy Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload caddy
+
+- name: Ensure caddy is running and enabled
+  ansible.builtin.service:
+    name: caddy
+    state: started
+    enabled: true
