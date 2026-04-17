@@ -1,0 +1,80 @@
+---
+- name: Look up login account details
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ system_shell_account }}"
+
+- name: Set login account shell paths
+  ansible.builtin.set_fact:
+    system_shell_account_home: "{{ ansible_facts.getent_passwd[system_shell_account][4] }}"
+    system_shell_omz_dir: "{{ ansible_facts.getent_passwd[system_shell_account][4] }}/{{ system_omz_dirname }}"
+    system_shell_custom_dir: "{{ ansible_facts.getent_passwd[system_shell_account][4] }}/{{ system_omz_dirname }}/custom"
+
+- name: Install Oh My Zsh for the login account
+  ansible.builtin.git:
+    repo: "{{ system_omz_repo }}"
+    dest: "{{ system_shell_omz_dir }}"
+    version: "{{ system_omz_version }}"
+    update: true
+  become: true
+  become_user: "{{ system_shell_account }}"
+  environment:
+    HOME: "{{ system_shell_account_home }}"
+
+- name: Ensure zsh custom directories exist for the login account
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ system_shell_account }}"
+    group: "{{ system_shell_account }}"
+    mode: "0755"
+  loop:
+    - "{{ system_shell_custom_dir }}"
+    - "{{ system_shell_custom_dir }}/themes"
+    - "{{ system_shell_custom_dir }}/plugins"
+
+- name: Install powerlevel10k for the login account
+  ansible.builtin.git:
+    repo: "{{ system_powerlevel10k_repo }}"
+    dest: "{{ system_shell_custom_dir }}/themes/powerlevel10k"
+    version: "{{ system_powerlevel10k_version }}"
+    update: true
+  become: true
+  become_user: "{{ system_shell_account }}"
+  environment:
+    HOME: "{{ system_shell_account_home }}"
+
+- name: Install Oh My Zsh plugins for the login account
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ system_shell_custom_dir }}/plugins/{{ item.name }}"
+    version: "{{ item.version }}"
+    update: true
+  loop: "{{ system_omz_plugin_repositories }}"
+  loop_control:
+    label: "{{ item.name }}"
+  become: true
+  become_user: "{{ system_shell_account }}"
+  environment:
+    HOME: "{{ system_shell_account_home }}"
+
+- name: Set login shell to zsh for the login account
+  ansible.builtin.user:
+    name: "{{ system_shell_account }}"
+    shell: "{{ system_login_shell }}"
+
+- name: Deploy zshrc for the login account
+  ansible.builtin.copy:
+    src: "zsh/.zshrc"
+    dest: "{{ system_shell_account_home }}/.zshrc"
+    owner: "{{ system_shell_account }}"
+    group: "{{ system_shell_account }}"
+    mode: "0644"
+
+- name: Deploy powerlevel10k config for the login account
+  ansible.builtin.copy:
+    src: "zsh/.p10k.zsh"
+    dest: "{{ system_shell_account_home }}/.p10k.zsh"
+    owner: "{{ system_shell_account }}"
+    group: "{{ system_shell_account }}"
+    mode: "0644"

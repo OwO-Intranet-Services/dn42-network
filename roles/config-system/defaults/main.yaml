@@ -1,0 +1,32 @@
+---
+system_base_packages:
+  - debian-keyring
+  - debian-archive-keyring
+  - apt-transport-https
+  - curl
+  - ca-certificates
+  - wget
+  - git
+  - zsh
+  - cron
+  - acl
+  - iptables
+  - rsync
+  - ifupdown
+  - traceroute
+
+system_authorized_keys: "{{ ssh_keys }}"
+system_shell_account: "{{ ansible_user }}"
+system_login_shell: /usr/bin/zsh
+system_omz_dirname: .omz
+system_omz_repo: https://github.com/ohmyzsh/ohmyzsh
+system_omz_version: HEAD
+system_powerlevel10k_repo: https://github.com/romkatv/powerlevel10k
+system_powerlevel10k_version: HEAD
+system_omz_plugin_repositories:
+  - name: zsh-syntax-highlighting
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+    version: HEAD
+  - name: zsh-autosuggestions
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    version: HEAD

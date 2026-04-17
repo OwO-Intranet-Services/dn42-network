@@ -1,0 +1,42 @@
+---
+- name: Add SSH keys for access
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ item }}"
+  loop: "{{ system_authorized_keys }}"
+  loop_control:
+    label: "{{ item | regex_replace('^.* (.*)$', '\\1') }}"
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Configure interactive shell for the login account
+  ansible.builtin.include_tasks:
+    file: interactive_shell.yaml
+
+- name: Create automation group for dn42 scripts
+  ansible.builtin.group:
+    name: "{{ automation_user }}"
+    system: false
+    state: present
+  failed_when: false
+
+- name: Create automation account for dn42 scripts
+  ansible.builtin.user:
+    name: "{{ automation_user }}"
+    group: "{{ automation_user }}"
+    system: false
+    password: "!"
+    home: "{{ automation_user_home }}"
+    state: present
+  failed_when: false
+
+- name: Set automation user home permissions
+  ansible.builtin.file:
+    path: "{{ automation_user_home }}"
+    state: directory
+    owner: "{{ automation_user }}"
+    group: "{{ automation_user }}"
+    mode: "0755"

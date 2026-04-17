@@ -1,0 +1,18 @@
+---
+- name: Upgrade apt bootstrap packages # noqa: package-latest
+  ansible.builtin.apt:
+    name:
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+      - curl
+      - ca-certificates
+      - wget
+    state: latest
+    update_cache: true
+
+- name: Install system base packages
+  ansible.builtin.apt:
+    name: "{{ system_base_packages }}"
+    state: present
+    update_cache: true
