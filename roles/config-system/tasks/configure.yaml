@@ -1,7 +1,7 @@
 ---
 - name: Add SSH keys for access
   ansible.posix.authorized_key:
-    user: "{{ ansible_user }}"
+    user: "{{ system_shell_account }}"
     state: present
     key: "{{ item }}"
   loop: "{{ system_authorized_keys }}"

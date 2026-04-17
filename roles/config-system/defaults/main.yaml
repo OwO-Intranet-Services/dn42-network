@@ -16,7 +16,7 @@ system_base_packages:
   - traceroute
 
 system_authorized_keys: "{{ ssh_keys }}"
-system_shell_account: "{{ ansible_user }}"
+system_shell_account: "{{ lookup('ansible.builtin.vars', 'ansible_user', default=lookup('ansible.builtin.vars', 'ansible_ssh_user', default='iris')) }}"
 system_login_shell: /usr/bin/zsh
 system_omz_dirname: .omz
 system_omz_repo: https://github.com/ohmyzsh/ohmyzsh
