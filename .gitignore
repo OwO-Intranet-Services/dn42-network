@@ -3,6 +3,20 @@
 *.retry
 vault_pass.txt
 .secrets/
+
+# Python cache/bytecode
+__pycache__/
+*.py[cod]
+
+# Local temp/editor files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.swp
+*.swo
+*~
+
 # FIXME
 bird-lg-web/
 dist-network-site/
