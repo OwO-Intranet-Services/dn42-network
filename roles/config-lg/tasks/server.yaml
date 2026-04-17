@@ -1,18 +1,10 @@
 ---
-- name: Check existing lg server binary
-  ansible.builtin.stat:
-    path: "{{ automation_root_dir }}/lg/lg-server"
-  register: lg_server_binary
-
-- name: Backup current lg server binary
-  ansible.builtin.copy:
-    src: "{{ automation_root_dir }}/lg/lg-server"
-    dest: "{{ automation_root_dir }}/lg/lg-server.backup"
-    remote_src: true
-    owner: root
-    group: nogroup
-    mode: "0755"
-  when: lg_server_binary.stat.exists
+- name: Backup current lg-server binary
+  ansible.builtin.include_tasks:
+    file: backup_binary.yaml
+  vars:
+    lg_binary_name: lg-server
+    lg_binary_path: "{{ automation_root_dir }}/lg/lg-server"
 
 - name: Render lg server config
   ansible.builtin.template:
@@ -22,45 +14,13 @@
     group: nogroup
     mode: "0644"
 
-- name: Get current commit hash for bird-lg-rs
-  ansible.builtin.command: git rev-parse HEAD
-  args:
-    chdir: "{{ playbook_dir }}/bird-lg-rs"
-  delegate_to: localhost
-  become: false
-  run_once: true
-  register: current_commit
-  changed_when: false
-
-- name: Read last built commit hash for server
-  ansible.builtin.slurp:
-    src: "{{ playbook_dir }}/.last_build_commit_server"
-  delegate_to: localhost
-  become: false
-  run_once: true
-  register: last_build_commit_server
-  ignore_errors: true
-
-- name: Build lg-server binary
-  when: (last_build_commit_server.failed | default(true)) or (last_build_commit_server['content'] | b64decode | trim != current_commit.stdout)
-  block:
-    - name: Run cargo build for server
-      ansible.builtin.command:
-        cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p server -r
-        chdir: "{{ playbook_dir }}/bird-lg-rs"
-      delegate_to: localhost
-      become: false
-      run_once: true
-      changed_when: true
-
-    - name: Save current commit hash for server
-      ansible.builtin.copy:
-        content: "{{ current_commit.stdout }}"
-        dest: "{{ playbook_dir }}/.last_build_commit_server"
-        mode: "0644"
-      delegate_to: localhost
-      become: false
-      run_once: true
+- name: Build lg-server binary locally when source changed
+  ansible.builtin.include_tasks:
+    file: build_binary.yaml
+  vars:
+    lg_binary_name: lg-server
+    lg_cargo_package: server
+    lg_build_stamp_file: .last_build_commit_server
 
 - name: Copy lg server binary
   ansible.builtin.copy:

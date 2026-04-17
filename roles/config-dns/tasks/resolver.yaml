@@ -1,0 +1,52 @@
+---
+- name: Build forwarding facts for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_internal_forwarders: "{{ (dns_anycast_records | selectattr('ipv4', 'defined') | map(attribute='ipv4') | list) + (dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list) }}"
+    dns_non_anycast_forwarders: >-
+      {{
+        (dns_anycast_records | selectattr('name', 'in', dns_nameservers) | map(attribute='ipv4') | list) +
+        (dns_anycast_records | selectattr('name', 'in', dns_nameservers) | map(attribute='ipv6') | list) +
+        _dn42_forwarders +
+        dns_named_options.forwarders
+      }}
+
+- name: Construct forward zones list for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_zones: >-
+      {%- set res = [] -%}
+      {%- for zone in dns_forward_zones_list -%}
+        {%- set _ = res.append(
+          {'name': zone} | combine(forward_zone_defaults) | combine({'forwarders': dns_internal_forwarders + _dn42_forwarders})
+        ) -%}
+      {%- endfor -%}
+      {{ res }}
+
+- name: Build named options for non-anycast nodes
+  ansible.builtin.set_fact:
+    dns_named_options_rendered: >-
+      {{ dns_named_options | combine(
+          {
+            'forwarders': dns_non_anycast_forwarders,
+            'extra_statements': (dns_named_options.extra_statements | default([])) + [dns_validate_except_block]
+          },
+          recursive=True
+        )
+      }}
+
+- name: Render named.conf.options
+  ansible.builtin.template:
+    src: named.conf.options.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.options"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  notify: Restart bind9
+
+- name: Render named.conf.local
+  ansible.builtin.template:
+    src: named.conf.local.j2
+    dest: "{{ dns_service.config_dir }}/named.conf.local"
+    owner: root
+    group: "{{ dns_service.group }}"
+    mode: "0644"
+  notify: Restart bind9

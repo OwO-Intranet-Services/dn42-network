@@ -1,18 +1,10 @@
 ---
-- name: Check existing lg proxy binary
-  ansible.builtin.stat:
-    path: "{{ automation_root_dir }}/lg/lg-proxy"
-  register: lg_proxy_binary
-
-- name: Backup current lg proxy binary
-  ansible.builtin.copy:
-    src: "{{ automation_root_dir }}/lg/lg-proxy"
-    dest: "{{ automation_root_dir }}/lg/lg-proxy.backup"
-    remote_src: true
-    owner: root
-    group: nogroup
-    mode: "0755"
-  when: lg_proxy_binary.stat.exists
+- name: Backup current lg-proxy binary
+  ansible.builtin.include_tasks:
+    file: backup_binary.yaml
+  vars:
+    lg_binary_name: lg-proxy
+    lg_binary_path: "{{ automation_root_dir }}/lg/lg-proxy"
 
 - name: Resolve lg_server hostnames (IPv4)
   ansible.builtin.command: "dig +short A {{ hostvars[item].ansible_host | default(item) }}"
@@ -38,45 +30,13 @@
     group: nogroup
     mode: "0644"
 
-- name: Get current commit hash for bird-lg-rs
-  ansible.builtin.command: git rev-parse HEAD
-  args:
-    chdir: "{{ playbook_dir }}/bird-lg-rs"
-  delegate_to: localhost
-  become: false
-  run_once: true
-  register: current_commit
-  changed_when: false
-
-- name: Read last built commit hash for proxy
-  ansible.builtin.slurp:
-    src: "{{ playbook_dir }}/.last_build_commit_proxy"
-  delegate_to: localhost
-  become: false
-  run_once: true
-  register: last_build_commit_proxy
-  ignore_errors: true
-
-- name: Build lg-proxy binary
-  when: (last_build_commit_proxy.failed | default(true)) or (last_build_commit_proxy['content'] | b64decode | trim != current_commit.stdout)
-  block:
-    - name: Run cargo build for proxy
-      ansible.builtin.command:
-        cmd: cargo zigbuild --target x86_64-unknown-linux-musl -p proxy -r
-        chdir: "{{ playbook_dir }}/bird-lg-rs"
-      delegate_to: localhost
-      become: false
-      run_once: true
-      changed_when: true
-
-    - name: Save current commit hash for proxy
-      ansible.builtin.copy:
-        content: "{{ current_commit.stdout }}"
-        dest: "{{ playbook_dir }}/.last_build_commit_proxy"
-        mode: "0644"
-      delegate_to: localhost
-      become: false
-      run_once: true
+- name: Build lg-proxy binary locally when source changed
+  ansible.builtin.include_tasks:
+    file: build_binary.yaml
+  vars:
+    lg_binary_name: lg-proxy
+    lg_cargo_package: proxy
+    lg_build_stamp_file: .last_build_commit_proxy
 
 - name: Copy lg proxy binary
   ansible.builtin.copy:

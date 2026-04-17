@@ -1,0 +1,15 @@
+---
+- name: Check existing {{ lg_binary_name }} binary
+  ansible.builtin.stat:
+    path: "{{ lg_binary_path }}"
+  register: lg_existing_binary
+
+- name: Backup current {{ lg_binary_name }} binary
+  ansible.builtin.copy:
+    src: "{{ lg_binary_path }}"
+    dest: "{{ lg_binary_path }}.backup"
+    remote_src: true
+    owner: root
+    group: nogroup
+    mode: "0755"
+  when: lg_existing_binary.stat.exists

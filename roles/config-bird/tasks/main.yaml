@@ -1,11 +1,8 @@
 ---
-- name: Gather node list
+- name: Gather BIRD inventory inputs
   ansible.builtin.set_fact:
     node_hosts: "{{ groups.get(node_group, []) | list }}"
-
-- name: Gather dn42 node list
-  ansible.builtin.set_fact:
-    node_hosts: "{{ groups.get(dn42_group, []) | list }}"
+    dn42_peers: "{{ hostvars[inventory_hostname].peers | default([]) }}"
 
 - name: Run cleanup when removing node
   ansible.builtin.include_tasks:
@@ -25,11 +22,7 @@
     - not (remove | default(false))
     - not (remove_node | default(false))
 
-- name: Cache DN42 peer definitions for this node
-  ansible.builtin.set_fact:
-    dn42_peers: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
-
-- name: Initialize bird_dn42_peers_processed
+- name: Initialize BIRD DN42 peer list
   ansible.builtin.set_fact:
     bird_dn42_peers_processed: []
 
@@ -42,38 +35,9 @@
   loop_control:
     label: "{{ item.bgp.asn }}"
 
-- name: Filter lists
+- name: Determine BIRD target lists
   ansible.builtin.set_fact:
-    bird_node_peers_configure: >-
-      {{
-        node_hosts
-        | select('ne', inventory_hostname)
-        | select('in', target_list_node)
-        | list
-      }}
-    bird_node_peers_remove: >-
-      {{
-        node_hosts
-        | select('ne', inventory_hostname)
-        | select('in', target_list_node)
-        | list
-      }}
-    bird_dn42_peers_configure: >-
-      {{
-        bird_dn42_peers_processed
-        | selectattr('name', 'in', target_list_dn42)
-        | rejectattr('removed')
-        | list
-      }}
-    bird_dn42_peers_remove: >-
-      {{
-        bird_dn42_peers_processed
-        | selectattr('name', 'in', target_list_dn42)
-        | selectattr('removed')
-        | list
-      }}
-  vars:
-    target_list_node: >-
+    bird_target_list_node: >-
       {{
         [target | replace(node_prefix, '') | replace('_', '-')]
         if target is defined and target.startswith(node_prefix)
@@ -82,45 +46,54 @@
           else node_hosts
         )
       }}
-    target_list_dn42: >-
+    bird_target_list_dn42: >-
       {{
         [target]
         if target is defined
         else (bird_dn42_peers_processed | map(attribute='name') | list)
       }}
 
-- name: Apply global flags to lists
+- name: Build BIRD peer selections
+  ansible.builtin.set_fact:
+    bird_node_peers_selected: >-
+      {{
+        node_hosts
+        | reject('equalto', inventory_hostname)
+        | select('in', bird_target_list_node)
+        | list
+      }}
+    bird_dn42_peers_selected: >-
+      {{
+        bird_dn42_peers_processed
+        | selectattr('name', 'in', bird_target_list_dn42)
+        | list
+      }}
+
+- name: Apply global flags to BIRD peer lists
   ansible.builtin.set_fact:
     bird_node_peers_configure: >-
       {{
         [] if (remove | default(false)) or (task_type is defined and task_type != 'node')
-        else bird_node_peers_configure
+        else bird_node_peers_selected
       }}
     bird_node_peers_remove: >-
       {{
         [] if (not (remove | default(false))) or (task_type is defined and task_type != 'node')
-        else bird_node_peers_remove
+        else bird_node_peers_selected
       }}
     bird_dn42_peers_configure: >-
       {{
         [] if (remove | default(false)) or (task_type is defined and task_type != 'dn42')
-        else bird_dn42_peers_configure
+        else (bird_dn42_peers_selected | rejectattr('removed') | list)
       }}
     bird_dn42_peers_remove: >-
       {{
-        bird_dn42_peers_processed | selectattr('name', 'in', target_list_dn42) | list
+        bird_dn42_peers_selected
         if (remove | default(false)) and (task_type is undefined or task_type == 'dn42')
         else (
           [] if (task_type is defined and task_type != 'dn42')
-          else bird_dn42_peers_remove
+          else (bird_dn42_peers_selected | selectattr('removed') | list)
         )
-      }}
-  vars:
-    target_list_dn42: >-
-      {{
-        [target]
-        if target is defined
-        else (bird_dn42_peers_processed | map(attribute='name') | list)
       }}
 
 - name: Render per-node BIRD configurations
