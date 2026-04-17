@@ -4,47 +4,15 @@
     url: https://ca.dn42/crt/root-ca.crt
     dest: /usr/local/share/ca-certificates/dn42-ca.crt
     mode: "0644"
+    force: false
     validate_certs: false
   register: dn42_ca_download
-  ignore_errors: true
 
 - name: Update CA certificates  # noqa: no-handler
   ansible.builtin.command: update-ca-certificates
   when: dn42_ca_download is changed
   changed_when: true
-
-- name: Create automation bin directory
-  ansible.builtin.file:
-    path: "{{ automation_user_home }}/bin"
-    state: directory
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-
-- name: Create automation certs directory
-  ansible.builtin.file:
-    path: "{{ automation_user_home }}/certs"
-    state: directory
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-
-- name: Install dn42-cert-client script
-  ansible.builtin.copy:
-    src: dn42-cert-client.sh
-    dest: "{{ automation_user_home }}/bin/dn42-cert-client"
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-
-- name: Create DN42 CA token file
-  ansible.builtin.copy:
-    content: "{{ kioubit_auth_code }}"
-    dest: "{{ automation_user_home }}/certs/token.txt"
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0600"
-  when: kioubit_auth_code is defined
+  notify: Restart caddy
 
 - name: Create SSL directory
   ansible.builtin.file:
@@ -164,9 +132,7 @@
                'server_name': domain,
                'type': 'lg-server',
                'dn42_cert': true,
-               'upstream': lg_server_listen,
-               'ssl_cert': automation_user_home + '/certs/' + domain + '/signed.crt',
-               'ssl_key': automation_user_home + '/certs/' + domain + '/server.key'
+               'upstream': lg_server_listen
              }) -%}
           {%- elif domain == 'lg-api.svc.moe' -%}
              {%- set _ = res.append({
@@ -210,91 +176,6 @@
           'listen_ipv6': 'fd42:4242:1023::1111:1'
       }) -%}
       {{ res }}
-
-- name: Build DN42 websites list for cron
-  ansible.builtin.set_fact:
-    dn42_websites: >-
-      {%- set res = [] -%}
-      {%- for site in all_websites -%}
-        {%- if site.dn42_cert | default(false) -%}
-          {%- if site.server_name is string -%}
-             {%- set _ = res.append(site) -%}
-          {%- else -%}
-             {%- for domain in site.server_name -%}
-               {%- if domain is match('.*\.dn42$') -%}
-                 {%- set _ = res.append(site | combine({'server_name': domain})) -%}
-               {%- endif -%}
-             {%- endfor -%}
-          {%- endif -%}
-        {%- endif -%}
-      {%- endfor -%}
-      {{ res }}
-
-- name: Create DN42 cert directories per domain
-  ansible.builtin.file:
-    path: "{{ automation_user_home }}/certs/{{ item.server_name }}"
-    state: directory
-    owner: "{{ automation_user }}"
-    group: caddy
-    mode: "2750"
-  loop: "{{ dn42_websites }}"
-  loop_control:
-    label: "{{ item.server_name }}"
-
-- name: Deploy DN42 cert renewal script
-  ansible.builtin.template:
-    src: dn42-cert-renew.sh.j2
-    dest: "{{ automation_user_home }}/bin/dn42-cert-renew"
-    owner: "{{ automation_user }}"
-    group: nogroup
-    mode: "0755"
-  when: dn42_websites | length > 0
-
-- name: Allow automation user to reload caddy
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/dn42-automation-caddy
-    line: "{{ automation_user }} ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload caddy"
-    create: true
-    mode: "0440"
-    validate: visudo -cf %s
-
-- name: Set up cron job for DN42 cert renewal (Caddy)
-  ansible.builtin.cron:
-    name: "DN42 certificate renewal"
-    user: "{{ automation_user }}"
-    weekday: "0"
-    hour: "3"
-    minute: "0"
-    job: "{{ automation_user_home }}/bin/dn42-cert-renew"
-  when: dn42_websites | length > 0
-
-- name: Check DN42 certificates exist
-  ansible.builtin.stat:
-    path: "{{ automation_user_home }}/certs/{{ item.server_name }}/signed.crt"
-  loop: "{{ dn42_websites }}"
-  loop_control:
-    label: "{{ item.server_name }}"
-  register: dn42_cert_check
-
-- name: Request missing DN42 certificates
-  ansible.builtin.command:
-    cmd: "{{ automation_user_home }}/bin/dn42-cert-client -t {{ automation_user_home }}/certs/token.txt get_certificate {{ item.item.server_name }}"
-    chdir: "{{ automation_user_home }}/certs/{{ item.item.server_name }}"
-  become: true
-  become_user: "{{ automation_user }}"
-  loop: "{{ dn42_cert_check.results }}"
-  loop_control:
-    label: "{{ item.item.server_name }}"
-    pause: 2
-  when:
-    - item.item.dn42_cert | default(false)
-    - not item.stat.exists
-  register: cert_request_result
-  until: cert_request_result.rc == 0
-  retries: 3
-  delay: 5
-  changed_when: cert_request_result.rc == 0
-  throttle: 1
 
 - name: Ensure web roots exist
   ansible.builtin.file:

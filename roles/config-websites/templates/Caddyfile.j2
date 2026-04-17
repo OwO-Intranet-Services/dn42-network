@@ -1,5 +1,7 @@
 (dn42_tls) {
-    tls {args.0} {args.1}
+    tls {
+        ca {{ dn42_acme_directory }}
+    }
 }
 
 {% for site in all_websites %}
@@ -10,7 +12,7 @@
 {{ site.server_name | join(', ') }} {
 {% endif %}
     {% if site.dn42_cert | default(false) %}
-    import dn42_tls {{ automation_user_home }}/certs/{{ site.server_name if site.server_name is string else site.server_name[0] }}/signed.crt {{ automation_user_home }}/certs/{{ site.server_name if site.server_name is string else site.server_name[0] }}/server.key
+    import dn42_tls
     {% elif site.ssl_cert is defined %}
     tls {{ site.ssl_cert }} {{ site.ssl_key }}
     {% endif %}
