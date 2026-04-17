@@ -1,0 +1,3 @@
+---
+repository_root_dir: "{{ playbook_dir | dirname }}"
+artifacts_root_dir: "{{ repository_root_dir ~ '/.artifacts' }}"
