@@ -1,0 +1,16 @@
+---
+dns_service:
+  packages:
+    - bind9
+    - bind9utils
+    - bind9-doc
+  service_name: named
+  user: bind
+  group: bind
+  config_dir: /etc/bind
+  zone_dir: /etc/bind/zones
+
+dns_primary_zone_file: "db.{{ domain_name }}"
+dns_acme_challenge_include_file: "db.{{ domain_name }}.acme"
+dns_acme_challenge_include_path: "{{ dns_service.zone_dir }}/{{ dns_acme_challenge_include_file }}"
+dns_acme_challenge_ttl: 60

@@ -26,6 +26,9 @@ $ORIGIN {{ zone.origin }}
 
 {% if zone.name == domain_name %}
 
+; ACME dns-01 challenges
+$INCLUDE {{ dns_acme_challenge_include_path }}
+
 ; Nodes (A / AAAA)
 {%   for host in groups['nodes'] %}
 {%     if hostvars[host].ownip is defined %}
