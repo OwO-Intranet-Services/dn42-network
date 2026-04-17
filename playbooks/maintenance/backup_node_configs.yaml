@@ -1,19 +1,19 @@
 ---
-- name: Backup WireGuard configs
+- name: Backup node configs
   hosts: dn42
   gather_facts: false
   vars:
-    backup_root: "./backups/wireguard"
+    backup_root: "./backups/node_configs"
 
   tasks:
-    - name: Ensure local backup directories exist
+    - name: Ensure local WireGuard backup directory exists
       ansible.builtin.file:
         path: "{{ backup_root }}/{{ inventory_hostname }}/wireguard"
         state: directory
         mode: "0750"
       delegate_to: localhost
 
-    - name: Ensure local backup directories exist
+    - name: Ensure local BIRD peer backup directory exists
       ansible.builtin.file:
         path: "{{ backup_root }}/{{ inventory_hostname }}/bird/peers"
         state: directory
@@ -21,6 +21,7 @@
       delegate_to: localhost
 
     - name: Locate WireGuard config files
+      become: true
       ansible.builtin.find:
         paths: /etc/wireguard
         patterns: "*.conf"
@@ -28,14 +29,14 @@
       register: wg_conf_files
 
     - name: Fetch WireGuard configs to local backup
+      become: true
       ansible.builtin.fetch:
         src: "{{ item.path }}"
         dest: "{{ backup_root }}/{{ inventory_hostname }}/wireguard/"
         flat: true
-      become: true
       loop: "{{ wg_conf_files.files }}"
 
-    - name: Locate bird peers config files
+    - name: Locate BIRD peer config files
       become: true
       ansible.builtin.find:
         paths: /etc/bird/peers
@@ -43,10 +44,10 @@
         file_type: file
       register: bird_conf_files
 
-    - name: Fetch bird peers configs to local backup
+    - name: Fetch BIRD peer configs to local backup
+      become: true
       ansible.builtin.fetch:
         src: "{{ item.path }}"
         dest: "{{ backup_root }}/{{ inventory_hostname }}/bird/peers/"
         flat: true
-      become: true
       loop: "{{ bird_conf_files.files }}"
