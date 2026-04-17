@@ -38,9 +38,6 @@
     - caddy
     - websites
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-caddy
       tags:
         - caddy

@@ -6,9 +6,6 @@
   tags:
     - bird
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-bird
       tags:
         - bird

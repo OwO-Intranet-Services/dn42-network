@@ -29,9 +29,6 @@
     - lg
     - lg-proxy
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-lg-proxy
       tags:
         - lg

@@ -6,9 +6,6 @@
   tags:
     - wireguard
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-wireguard
       tags:
         - wireguard

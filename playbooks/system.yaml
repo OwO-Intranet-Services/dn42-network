@@ -6,9 +6,6 @@
   tags:
     - system
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-system
       tags:
         - system

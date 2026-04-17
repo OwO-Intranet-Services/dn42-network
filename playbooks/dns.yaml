@@ -6,9 +6,6 @@
   tags:
     - dns
   roles:
-    - role: config-apt
-      tags:
-        - apt-preflight
     - role: config-dns
       tags:
         - dns
