@@ -7,7 +7,7 @@ mxp-01:
       peer6: fe80::207
     bgp:
       asn: 4242420207
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -18,7 +18,7 @@ mxp-01:
       peer6: fe80::2005
     bgp:
       asn: 4242422227
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true

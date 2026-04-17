@@ -7,7 +7,7 @@ ams-01:
       peer6: fe80::1771
     bgp:
       asn: 4242421771
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -18,7 +18,7 @@ ams-01:
       peer6: fe80::2279
     bgp:
       asn: 4242422279
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -29,10 +29,11 @@ ams-01:
       peer6: fe80::150
     bgp:
       asn: 4242420150
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    removed: true
   - comment: sun
     wg:
       endpoint: v6.ams1-nl.dn42.6700.cc:21023
@@ -40,7 +41,7 @@ ams-01:
       peer6: fe80::3088:194
     bgp:
       asn: 4242423088
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -51,7 +52,7 @@ ams-01:
       peer6: fe80::1534
     bgp:
       asn: 4242421534
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -62,7 +63,7 @@ ams-01:
       peer6: fe80::337
     bgp:
       asn: 4242420337
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -73,7 +74,7 @@ ams-01:
       peer6: fe80::117
     bgp:
       asn: 4242421080
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -87,7 +88,7 @@ ams-01:
       peer6: fe80::ade0
     bgp:
       asn: 4242423914
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -98,11 +99,10 @@ ams-01:
       peer6: fe80::1816
     bgp:
       asn: 4242421816
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-    removed: true
   - comment: Nisbett
     wg:
       endpoint: fra.dn42.boletus.icu:21023
@@ -110,7 +110,7 @@ ams-01:
       peer6: fe80::398
     bgp:
       asn: 4242420398
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -121,7 +121,7 @@ ams-01:
       peer6: fe80::2189:e9
     bgp:
       asn: 4242422189
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -133,7 +133,7 @@ ams-01:
       own6: fe80::1023
     bgp:
       asn: 4242422225
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -144,7 +144,7 @@ ams-01:
       peer6: fe80::3035:131
     bgp:
       asn: 4242423035
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -155,7 +155,7 @@ ams-01:
       peer6: fe80::1117
     bgp:
       asn: 4242421117
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -167,7 +167,7 @@ ams-01:
       own6: fe80::100
     bgp:
       asn: 4242421588
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -178,7 +178,7 @@ ams-01:
       peer6: fe80::207
     bgp:
       asn: 4242420207
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -189,7 +189,7 @@ ams-01:
       peer6: fe80::3011
     bgp:
       asn: 4242423011
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -200,7 +200,7 @@ ams-01:
       peer6: fe80::253
     bgp:
       asn: 4242420253
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -211,7 +211,7 @@ ams-01:
       peer6: fe80::985
     bgp:
       asn: 4242420985
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -222,18 +222,7 @@ ams-01:
       peer6: fe80::2999:232
     bgp:
       asn: 4242423374
-      ipv4: false
-      ipv6: true
-      extended_next_hop: true
-      mp_bgp: true
-  - comment: BingxinBaka
-    wg:
-      endpoint: de01.dn42.baka.pub:21023
-      wg_pubkey: "xFZ0S57R5ykjq5lThYEvLLWHhv2+De5D26p4bX5wdSo="
-      peer6: fe80::2999:232
-    bgp:
-      asn: 4242423374
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -244,7 +233,7 @@ ams-01:
       peer6: fe80::155:1
     bgp:
       asn: 4242420155
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -253,13 +242,13 @@ ams-01:
       endpoint: nl1.420129.xyz:21023
       wg_pubkey: "m724+s6dks1bHZbEj9JvQb17mAC45z1WkaHSTSgxcRk="
       psk: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          30643465343331666637353763336262626165636233336133363964633239623233366134373331
-          3862356230393163313439336436653736393434363230610a623735623063383633663565336438
-          32333464333364386564363433643663613935316536343439326632363934303335633133306664
-          6134633365383639650a313430346331363933326339363930333038616435636532626565343930
-          32613166616631383064336631366163363238333561656435633334613430613765386361616163
-          3338633931363438663232633665396133363232613834613839
+        $ANSIBLE_VAULT;1.1;AES256
+        30643465343331666637353763336262626165636233336133363964633239623233366134373331
+        3862356230393163313439336436653736393434363230610a623735623063383633663565336438
+        32333464333364386564363433643663613935316536343439326632363934303335633133306664
+        6134633365383639650a313430346331363933326339363930333038616435636532626565343930
+        32613166616631383064336631366163363238333561656435633334613430613765386361616163
+        3338633931363438663232633665396133363232613834613839
       peer6: fe80::129:1
     bgp:
       asn: 4242420129
@@ -267,6 +256,51 @@ ams-01:
       ipv6: true
       extended_next_hop: false
       mp_bgp: false
+  - comment: leziblog
+    wg:
+      endpoint: v6.de1.peer.dn42.leziblog.com:21023
+      wg_pubkey: "Kd5+CvZW3NRvUXpbdqGFt85VzMyReBtnVeDVXae06Qg="
+      peer6: fe80::3377
+      mtu: 1370
+    bgp:
+      asn: 4242423377
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: cowgl
+    wg:
+      endpoint: v6.brn.node.cowgl.xyz:31023
+      wg_pubkey: "sHPUV74X+hqUK5wFj3m5kCga0rlPCxImUBwZ/oLiEn4="
+      peer6: fe80::3:3999
+    bgp:
+      asn: 4242423999
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: nedifinita
+    wg:
+      endpoint: dn42c.nedifinita.com:49422
+      wg_pubkey: "pCTgngczpFgIDbZzfxtz6tiaiFo59b2GbeJEEc21mA0="
+      peer6: fe80::454:102
+    bgp:
+      asn: 4242420454
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: "imlonghao"
+    wg:
+      endpoint: de1.dn42.ni.sb:21023
+      wg_pubkey: "k9F2akSTkbA/GiO59PNW/v0D65ioMYD4P1DqeKSL3FM="
+      peer6: fe80::1888
+    bgp:
+      asn: 4242421888
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
   # - comment: C4TG1RL5
   #   wg:
   #     endpoint: frog.catgirls.systems
@@ -282,7 +316,7 @@ ams-01:
   #     peer6: 
   #   bgp:
   #     asn: 
-  #     ipv4: false
+  #     ipv4: true
   #     ipv6: true
   #     extended_next_hop: false
   #     mp_bgp: false

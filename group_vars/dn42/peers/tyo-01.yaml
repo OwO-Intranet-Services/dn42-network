@@ -11,7 +11,7 @@ tyo-01:
       keepalive: null
     bgp:
       asn: 4242421534
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -23,7 +23,7 @@ tyo-01:
       own6: fe80::100
     bgp:
       asn: 4242421588
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -34,7 +34,7 @@ tyo-01:
       peer6: fe80::2024
     bgp:
       asn: 4242422024
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -45,7 +45,7 @@ tyo-01:
       peer6: fe80::2189:115
     bgp:
       asn: 4242422189
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -56,7 +56,7 @@ tyo-01:
       peer6: fe80::3035:134
     bgp:
       asn: 4242423035
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -68,7 +68,7 @@ tyo-01:
       peer6: fe80::1:3999
     bgp:
       asn: 4242423999
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -79,7 +79,7 @@ tyo-01:
       peer6: fe80::337
     bgp:
       asn: 4242420337
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -90,7 +90,7 @@ tyo-01:
       peer6: fe80::1771
     bgp:
       asn: 4242421771
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -101,7 +101,7 @@ tyo-01:
       peer6: fe80::2279
     bgp:
       asn: 4242422279
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -112,7 +112,7 @@ tyo-01:
       peer6: fe80::3088:190
     bgp:
       asn: 4242423088
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -123,7 +123,7 @@ tyo-01:
       peer6: fe80::124
     bgp:
       asn: 4242421080
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -134,7 +134,7 @@ tyo-01:
       peer6: fe80::398
     bgp:
       asn: 4242420398
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -144,13 +144,13 @@ tyo-01:
       endpoint: node5.ox5.cc:21023
       wg_pubkey: "uGBAVsIQNZumBm7hb4l0cvCx3a2diQCUdb/o/PJPyis="
       psk: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          34303835663737333430313565323430663666353966633131323930633435663361356237613934
-          6661623932306166613236616564333634326565333963300a643832343432306135316633656239
-          30393739353864383935613361346664353532333161346234653137653763316464666165383438
-          6237366439356236610a343032366330323037663765633963343432616561646539353962346439
-          66363632396261396436353861356432366331313663393963313037313939343930333139376539
-          3739386636643532663433623238373630353337363236323931
+        $ANSIBLE_VAULT;1.1;AES256
+        34303835663737333430313565323430663666353966633131323930633435663361356237613934
+        6661623932306166613236616564333634326565333963300a643832343432306135316633656239
+        30393739353864383935613361346664353532333161346234653137653763316464666165383438
+        6237366439356236610a343032366330323037663765633963343432616561646539353962346439
+        66363632396261396436353861356432366331313663393963313037313939343930333139376539
+        3739386636643532663433623238373630353337363236323931
       peer6: fe80::298
     bgp:
       asn: 4242420298
@@ -165,7 +165,7 @@ tyo-01:
       peer6: fe80::1117
     bgp:
       asn: 4242421117
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -188,7 +188,7 @@ tyo-01:
       peer6: fe80::207
     bgp:
       asn: 4242420207
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -199,7 +199,7 @@ tyo-01:
       peer6: fe80::3011
     bgp:
       asn: 4242423011
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -210,7 +210,7 @@ tyo-01:
       peer6: fe80::3702
     bgp:
       asn: 4242423702
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -221,7 +221,7 @@ tyo-01:
       peer6: fe80::985:4
     bgp:
       asn: 4242420985
-      ipv4: false
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
@@ -232,7 +232,29 @@ tyo-01:
       peer6: fe80::3777
     bgp:
       asn: 4242423777
-      ipv4: false
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: BingxinBaka
+    wg:
+      endpoint: jp01.dn42.baka.pub:21023
+      wg_pubkey: "N7iQzqWLPb6lpRlf7grQG6rEzQOvDZWkmsRDkRnniH0="
+      peer6: fe80::2999:226
+    bgp:
+      asn: 4242423374
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: "imlonghao"
+    wg:
+      endpoint: jp1.dn42.ni.sb:21023
+      wg_pubkey: "HND/VBClYdfCqAKGFmapwqOxg/KluPcv2u30rjD8+gk="
+      peer6: fe80::1888
+    bgp:
+      asn: 4242421888
+      ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true

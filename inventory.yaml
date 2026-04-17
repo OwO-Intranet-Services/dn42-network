@@ -72,39 +72,6 @@ all:
           peering_comment: "IPv6 only"
           region: EUROPE
           country: NL
-        tlv-01:
-          ansible_host: tlv-01.node.svc.moe
-          ownip: 172.21.111.71
-          ownip6: fd42:4242:1023:71::1
-          ownip6block: fd42:4242:1023:71::/64
-          link_local_ipv6: fe80::1023:2
-          wg_pubkey: "Q7pw+W8asRFxgDOu2cIIAlkffM0MyVrQPNI7Yd34wj0="
-          ip_support: dual
-          region: ASIA_W
-          peering_comment: "Likely will down before 2026-02"
-          country: IL
-        bom-01:
-          ansible_host: bom-01.node.svc.moe
-          ownip: 172.21.111.72
-          ownip6: fd42:4242:1023:72::1
-          ownip6block: fd42:4242:1023:72::/64
-          wg_pubkey: "AmE6oB4DfqKDh8+FESH/cSWJ4D7ta1nhJ9r7cRhYsy0="
-          ip_support: dual
-          link_local_ipv6: fe80::1023:2
-          peering_comment: "Likely will down before 2026-02"
-          region: ASIA_S
-          country: IN
-        mxp-01:
-          ansible_host: mxp-01.node.svc.moe
-          ownip: 172.21.111.73
-          ownip6: fd42:4242:1023:73::1
-          ownip6block: fd42:4242:1023:72::/64
-          wg_pubkey: "1v5AT9RYbApaY6lnPgasEOejKzN/RHNdNOHYLOiYwHs="
-          ip_support: dual
-          link_local_ipv6: fe80::1023:2
-          peering_comment: "Likely will down before 2026-02"
-          region: EUROPE
-          country: IT
     dn42:
       hosts:
         lax-01:
@@ -113,17 +80,12 @@ all:
         dls-01:
         lax-02:
         ams-01:
-        tlv-01:
-        bom-01:
-        mxp-01:
 
     anycast:
       hosts:
         lax-01:
         tyo-01:
         ams-01:
-        bom-01:
-        mxp-01:
 
     lg_server:
       hosts:
