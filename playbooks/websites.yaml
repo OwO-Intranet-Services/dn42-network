@@ -1,0 +1,47 @@
+---
+- name: Build Network Site Artifact
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    repository_root_dir: "{{ playbook_dir | dirname }}"
+    artifacts_root_dir: "{{ (playbook_dir | dirname) ~ '/.artifacts' }}"
+  tags:
+    - build
+    - websites
+    - network-site
+  roles:
+    - role: build-network-site
+      tags:
+        - build
+        - websites
+        - network-site
+
+- name: Deploy Network Site
+  hosts: anycast
+  become: true
+  gather_facts: true
+  tags:
+    - websites
+    - network-site
+  roles:
+    - role: deploy-network-site
+      tags:
+        - websites
+        - network-site
+
+- name: Configure Caddy Websites
+  hosts: nodes
+  become: true
+  gather_facts: true
+  tags:
+    - caddy
+    - websites
+  roles:
+    - role: config-apt
+      tags:
+        - apt-preflight
+    - role: config-caddy
+      tags:
+        - caddy
+        - websites

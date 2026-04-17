@@ -1,0 +1,4 @@
+---
+apt_preflight_caddy_repo_key_url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+apt_preflight_caddy_repo_key_path: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+apt_preflight_caddy_repo_key_asc_path: "{{ apt_preflight_caddy_repo_key_path }}.asc"

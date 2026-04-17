@@ -1,0 +1,14 @@
+---
+- name: DNS Configuration
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - dns
+  roles:
+    - role: config-apt
+      tags:
+        - apt-preflight
+    - role: config-dns
+      tags:
+        - dns

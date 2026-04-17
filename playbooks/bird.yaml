@@ -1,0 +1,14 @@
+---
+- name: BIRD Configuration
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - bird
+  roles:
+    - role: config-apt
+      tags:
+        - apt-preflight
+    - role: config-bird
+      tags:
+        - bird

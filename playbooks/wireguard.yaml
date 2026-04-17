@@ -1,0 +1,14 @@
+---
+- name: WireGuard Configuration
+  hosts: nodes
+  become: true
+  gather_facts: true
+  tags:
+    - wireguard
+  roles:
+    - role: config-apt
+      tags:
+        - apt-preflight
+    - role: config-wireguard
+      tags:
+        - wireguard

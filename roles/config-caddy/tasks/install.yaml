@@ -1,0 +1,96 @@
+---
+- name: Fetch Caddy GPG key
+  ansible.builtin.uri:
+    url: "{{ caddy_repo_key_url }}"
+    return_content: true
+  register: caddy_repo_key_response
+  changed_when: false
+
+- name: Check current armored Caddy GPG key
+  ansible.builtin.stat:
+    path: "{{ caddy_repo_key_asc_path }}"
+    checksum_algorithm: sha256
+  register: caddy_repo_key_asc_stat
+
+- name: Check current dearmored Caddy GPG key
+  ansible.builtin.stat:
+    path: "{{ caddy_repo_key_path }}"
+  register: caddy_repo_key_stat
+
+- name: Update armored Caddy GPG key
+  ansible.builtin.copy:
+    content: "{{ caddy_repo_key_response.content }}"
+    dest: "{{ caddy_repo_key_asc_path }}"
+    mode: "0644"
+  register: caddy_repo_key_copy
+  when:
+    - not caddy_repo_key_asc_stat.stat.exists
+      or caddy_repo_key_asc_stat.stat.checksum !=
+      (caddy_repo_key_response.content | hash('sha256'))
+
+- name: Dearmor Caddy GPG key
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --dearmor
+      - --yes
+      - --output
+      - "{{ caddy_repo_key_path }}"
+      - "{{ caddy_repo_key_asc_path }}"
+  when:
+    - caddy_repo_key_copy is changed
+      or not caddy_repo_key_stat.stat.exists
+
+- name: Add Caddy repository
+  ansible.builtin.apt_repository:
+    repo: "{{ caddy_repo }}"
+    state: present
+    filename: "{{ caddy_repo_filename }}"
+
+- name: Install Caddy package
+  ansible.builtin.apt:
+    name: "{{ caddy_packages }}"
+    state: present
+    update_cache: true
+
+- name: Check automation user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ automation_user }}"
+  register: caddy_automation_user_getent
+  failed_when: false
+
+- name: Add automation user to caddy group
+  ansible.builtin.user:
+    name: "{{ automation_user }}"
+    groups:
+      - caddy
+    append: true
+  when: automation_user in (caddy_automation_user_getent.ansible_facts.getent_passwd | default({}))
+
+- name: Download DN42 CA root certificate
+  ansible.builtin.get_url:
+    url: https://ca.dn42/crt/root-ca.crt
+    dest: /usr/local/share/ca-certificates/dn42-ca.crt
+    mode: "0644"
+    force: false
+    validate_certs: false
+  notify:
+    - Update CA certificates
+    - Restart caddy
+
+- name: Create SSL directory
+  ansible.builtin.file:
+    path: /etc/caddy/ssl
+    state: directory
+    owner: caddy
+    group: caddy
+    mode: "0755"
+
+- name: Create Caddy conf.d directory
+  ansible.builtin.file:
+    path: /etc/caddy/conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"

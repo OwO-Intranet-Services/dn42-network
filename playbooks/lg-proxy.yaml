@@ -1,0 +1,38 @@
+---
+- name: Build Looking Glass Proxy Artifact
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    repository_root_dir: "{{ playbook_dir | dirname }}"
+    artifacts_root_dir: "{{ (playbook_dir | dirname) ~ '/.artifacts' }}"
+  tags:
+    - build
+    - lg
+    - lg-proxy
+  roles:
+    - role: build-lg-artifacts
+      tags:
+        - build
+        - lg
+        - lg-proxy
+      vars:
+        lg_artifacts_packages:
+          - name: proxy
+            cargo_package: proxy
+
+- name: Looking Glass Proxy
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - lg
+    - lg-proxy
+  roles:
+    - role: config-apt
+      tags:
+        - apt-preflight
+    - role: config-lg-proxy
+      tags:
+        - lg
+        - lg-proxy
