@@ -16,3 +16,13 @@ protocol rpki roa_dn42_{{ loop.index }} {
 {% else %}
 # No RPKI servers configured
 {% endif %}
+
+{# TODO #}
+protocol rpki roa_dn42_flap {
+    roa4 { table dn42_roa_flap_4; };
+    roa6 { table dn42_roa_flap_6; };
+    remote "rpki.nia.dn42" port 8083;
+    retry keep 120;
+    refresh keep 300;
+    expire keep 600;
+}

@@ -19,6 +19,7 @@
 	'shared_secret': (lg_shared_secret | default(None)),
 	'traceroute_bin': (lg_proxy_traceroute_bin | default('/usr/sbin/traceroute')),
 	'traceroute_args': (lg_proxy_traceroute_args | default('-q1 -N32 -w2')),
+    "ping_bin": (lg_proxy_ping_bin | default('/bin/ping')),
 	'peering': {
 		'ipv4': (ownip | mandatory),
 		'ipv6': (ownip6 | mandatory),

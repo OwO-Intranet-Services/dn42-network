@@ -11,15 +11,19 @@ protocol bgp {{ peer_name }} from dnpeers {
     enable extended messages on;
     neighbor {{ item.wg.peer6 }} as {{ item.bgp.asn }};
     interface "{{ peer_name }}";
+{%   if item.bgp.get('ipv4', true) %}
     ipv4 {
         extended next hop {{ extended_next_hop_switch }};
         import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
         export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
     };
+{%   endif %}
+{%   if item.bgp.get('ipv6', true) %}
     ipv6 {
         import where dn42_import_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
         export where dn42_export_filter({{ latency }}, {{ bandwidth }}, {{ encryption }});
     };
+{%   endif %}
 }
 {% else %}
 
