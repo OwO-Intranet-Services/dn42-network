@@ -12,6 +12,10 @@ network_contacts:
 
 ownnet4: 172.21.111.64/26
 ownnet6: fd42:4242:1023::/48
+ownnet4_extra:
+  - 172.23.41.80/28
+ownnet6_extra:
+  - fd32:3940:2738::/48
 
 automation_user: dn42-automation
 automation_root_dir: /opt/dn42
