@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ipaddress
+import re
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +11,8 @@ from yaml.nodes import MappingNode, ScalarNode, SequenceNode
 PEER_KEY_ORDER = ("comment", "wg", "bgp", "removed")
 WG_KEY_ORDER = ("port", "endpoint", "wg_pubkey", "psk", "peer4", "peer6", "own6", "keepalive", "mtu")
 BGP_KEY_ORDER = ("asn", "ipv4", "ipv6", "extended_next_hop", "mp_bgp")
+BASE64_LIKE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
+HOSTNAME_LABEL_RE = re.compile(r"^[A-Za-z0-9-]{1,63}$")
 
 
 class TaggedScalar(str):
@@ -163,6 +167,156 @@ def _normalize_known_value(mapping: dict[str, Any], key: str, default: Any) -> A
     return normalized_value
 
 
+def _peer_label(asn: int) -> str:
+    return f"peer AS{asn}"
+
+
+def _require_bool(value: Any, *, field: str, peer_label: str) -> bool:
+    if not isinstance(value, bool):
+        raise ValueError(f"{peer_label} has invalid {field}: expected boolean")
+    return value
+
+
+def _require_port(value: Any, *, field: str, peer_label: str) -> int:
+    port = _coerce_int(value)
+    if port is None or not 1 <= port <= 65535:
+        raise ValueError(f"{peer_label} has invalid {field}: expected integer in range 1-65535")
+    return port
+
+
+def _require_optional_port(value: Any, *, field: str, peer_label: str) -> None:
+    if value is None:
+        return
+    _require_port(value, field=field, peer_label=peer_label)
+
+
+def _require_endpoint(value: Any, *, peer_label: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{peer_label} has invalid wg.endpoint: expected host:port string")
+
+    endpoint = value.strip()
+    if endpoint.startswith("["):
+        closing = endpoint.find("]")
+        if closing == -1 or closing == 1 or closing + 2 > len(endpoint) or endpoint[closing + 1] != ":":
+            raise ValueError(f"{peer_label} has invalid wg.endpoint: expected [ipv6]:port")
+        host = endpoint[1:closing]
+        port_text = endpoint[closing + 2 :]
+    else:
+        if endpoint.count(":") != 1:
+            raise ValueError(f"{peer_label} has invalid wg.endpoint: expected host:port")
+        host, port_text = endpoint.rsplit(":", 1)
+
+    _require_port(port_text, field="wg.endpoint port", peer_label=peer_label)
+    _require_endpoint_host(host, peer_label=peer_label)
+    return endpoint
+
+
+def _require_endpoint_host(host: str, *, peer_label: str) -> None:
+    if not host:
+        raise ValueError(f"{peer_label} has invalid wg.endpoint: missing host")
+
+    try:
+        ipaddress.ip_address(host)
+        return
+    except ValueError:
+        pass
+
+    labels = host.split(".")
+    if len(labels) < 2:
+        raise ValueError(
+            f"{peer_label} has invalid wg.endpoint: host must be an IP address or dotted hostname"
+        )
+    if len(host) > 253:
+        raise ValueError(f"{peer_label} has invalid wg.endpoint: hostname is too long")
+
+    for label in labels:
+        if not HOSTNAME_LABEL_RE.fullmatch(label) or label.startswith("-") or label.endswith("-"):
+            raise ValueError(f"{peer_label} has invalid wg.endpoint: malformed hostname label {label!r}")
+
+
+def _require_wg_public_key(value: Any, *, peer_label: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{peer_label} has invalid wg.wg_pubkey: expected non-empty string")
+
+    key = value.strip()
+    if not BASE64_LIKE_RE.fullmatch(key):
+        raise ValueError(f"{peer_label} has invalid wg.wg_pubkey: expected base64-like string")
+    return key
+
+
+def _require_optional_ipv4(value: Any, *, field: str, peer_label: str) -> None:
+    if value is None:
+        return
+    if not isinstance(value, str):
+        raise ValueError(f"{peer_label} has invalid {field}: expected IPv4 string")
+
+    try:
+        address = ipaddress.IPv4Address(value)
+    except ipaddress.AddressValueError as exc:
+        raise ValueError(f"{peer_label} has invalid {field}: not a valid IPv4 address") from exc
+
+    if address.is_unspecified:
+        raise ValueError(f"{peer_label} has invalid {field}: unspecified IPv4 address is not allowed")
+
+
+def _require_ipv6(value: Any, *, field: str, peer_label: str) -> ipaddress.IPv6Address:
+    if not isinstance(value, str):
+        raise ValueError(f"{peer_label} has invalid {field}: expected IPv6 string")
+
+    try:
+        address = ipaddress.IPv6Address(value)
+    except ipaddress.AddressValueError as exc:
+        raise ValueError(f"{peer_label} has invalid {field}: not a valid IPv6 address") from exc
+
+    if address.is_unspecified:
+        raise ValueError(f"{peer_label} has invalid {field}: unspecified IPv6 address is not allowed")
+    if address.is_multicast:
+        raise ValueError(f"{peer_label} has invalid {field}: multicast IPv6 address is not allowed")
+    return address
+
+
+def _require_optional_link_local_ipv6(value: Any, *, field: str, peer_label: str) -> None:
+    if value is None:
+        return
+    address = _require_ipv6(value, field=field, peer_label=peer_label)
+    if not address.is_link_local:
+        raise ValueError(f"{peer_label} has invalid {field}: expected link-local IPv6 address")
+
+
+def _validate_wg_settings(wg: dict[str, Any], *, asn: int, removed: bool) -> None:
+    peer_label = _peer_label(asn)
+
+    if not removed:
+        _require_port(wg.get("port", default_peer_port(asn)), field="wg.port", peer_label=peer_label)
+        _require_endpoint(wg.get("endpoint"), peer_label=peer_label)
+        _require_wg_public_key(wg.get("wg_pubkey"), peer_label=peer_label)
+        _require_ipv6(wg.get("peer6"), field="wg.peer6", peer_label=peer_label)
+
+    _require_optional_ipv4(wg.get("peer4"), field="wg.peer4", peer_label=peer_label)
+    _require_optional_link_local_ipv6(wg.get("own6"), field="wg.own6", peer_label=peer_label)
+    _require_optional_port(wg.get("keepalive"), field="wg.keepalive", peer_label=peer_label)
+
+    mtu = wg.get("mtu")
+    if mtu is not None:
+        mtu_value = _coerce_int(mtu)
+        if mtu_value is None or not 576 <= mtu_value <= 65535:
+            raise ValueError(f"{peer_label} has invalid wg.mtu: expected integer in range 576-65535")
+
+
+def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> None:
+    peer_label = _peer_label(asn)
+    ipv4 = _require_bool(bgp.get("ipv4", True), field="bgp.ipv4", peer_label=peer_label)
+    ipv6 = _require_bool(bgp.get("ipv6", True), field="bgp.ipv6", peer_label=peer_label)
+    _require_bool(
+        bgp.get("extended_next_hop", True),
+        field="bgp.extended_next_hop",
+        peer_label=peer_label,
+    )
+    _require_bool(bgp.get("mp_bgp", True), field="bgp.mp_bgp", peer_label=peer_label)
+    if not ipv4 and not ipv6:
+        raise ValueError(f"{peer_label} must enable at least one address family")
+
+
 def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(peer, dict):
         raise ValueError("peer entry must be a mapping")
@@ -180,6 +334,9 @@ def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(wg, dict) and not removed:
         raise ValueError(f"active peer AS{asn} is missing wg mapping")
     raw_wg = wg if isinstance(wg, dict) else {}
+
+    _validate_wg_settings(raw_wg, asn=asn, removed=removed)
+    _validate_bgp_settings(bgp, asn=asn)
 
     normalized_peer: dict[str, Any] = {}
 

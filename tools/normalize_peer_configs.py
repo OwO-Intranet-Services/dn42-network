@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
+
+import yaml
 
 try:
     from tools.peer_config import dump_peer_yaml, load_peer_yaml_file, normalize_peer_file_data
@@ -39,16 +42,25 @@ def iter_peer_paths(paths: list[Path]) -> list[Path]:
 def main() -> int:
     args = parse_args()
     changed_paths: list[Path] = []
+    invalid = False
 
     for path in iter_peer_paths(args.paths):
-        original = path.read_text(encoding="utf-8")
-        normalized = dump_peer_yaml(normalize_peer_file_data(load_peer_yaml_file(path)))
+        try:
+            original = path.read_text(encoding="utf-8")
+            normalized = dump_peer_yaml(normalize_peer_file_data(load_peer_yaml_file(path)))
+        except (ValueError, yaml.YAMLError) as exc:
+            print(f"{path.as_posix()}: {exc}", file=sys.stderr)
+            invalid = True
+            continue
         if normalized == original:
             continue
 
         changed_paths.append(path)
         if not args.check:
             path.write_text(normalized, encoding="utf-8")
+
+    if invalid:
+        return 1
 
     if args.check and changed_paths:
         for path in changed_paths:
