@@ -1,0 +1,8 @@
+---
+- name: Create autopeer frontend directory
+  ansible.builtin.file:
+    path: "{{ autopeer_frontend_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"

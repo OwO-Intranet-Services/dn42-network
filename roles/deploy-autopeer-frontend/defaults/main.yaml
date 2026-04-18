@@ -1,0 +1,3 @@
+---
+autopeer_frontend_root: "/var/www/html/{{ lg_autopeer_domain }}"
+autopeer_frontend_tarball_path: "{{ artifacts_root_dir }}/autopeer-frontend/site.tar.gz"

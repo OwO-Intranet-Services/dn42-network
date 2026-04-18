@@ -16,6 +16,12 @@
         - build
         - websites
         - network-site
+    - role: build-autopeer-frontend
+      tags:
+        - build
+        - websites
+        - autopeer
+        - autopeer-frontend
 
 - name: Deploy Network Site
   hosts: anycast
@@ -29,6 +35,21 @@
       tags:
         - websites
         - network-site
+
+- name: Deploy Autopeer Frontend
+  hosts: autopeer_frontend
+  become: true
+  gather_facts: true
+  tags:
+    - websites
+    - autopeer
+    - autopeer-frontend
+  roles:
+    - role: deploy-autopeer-frontend
+      tags:
+        - websites
+        - autopeer
+        - autopeer-frontend
 
 - name: Configure Caddy Websites
   hosts: nodes

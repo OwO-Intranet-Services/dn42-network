@@ -16,7 +16,18 @@
     path: "{{ network_site_tarball_path }}"
   register: network_site_tarball
 
-- name: Read last built commit hash for frontend
+- name: Build network site input signature
+  ansible.builtin.set_fact:
+    network_site_build_signature: >-
+      {{ {
+        'source_commit': network_site_current_commit.stdout,
+        'backend_url': network_site_backend_url,
+        'autopeer_url': network_site_autopeer_url,
+        'autopeer_site_url': network_site_autopeer_site_url,
+        'username': network_site_build_username,
+      } | to_json }}
+
+- name: Read last network site build signature
   ansible.builtin.slurp:
     src: "{{ network_site_commit_stamp }}"
   register: network_site_last_commit
@@ -27,7 +38,7 @@
     network_site_build_needed: >-
       {{
         (not network_site_commit_stamp_stat.stat.exists) or
-        ((network_site_last_commit.content | default('') | b64decode | trim) != network_site_current_commit.stdout) or
+        ((network_site_last_commit.content | default('') | b64decode | trim) != network_site_build_signature) or
         (not network_site_tarball.stat.exists)
       }}
 
@@ -38,11 +49,20 @@
   block:
     - name: Run frontend build script
       ansible.builtin.command:
-        cmd: >-
-          {{ network_site_build_workspace }}/build.sh
-          --backend-url {{ network_site_backend_url }}
-          --username {{ network_site_build_username }}
-          --output {{ network_site_dist_dir }}
+        argv:
+          - "{{ network_site_build_workspace }}/build.sh"
+          - --backend-url
+          - "{{ network_site_backend_url }}"
+          - --autopeer-url
+          - "{{ network_site_autopeer_url }}"
+          - --autopeer-site-url
+          - "{{ network_site_autopeer_site_url }}"
+          - --username
+          - "{{ network_site_build_username }}"
+          - --output
+          - "{{ network_site_dist_dir }}"
+      environment:
+        NO_COLOR: "true"
       changed_when: true
 
     - name: Compress network site assets # noqa: command-instead-of-module
@@ -50,9 +70,9 @@
         cmd: tar czf {{ network_site_tarball_path }} -C {{ network_site_dist_dir }} .
       changed_when: true
 
-    - name: Save current commit hash for frontend
+    - name: Save network site build signature
       ansible.builtin.copy:
-        content: "{{ network_site_current_commit.stdout }}"
+        content: "{{ network_site_build_signature }}"
         dest: "{{ network_site_commit_stamp }}"
         mode: "0644"
 

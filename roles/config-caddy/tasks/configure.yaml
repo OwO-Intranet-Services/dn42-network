@@ -71,6 +71,17 @@
           {%- endif -%}
         {%- endfor -%}
       {%- endif -%}
+      {%- if inventory_hostname in groups.get('autopeer_frontend', []) -%}
+        {%- set _ = res.append({
+          'name': 'autopeer-' + inventory_hostname,
+          'server_name': lg_autopeer_domain,
+          'type': 'autopeer-site',
+          'dn42_cert': true,
+          'root': '/var/www/html/' ~ lg_autopeer_domain,
+          'backend_upstream': lg_autopeer_backend_url,
+          'backend_host': lg_autopeer_backend_host
+        }) -%}
+      {%- endif -%}
       {%- if inventory_hostname in groups.get(anycast_group, []) -%}
         {%- set network_site = {
           'name': 'network-iris-dn42',

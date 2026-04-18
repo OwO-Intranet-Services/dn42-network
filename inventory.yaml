@@ -91,6 +91,10 @@ all:
       hosts:
         lax-01:
 
+    autopeer_frontend:
+      hosts:
+        lax-01:
+
     flapalerted:
       hosts:
         ams-01:

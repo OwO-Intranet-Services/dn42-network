@@ -1,0 +1,8 @@
+---
+- name: Prepare autopeer frontend artifact directories
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Build autopeer frontend artifact
+  ansible.builtin.include_tasks:
+    file: configure.yaml

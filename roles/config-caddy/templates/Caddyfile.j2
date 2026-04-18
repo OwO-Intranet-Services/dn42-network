@@ -42,10 +42,35 @@
     }
     {% elif site.type == 'network-site' %}
     root * {{ site.root }}
-    
+
     handle /visitor-info {
         header Content-Type application/json
         respond `{"node": "{{ inventory_hostname }}", "ip": "{remote_host}"}` 200
+    }
+
+    handle {
+        file_server
+        try_files {path} {path}/ /index.html
+    }
+    {% elif site.type == 'autopeer-site' %}
+    root * {{ site.root }}
+
+    handle /v1/* {
+        reverse_proxy {{ site.backend_upstream }} {
+            header_up Host {{ site.backend_host }}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle /health {
+        reverse_proxy {{ site.backend_upstream }} {
+            header_up Host {{ site.backend_host }}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 
     handle {

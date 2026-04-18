@@ -1,0 +1,6 @@
+---
+autopeer_frontend_artifacts_root: "{{ artifacts_root_dir }}/autopeer-frontend"
+autopeer_frontend_build_workspace: "{{ repository_root_dir }}/bird-lg-rs/autopeer"
+autopeer_frontend_dist_dir: "{{ autopeer_frontend_artifacts_root }}/dist"
+autopeer_frontend_tarball_path: "{{ autopeer_frontend_artifacts_root }}/site.tar.gz"
+autopeer_frontend_commit_stamp: "{{ autopeer_frontend_artifacts_root }}/last_build_commit"

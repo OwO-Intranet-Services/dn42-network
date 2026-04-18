@@ -1,0 +1,6 @@
+---
+- name: Ensure autopeer frontend artifact root exists
+  ansible.builtin.file:
+    path: "{{ autopeer_frontend_artifacts_root }}"
+    state: directory
+    mode: "0755"

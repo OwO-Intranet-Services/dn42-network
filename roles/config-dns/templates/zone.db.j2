@@ -44,6 +44,12 @@ $INCLUDE {{ dns_acme_challenge_include_path }}
 lg-proxy.{{ host }}.node  IN  CNAME  {{ hostvars[host].ansible_host }}.
 {%   endfor %}
 
+; Autopeer Frontend
+{%   if lg_autopeer_domain is defined and lg_autopeer_domain.endswith(domain_name) %}
+{{ lg_autopeer_domain | replace('.' + domain_name, '') }}  IN  A     {{ hostvars[lg_autopeer_frontend_host].ownip }}
+{{ lg_autopeer_domain | replace('.' + domain_name, '') }}  IN  AAAA  {{ hostvars[lg_autopeer_frontend_host].ownip6 }}
+{%   endif %}
+
 ; LG Server Domains
 {%   if lg_server_domains is defined %}
 {%     for domain in lg_server_domains %}
