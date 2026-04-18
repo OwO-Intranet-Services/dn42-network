@@ -6,12 +6,22 @@ on:
       - main
     paths:
       - host_vars/*/dn42_peers.yaml
+  workflow_dispatch:
+    inputs:
+      deploy_host:
+        description: Inventory host to deploy
+        required: true
+        type: string
+      peer_targets:
+        description: Peer names as JSON array or comma-separated list
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: peer-session-apply-main
+  group: peer-session-apply-${{ github.event_name == 'workflow_dispatch' && inputs.deploy_host || 'main' }}
   cancel-in-progress: false
 
 jobs:
@@ -38,27 +48,61 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install PyYAML
 
-      - name: Detect peer session changes
-        run: |
-          python3 tools/peer_session_diff.py \
-            --base-ref "${{ github.event.before }}" \
-            --head-ref "${{ github.sha }}" \
-            --json-output peer-session-report.json
-
       - name: Export deploy matrix
         id: export
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DEPLOY_HOST: ${{ inputs.deploy_host }}
+          PEER_TARGETS: ${{ inputs.peer_targets }}
         run: |
-          python3 - <<'PY'
-          import json
-          import os
+          if [ "$EVENT_NAME" = "push" ]; then
+            python3 tools/peer_session_diff.py \
+              --base-ref "${{ github.event.before }}" \
+              --head-ref "${{ github.sha }}" \
+              --json-output peer-session-report.json
 
-          with open("peer-session-report.json", "r", encoding="utf-8") as handle:
-              report = json.load(handle)
+            python3 - <<'PY'
+            import json
+            import os
 
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-              handle.write(f"has_changes={'true' if report['has_changes'] else 'false'}\n")
-              handle.write(f"deploy_matrix={json.dumps(report['deploy_matrix'])}\n")
-          PY
+            with open("peer-session-report.json", "r", encoding="utf-8") as handle:
+                report = json.load(handle)
+
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+                handle.write(f"has_changes={'true' if report['has_changes'] else 'false'}\n")
+                handle.write(f"deploy_matrix={json.dumps(report['deploy_matrix'])}\n")
+            PY
+          else
+            python3 - <<'PY'
+            import json
+            import os
+
+            deploy_host = os.environ["DEPLOY_HOST"].strip()
+            raw_targets = os.environ["PEER_TARGETS"].strip()
+            if not deploy_host:
+                raise SystemExit("deploy_host is required")
+
+            try:
+                parsed = json.loads(raw_targets)
+            except json.JSONDecodeError:
+                parsed = [item.strip() for item in raw_targets.split(",") if item.strip()]
+
+            if isinstance(parsed, str):
+                targets = [parsed]
+            elif isinstance(parsed, list):
+                targets = [str(item).strip() for item in parsed if str(item).strip()]
+            else:
+                raise SystemExit("peer_targets must be a JSON array, JSON string, or comma-separated list")
+
+            if not targets:
+                raise SystemExit("peer_targets must resolve to at least one peer")
+
+            deploy_matrix = [{"host": deploy_host, "targets": targets}]
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+                handle.write("has_changes=true\n")
+                handle.write(f"deploy_matrix={json.dumps(deploy_matrix)}\n")
+            PY
+          fi
 
   apply:
     needs: detect
