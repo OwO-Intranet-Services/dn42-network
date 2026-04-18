@@ -1,12 +1,12 @@
 peers:
-  - comment: highdef.network
+  - comment: 'highdef.network'
     wg:
       port: 21080
-      endpoint: yvr.peer.highdef.network:21023
-      wg_pubkey: "O4qWRgbJVdOM8ktyUQyT1s11WkR16JTgtnn42m9A2R8="
+      endpoint: 'yvr.peer.highdef.network:21023'
+      wg_pubkey: 'O4qWRgbJVdOM8ktyUQyT1s11WkR16JTgtnn42m9A2R8='
       psk: null
       peer4: null
-      peer6: fe80::1080:35
+      peer6: 'fe80::1080:35'
       own6: null
       keepalive: null
       mtu: null
@@ -16,14 +16,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Session Hikari
+  - comment: 'Session Hikari'
     wg:
       port: 22466
-      endpoint: ne-e2-goog.xhustudio.eu.org:21023
-      wg_pubkey: "laXweKmj2O3NEYYqcT69H9x2QKgnyjDGHOi305v3sUc="
+      endpoint: 'ne-e2-goog.xhustudio.eu.org:21023'
+      wg_pubkey: 'laXweKmj2O3NEYYqcT69H9x2QKgnyjDGHOi305v3sUc='
       psk: null
       peer4: null
-      peer6: fe80::164:2466
+      peer6: 'fe80::164:2466'
       own6: null
       keepalive: null
       mtu: 1380
@@ -35,12 +35,12 @@ peers:
       mp_bgp: true
   - wg:
       port: 20454
-      endpoint: dn42a.nedifinita.com:52381
-      wg_pubkey: "8EXT6zciVdil3Zg6dqB0YT2SssTh2OTKDeBBfrVGUkE="
+      endpoint: 'dn42a.nedifinita.com:52381'
+      wg_pubkey: '8EXT6zciVdil3Zg6dqB0YT2SssTh2OTKDeBBfrVGUkE='
       psk: null
       peer4: null
-      peer6: fe80::454
-      own6: fe80::1023:2
+      peer6: 'fe80::454'
+      own6: 'fe80::1023:2'
       keepalive: null
       mtu: 1420
     bgp:
@@ -51,5 +51,5 @@ peers:
       mp_bgp: true
     autopeer:
       managed: true
-      effective_mnt: NEDIFINITA-MNT
-      auth_provider: host_impersonation
+      effective_mnt: 'NEDIFINITA-MNT'
+      auth_provider: 'host_impersonation'

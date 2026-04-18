@@ -1,12 +1,12 @@
 peers:
-  - comment: factor2431
+  - comment: 'factor2431'
     wg:
       port: 21534
-      endpoint: jp-tyo.factor2431.com:21023
-      wg_pubkey: "XYyk/uk3LTHk7vOqtDsDh/AcPtdT3qQptqhggzZCRio="
+      endpoint: 'jp-tyo.factor2431.com:21023'
+      wg_pubkey: 'XYyk/uk3LTHk7vOqtDsDh/AcPtdT3qQptqhggzZCRio='
       psk: null
       peer4: null
-      peer6: fe80::1534
+      peer6: 'fe80::1534'
       own6: null
       keepalive: null
       mtu: null
@@ -16,15 +16,15 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: tech9
+  - comment: 'tech9'
     wg:
       port: 21588
-      endpoint: jp-tyo01.dn42.tech9.io:52923
-      wg_pubkey: "unTYSat5YjkY+BY31Q9xLSfFhTUBvn3CiDCSZxbINVM="
+      endpoint: 'jp-tyo01.dn42.tech9.io:52923'
+      wg_pubkey: 'unTYSat5YjkY+BY31Q9xLSfFhTUBvn3CiDCSZxbINVM='
       psk: null
       peer4: null
-      peer6: fe80::1588
-      own6: fe80::100
+      peer6: 'fe80::1588'
+      own6: 'fe80::100'
       keepalive: null
       mtu: null
     bgp:
@@ -33,14 +33,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: iyoroy
+  - comment: 'iyoroy'
     wg:
       port: 22024
-      endpoint: ipv4.tyo-jp.ecs.iyoroy-infra.top:21023
-      wg_pubkey: "Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4="
+      endpoint: 'ipv4.tyo-jp.ecs.iyoroy-infra.top:21023'
+      wg_pubkey: 'Sh62ZCxnEcXyLq49mLP1jF4C2vWKhKMxjtZHxVUAQg4='
       psk: null
       peer4: null
-      peer6: fe80::2024
+      peer6: 'fe80::2024'
       own6: null
       keepalive: null
       mtu: null
@@ -50,14 +50,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: iedon
+  - comment: 'iedon'
     wg:
       port: 22189
-      endpoint: jp-ty2.dn42.iedon.net:57739
-      wg_pubkey: "XjKsLfOYJ8y/U9saLpfM/MjXErlQ7gkw3+OgQTdVZ0U="
+      endpoint: 'jp-ty2.dn42.iedon.net:57739'
+      wg_pubkey: 'XjKsLfOYJ8y/U9saLpfM/MjXErlQ7gkw3+OgQTdVZ0U='
       psk: null
       peer4: null
-      peer6: fe80::2189:115
+      peer6: 'fe80::2189:115'
       own6: null
       keepalive: null
       mtu: null
@@ -67,14 +67,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: lare
+  - comment: 'lare'
     wg:
       port: 23035
-      endpoint: jp01.dn42.lare.cc:21023
-      wg_pubkey: "oTPdRylNhX2O80e6rLejT9Fwzo7KWKZ7a3PUF4G9oEM="
+      endpoint: 'jp01.dn42.lare.cc:21023'
+      wg_pubkey: 'oTPdRylNhX2O80e6rLejT9Fwzo7KWKZ7a3PUF4G9oEM='
       psk: null
       peer4: null
-      peer6: fe80::3035:134
+      peer6: 'fe80::3035:134'
       own6: null
       keepalive: null
       mtu: null
@@ -85,14 +85,14 @@ peers:
       extended_next_hop: true
       mp_bgp: true
     removed: true
-  - comment: cowgl
+  - comment: 'cowgl'
     wg:
       port: 23999
-      endpoint: tyo.node.cowgl.xyz:31023
-      wg_pubkey: "mMGGxtEqsagrx1Raw57C2H3Stl6ch/cUuF7y08eVgBE="
+      endpoint: 'tyo.node.cowgl.xyz:31023'
+      wg_pubkey: 'mMGGxtEqsagrx1Raw57C2H3Stl6ch/cUuF7y08eVgBE='
       psk: null
       peer4: null
-      peer6: fe80::1:3999
+      peer6: 'fe80::1:3999'
       own6: null
       keepalive: null
       mtu: null
@@ -102,14 +102,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Stevie
+  - comment: 'Stevie'
     wg:
       port: 20337
-      endpoint: tyo01.dn42.wwrr.ru:21023
-      wg_pubkey: "xZBEeAO1btrRvU7cpXTBqaw8CZsmxrfB0005OgljtmU="
+      endpoint: 'tyo01.dn42.wwrr.ru:21023'
+      wg_pubkey: 'xZBEeAO1btrRvU7cpXTBqaw8CZsmxrfB0005OgljtmU='
       psk: null
       peer4: null
-      peer6: fe80::337
+      peer6: 'fe80::337'
       own6: null
       keepalive: null
       mtu: null
@@ -119,14 +119,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: qiuxin
+  - comment: 'qiuxin'
     wg:
       port: 21771
-      endpoint: tyo1.exploro.one:32619
-      wg_pubkey: "MhxNjov4q8GjBFhDhSX4G8Zzx7/w4qbWw2RQSU5JDTU="
+      endpoint: 'tyo1.exploro.one:32619'
+      wg_pubkey: 'MhxNjov4q8GjBFhDhSX4G8Zzx7/w4qbWw2RQSU5JDTU='
       psk: null
       peer4: null
-      peer6: fe80::1771
+      peer6: 'fe80::1771'
       own6: null
       keepalive: null
       mtu: null
@@ -136,14 +136,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: mhr
+  - comment: 'mhr'
     wg:
       port: 22279
-      endpoint: jp-nrt1.bb.mhr.hk:21023
-      wg_pubkey: "Bt0gmHMrBBCgV8/k7n8ykA31YStGc55xmyLgMyB04E0="
+      endpoint: 'jp-nrt1.bb.mhr.hk:21023'
+      wg_pubkey: 'Bt0gmHMrBBCgV8/k7n8ykA31YStGc55xmyLgMyB04E0='
       psk: null
       peer4: null
-      peer6: fe80::2279
+      peer6: 'fe80::2279'
       own6: null
       keepalive: null
       mtu: null
@@ -153,14 +153,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: sun
+  - comment: 'sun'
     wg:
       port: 23088
-      endpoint: v6.tyo1-jp.dn42.6700.cc:21023
-      wg_pubkey: "b3gUz8an2+wSCvXAwuxGR7AnxKDUqqQMd1+LASo93R0="
+      endpoint: 'v6.tyo1-jp.dn42.6700.cc:21023'
+      wg_pubkey: 'b3gUz8an2+wSCvXAwuxGR7AnxKDUqqQMd1+LASo93R0='
       psk: null
       peer4: null
-      peer6: fe80::3088:190
+      peer6: 'fe80::3088:190'
       own6: null
       keepalive: null
       mtu: null
@@ -170,14 +170,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: highdef.network
+  - comment: 'highdef.network'
     wg:
       port: 21080
-      endpoint: tyo.peer.highdef.network:21023
-      wg_pubkey: "iJXjwJGGrUTQy/P3OXmZ5lM4cjrDAd9K+vonZVUZjxY="
+      endpoint: 'tyo.peer.highdef.network:21023'
+      wg_pubkey: 'iJXjwJGGrUTQy/P3OXmZ5lM4cjrDAd9K+vonZVUZjxY='
       psk: null
       peer4: null
-      peer6: fe80::124
+      peer6: 'fe80::124'
       own6: null
       keepalive: null
       mtu: null
@@ -187,14 +187,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Nisbett
+  - comment: 'Nisbett'
     wg:
       port: 20398
-      endpoint: nrt.dn42.boletus.icu:21023
-      wg_pubkey: "QQecM/0eCbRu5TNdyRxGpJTCo6aGolMb0kZAqLH5Oho="
+      endpoint: 'nrt.dn42.boletus.icu:21023'
+      wg_pubkey: 'QQecM/0eCbRu5TNdyRxGpJTCo6aGolMb0kZAqLH5Oho='
       psk: null
       peer4: null
-      peer6: fe80::398
+      peer6: 'fe80::398'
       own6: null
       keepalive: null
       mtu: null
@@ -204,11 +204,11 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: HExpNetwork
+  - comment: 'HExpNetwork'
     wg:
       port: 20298
-      endpoint: node5.ox5.cc:21023
-      wg_pubkey: "uGBAVsIQNZumBm7hb4l0cvCx3a2diQCUdb/o/PJPyis="
+      endpoint: 'node5.ox5.cc:21023'
+      wg_pubkey: 'uGBAVsIQNZumBm7hb4l0cvCx3a2diQCUdb/o/PJPyis='
       psk: !vault |
         $ANSIBLE_VAULT;1.1;AES256
         34303835663737333430313565323430663666353966633131323930633435663361356237613934
@@ -218,7 +218,7 @@ peers:
         66363632396261396436353861356432366331313663393963313037313939343930333139376539
         3739386636643532663433623238373630353337363236323931
       peer4: null
-      peer6: fe80::298
+      peer6: 'fe80::298'
       own6: null
       keepalive: null
       mtu: null
@@ -228,14 +228,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: yuyuko
+  - comment: 'yuyuko'
     wg:
       port: 21117
-      endpoint: jp01.dn42.yuyuko.com:21023
-      wg_pubkey: "vZXB25Od9elWU4RKWp42MWNJrNtxJFgdmBkyYH/8Sj8="
+      endpoint: 'jp01.dn42.yuyuko.com:21023'
+      wg_pubkey: 'vZXB25Od9elWU4RKWp42MWNJrNtxJFgdmBkyYH/8Sj8='
       psk: null
       peer4: null
-      peer6: fe80::1117
+      peer6: 'fe80::1117'
       own6: null
       keepalive: null
       mtu: null
@@ -245,14 +245,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Minty
+  - comment: 'Minty'
     wg:
       port: 22172
-      endpoint: jp.nodes.stella.observer:4242
-      wg_pubkey: "Cbefg96Owv1Xk/jrUExO3i5OeUSlsdirv4ONenEnNXc="
+      endpoint: 'jp.nodes.stella.observer:4242'
+      wg_pubkey: 'Cbefg96Owv1Xk/jrUExO3i5OeUSlsdirv4ONenEnNXc='
       psk: null
-      peer4: 172.20.193.67
-      peer6: fd55:dead:beef::3
+      peer4: '172.20.193.67'
+      peer6: 'fd55:dead:beef::3'
       own6: null
       keepalive: null
       mtu: null
@@ -262,14 +262,14 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: true
-  - comment: RoutedBits
+  - comment: 'RoutedBits'
     wg:
       port: 20207
-      endpoint: router.tyo1.routedbits.com:51023
-      wg_pubkey: "Urnj0In2/ba5zBJ0+TvGN6/A3JFXZwWfJ3EVkc5A4Cs="
+      endpoint: 'router.tyo1.routedbits.com:51023'
+      wg_pubkey: 'Urnj0In2/ba5zBJ0+TvGN6/A3JFXZwWfJ3EVkc5A4Cs='
       psk: null
       peer4: null
-      peer6: fe80::207
+      peer6: 'fe80::207'
       own6: null
       keepalive: null
       mtu: null
@@ -279,14 +279,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: moraxyc
+  - comment: 'moraxyc'
     wg:
       port: 23011
-      endpoint: jp2.dn42.moraxyc.com:21023
-      wg_pubkey: "5Sq33dQ6Hox8lpda0wve08scNBc7BSDjaP4EPYKjdVk="
+      endpoint: 'jp2.dn42.moraxyc.com:21023'
+      wg_pubkey: '5Sq33dQ6Hox8lpda0wve08scNBc7BSDjaP4EPYKjdVk='
       psk: null
       peer4: null
-      peer6: fe80::3011
+      peer6: 'fe80::3011'
       own6: null
       keepalive: null
       mtu: null
@@ -296,14 +296,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: launchpadx
+  - comment: 'launchpadx'
     wg:
       port: 23702
-      endpoint: iij.s.launchpadx.top:51023
-      wg_pubkey: "G5v93xQO15JtNMKJehB2HFMB/ACX0ec6u6EUFbKblBY="
+      endpoint: 'iij.s.launchpadx.top:51023'
+      wg_pubkey: 'G5v93xQO15JtNMKJehB2HFMB/ACX0ec6u6EUFbKblBY='
       psk: null
       peer4: null
-      peer6: fe80::3702
+      peer6: 'fe80::3702'
       own6: null
       keepalive: null
       mtu: null
@@ -313,14 +313,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: MoonWX
+  - comment: 'MoonWX'
     wg:
       port: 20985
-      endpoint: dn42.jp01.moonwx.net:21023
-      wg_pubkey: "bRDjdLlbPExg+q4Sqr+fCKYeHiMfIiTKCk6GolVXKho="
+      endpoint: 'dn42.jp01.moonwx.net:21023'
+      wg_pubkey: 'bRDjdLlbPExg+q4Sqr+fCKYeHiMfIiTKCk6GolVXKho='
       psk: null
       peer4: null
-      peer6: fe80::985:4
+      peer6: 'fe80::985:4'
       own6: null
       keepalive: null
       mtu: null
@@ -330,14 +330,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: cloudc
+  - comment: 'cloudc'
     wg:
       port: 23777
-      endpoint: jp.cloudc.dev:21023
-      wg_pubkey: "TRsJBPvVUXBCDuiBDwte+YCbkjkIglfVm+M5NxOFfwk="
+      endpoint: 'jp.cloudc.dev:21023'
+      wg_pubkey: 'TRsJBPvVUXBCDuiBDwte+YCbkjkIglfVm+M5NxOFfwk='
       psk: null
       peer4: null
-      peer6: fe80::3777
+      peer6: 'fe80::3777'
       own6: null
       keepalive: null
       mtu: null
@@ -347,14 +347,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: BingxinBaka
+  - comment: 'BingxinBaka'
     wg:
       port: 23374
-      endpoint: jp01.dn42.baka.pub:21023
-      wg_pubkey: "N7iQzqWLPb6lpRlf7grQG6rEzQOvDZWkmsRDkRnniH0="
+      endpoint: 'jp01.dn42.baka.pub:21023'
+      wg_pubkey: 'N7iQzqWLPb6lpRlf7grQG6rEzQOvDZWkmsRDkRnniH0='
       psk: null
       peer4: null
-      peer6: fe80::2999:226
+      peer6: 'fe80::2999:226'
       own6: null
       keepalive: null
       mtu: null
@@ -364,14 +364,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: imlonghao
+  - comment: 'imlonghao'
     wg:
       port: 21888
-      endpoint: jp1.dn42.ni.sb:21023
-      wg_pubkey: "HND/VBClYdfCqAKGFmapwqOxg/KluPcv2u30rjD8+gk="
+      endpoint: 'jp1.dn42.ni.sb:21023'
+      wg_pubkey: 'HND/VBClYdfCqAKGFmapwqOxg/KluPcv2u30rjD8+gk='
       psk: null
       peer4: null
-      peer6: fe80::1888
+      peer6: 'fe80::1888'
       own6: null
       keepalive: null
       mtu: null

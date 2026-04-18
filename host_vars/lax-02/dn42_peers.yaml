@@ -1,12 +1,12 @@
 peers:
-  - comment: cowgl
+  - comment: 'cowgl'
     wg:
       port: 23999
-      endpoint: lax.node.cowgl.xyz:31023
-      wg_pubkey: "jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg="
+      endpoint: 'lax.node.cowgl.xyz:31023'
+      wg_pubkey: 'jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg='
       psk: null
       peer4: null
-      peer6: fe80::2:3999
+      peer6: 'fe80::2:3999'
       own6: null
       keepalive: null
       mtu: null
@@ -16,14 +16,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: iedon
+  - comment: 'iedon'
     wg:
       port: 22189
-      endpoint: us-lax.dn42.iedon.net:41504
-      wg_pubkey: "DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA="
+      endpoint: 'us-lax.dn42.iedon.net:41504'
+      wg_pubkey: 'DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA='
       psk: null
       peer4: null
-      peer6: fe80::2189:ef
+      peer6: 'fe80::2189:ef'
       own6: null
       keepalive: null
       mtu: null
@@ -33,14 +33,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: iyoroy
+  - comment: 'iyoroy'
     wg:
       port: 21023
-      endpoint: lax-us.ecs.iyoroy-infra.top:21023
-      wg_pubkey: "As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU="
+      endpoint: 'lax-us.ecs.iyoroy-infra.top:21023'
+      wg_pubkey: 'As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU='
       psk: null
       peer4: null
-      peer6: fe80::2024
+      peer6: 'fe80::2024'
       own6: null
       keepalive: null
       mtu: null
@@ -50,11 +50,11 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: HExpNetwork
+  - comment: 'HExpNetwork'
     wg:
       port: 20298
-      endpoint: node3.ox5.cc:21023
-      wg_pubkey: "qIqq1s5f0OMr1h9bZ5sRSo3+z5VaCfpzlbI/MG+JdhU="
+      endpoint: 'node3.ox5.cc:21023'
+      wg_pubkey: 'qIqq1s5f0OMr1h9bZ5sRSo3+z5VaCfpzlbI/MG+JdhU='
       psk: !vault |
         $ANSIBLE_VAULT;1.1;AES256
         33356663316165663136353433663865373534393861393932323933333062356162346463326238
@@ -64,7 +64,7 @@ peers:
         65323366623463333661376135393536653531346235353861316531336436646638643637316630
         6239623734653333663863633161343633303937613261373638
       peer4: null
-      peer6: fe80::298
+      peer6: 'fe80::298'
       own6: null
       keepalive: null
       mtu: null
@@ -74,14 +74,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: qiuxin
+  - comment: 'qiuxin'
     wg:
       port: 21771
-      endpoint: lax1.exploro.one:32641
-      wg_pubkey: "Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E="
+      endpoint: 'lax1.exploro.one:32641'
+      wg_pubkey: 'Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E='
       psk: null
       peer4: null
-      peer6: fe80::1771
+      peer6: 'fe80::1771'
       own6: null
       keepalive: null
       mtu: null
@@ -91,14 +91,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: launchpadx
+  - comment: 'launchpadx'
     wg:
       port: 23702
-      endpoint: svz.s.launchpadx.top:51023
-      wg_pubkey: "VVQeVruKQ50/KTUo8k5PF3Y7mR4Jvro7j39pBRZMI28="
+      endpoint: 'svz.s.launchpadx.top:51023'
+      wg_pubkey: 'VVQeVruKQ50/KTUo8k5PF3Y7mR4Jvro7j39pBRZMI28='
       psk: null
       peer4: null
-      peer6: fe80::3702
+      peer6: 'fe80::3702'
       own6: null
       keepalive: null
       mtu: 1392
@@ -108,14 +108,14 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Maoyue
+  - comment: 'Maoyue'
     wg:
       port: 23942
-      endpoint: 192.161.163.236:21023
-      wg_pubkey: "vUtdpRO5g/sTLW005E8nZAMoYEkoJk9qU+aHIK2iYTM="
+      endpoint: '192.161.163.236:21023'
+      wg_pubkey: 'vUtdpRO5g/sTLW005E8nZAMoYEkoJk9qU+aHIK2iYTM='
       psk: null
       peer4: null
-      peer6: fe80::3942
+      peer6: 'fe80::3942'
       own6: null
       keepalive: null
       mtu: null
@@ -128,11 +128,11 @@ peers:
   - comment: '@Ykino233'
     wg:
       port: 23311
-      endpoint: node01-bgp.us.peakcomet.dpdns.org:21023
-      wg_pubkey: "fxtgu29lj4VqYPxNY0VJCKVin6sh5JTdqeU7x7ts92s="
+      endpoint: 'node01-bgp.us.peakcomet.dpdns.org:21023'
+      wg_pubkey: 'fxtgu29lj4VqYPxNY0VJCKVin6sh5JTdqeU7x7ts92s='
       psk: null
       peer4: null
-      peer6: fe80::3311
+      peer6: 'fe80::3311'
       own6: null
       keepalive: null
       mtu: null

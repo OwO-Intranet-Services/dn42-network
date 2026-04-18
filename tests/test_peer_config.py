@@ -46,6 +46,9 @@ class PeerConfigTests(unittest.TestCase):
         rendered = dump_peer_yaml(normalized)
 
         self.assertIn('port: 23914', rendered)
+        self.assertIn("comment: 'alpha'", rendered)
+        self.assertIn("endpoint: 'alpha.example:21023'", rendered)
+        self.assertIn("wg_pubkey: 'AAA='", rendered)
         self.assertIn('peer4: null', rendered)
         self.assertIn('own6: null', rendered)
         self.assertIn('keepalive: null', rendered)
@@ -60,6 +63,50 @@ class PeerConfigTests(unittest.TestCase):
         self.assertIn("ipv4: false", rendered)
         self.assertIn("extended_next_hop: false", rendered)
         self.assertIn("mp_bgp: false", rendered)
+        self.assertNotIn("'peers':", rendered)
+        self.assertNotIn("'comment':", rendered)
+
+    def test_dump_quotes_all_string_values_and_preserves_empty_strings(self) -> None:
+        rendered = dump_peer_yaml(
+            {
+                "peers": [
+                    {
+                        "comment": "@Auride",
+                        "wg": {
+                            "port": 23310,
+                            "endpoint": "",
+                            "wg_pubkey": "aC9pjzMWZhbA/sLPljUFGU1K28MSopHbKNj5yyv4uzg=",
+                            "psk": "",
+                            "peer4": "",
+                            "peer6": "fe80::1023:3310",
+                            "own6": "",
+                            "keepalive": "",
+                            "mtu": 1420,
+                        },
+                        "bgp": {
+                            "asn": 4242423310,
+                            "ipv4": True,
+                            "ipv6": True,
+                            "extended_next_hop": True,
+                            "mp_bgp": True,
+                        },
+                        "autopeer": {
+                            "managed": True,
+                            "effective_mnt": "YUZU-MNT",
+                            "auth_provider": "registry_pgp",
+                        },
+                    }
+                ]
+            }
+        )
+
+        self.assertIn("- comment: '@Auride'", rendered)
+        self.assertIn("endpoint: ''", rendered)
+        self.assertIn("wg_pubkey: 'aC9pjzMWZhbA/sLPljUFGU1K28MSopHbKNj5yyv4uzg='", rendered)
+        self.assertIn("peer4: ''", rendered)
+        self.assertIn("effective_mnt: 'YUZU-MNT'", rendered)
+        self.assertIn("auth_provider: 'registry_pgp'", rendered)
+        self.assertNotIn("'autopeer':", rendered)
 
 
 if __name__ == "__main__":
