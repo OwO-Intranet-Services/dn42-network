@@ -40,7 +40,7 @@ peers:
       psk: null
       peer4: null
       peer6: fe80::454
-      own6: fe80:1023::2
+      own6: fe80::1023:2
       keepalive: null
       mtu: 1420
     bgp:
