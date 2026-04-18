@@ -432,6 +432,10 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'NEDIFINITA-MNT'
+      auth_provider: 'migration'
   - comment: 'imlonghao'
     wg:
       port: 21888
