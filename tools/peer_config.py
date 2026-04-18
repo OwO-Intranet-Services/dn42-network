@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import Any
 
@@ -10,7 +9,6 @@ from yaml.nodes import MappingNode, ScalarNode, SequenceNode
 PEER_KEY_ORDER = ("comment", "wg", "bgp", "removed")
 WG_KEY_ORDER = ("port", "endpoint", "wg_pubkey", "psk", "peer4", "peer6", "own6", "keepalive", "mtu")
 BGP_KEY_ORDER = ("asn", "ipv4", "ipv6", "extended_next_hop", "mp_bgp")
-BASE64_LIKE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
 
 
 class TaggedScalar(str):
@@ -31,11 +29,46 @@ class PeerConfigLoader(yaml.SafeLoader):
 class PeerConfigDumper(yaml.SafeDumper):
     """Deterministic YAML dumper for peer configuration files."""
 
+    _representing_key = False
+
     def increase_indent(self, flow: bool = False, indentless: bool = False) -> Any:
         return super().increase_indent(flow, False)
 
     def ignore_aliases(self, data: Any) -> bool:
         return True
+
+    def represent_mapping(self, tag: str, mapping: Any, flow_style: bool | None = None) -> MappingNode:
+        value: list[tuple[yaml.Node, yaml.Node]] = []
+        node = MappingNode(tag, value, flow_style=flow_style)
+        if self.alias_key is not None:
+            self.represented_objects[self.alias_key] = node
+
+        best_style = True
+        if hasattr(mapping, "items"):
+            mapping = list(mapping.items())
+            if self.sort_keys:
+                try:
+                    mapping = sorted(mapping)
+                except TypeError:
+                    pass
+
+        for item_key, item_value in mapping:
+            self._representing_key = True
+            node_key = self.represent_data(item_key)
+            self._representing_key = False
+            node_value = self.represent_data(item_value)
+            if not (isinstance(node_key, ScalarNode) and node_key.style is None):
+                best_style = False
+            if not (isinstance(node_value, ScalarNode) and node_value.style is None):
+                best_style = False
+            value.append((node_key, node_value))
+
+        if flow_style is None:
+            if self.default_flow_style is not None:
+                node.flow_style = self.default_flow_style
+            else:
+                node.flow_style = best_style
+        return node
 
 
 def _construct_unknown_tag(loader: PeerConfigLoader, node: yaml.Node) -> Any:
@@ -57,7 +90,7 @@ def _represent_tagged_scalar(dumper: PeerConfigDumper, data: TaggedScalar) -> ya
 
 
 def _represent_string(dumper: PeerConfigDumper, data: str) -> yaml.Node:
-    style = '"' if BASE64_LIKE_RE.fullmatch(data) and any(char in data for char in "+/=") else None
+    style = None if dumper._representing_key else "'"
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
 
 
