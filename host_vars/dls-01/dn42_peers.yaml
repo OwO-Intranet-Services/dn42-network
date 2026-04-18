@@ -49,7 +49,6 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-    removed: true
     autopeer:
       managed: true
       effective_mnt: NEDIFINITA-MNT
