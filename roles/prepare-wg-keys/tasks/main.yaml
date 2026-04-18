@@ -19,8 +19,10 @@
   become: false
   ansible.builtin.shell:
     cmd: |
-      set -o pipefail
-      wg genkey | tee privatekey | wg pubkey > publickey
+      umask 077
+      private_key="$(wg genkey)"
+      printf '%s\n' "${private_key}" > privatekey
+      printf '%s\n' "${private_key}" | wg pubkey > publickey
     chdir: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
     creates: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
 
