@@ -1,0 +1,5 @@
+---
+lg_artifacts_root: "{{ artifacts_root_dir }}/lg"
+lg_build_workspace: "{{ repository_root_dir }}/bird-lg-rs"
+lg_build_target: x86_64-unknown-linux-musl
+lg_artifacts_packages: []

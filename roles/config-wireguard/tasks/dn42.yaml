@@ -21,7 +21,7 @@
       keepalive: "{{ item.wg.keepalive | default(none) }}"
       mtu: "{{ item.wg.mtu | default(wireguard_peer_default_mtu | default(none)) }}"
       removed: "{{ item.removed | default(false) }}"
-  loop: "{{ lookup('vars', inventory_hostname).peers | default([]) }}"
+  loop: "{{ hostvars[inventory_hostname].peers | default([]) }}"
   loop_control:
     label: "{{ item.bgp.asn }}"
 

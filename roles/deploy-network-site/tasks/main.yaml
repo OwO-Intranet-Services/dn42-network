@@ -1,0 +1,8 @@
+---
+- name: Prepare network site deployment target
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Deploy network site artifact
+  ansible.builtin.include_tasks:
+    file: configure.yaml

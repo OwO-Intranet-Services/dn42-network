@@ -1,0 +1,20 @@
+---
+- name: Stop and disable lg-proxy service
+  ansible.builtin.systemd:
+    name: lg-proxy.service
+    state: stopped
+    enabled: false
+  ignore_errors: true
+
+- name: Remove lg-proxy systemd service file
+  ansible.builtin.file:
+    path: /etc/systemd/system/lg-proxy.service
+    state: absent
+
+- name: Remove wg-show wrapper and source
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ automation_root_dir }}/wg-show"
+    - "{{ automation_root_dir }}/wg-show.c"

@@ -1,6 +1,0 @@
----
-- name: Restart WireGuard tunnel
-  ansible.builtin.systemd:
-    name: "wg-quick@{{ wireguard_interface_name }}"
-    state: restarted
-  when: wireguard_interface_name is defined

@@ -1,0 +1,4 @@
+---
+lg_server_artifact_path: "{{ artifacts_root_dir }}/lg/server/server"
+lg_server_binary_path: "{{ automation_root_dir }}/lg/lg-server"
+lg_server_config_path: "{{ automation_root_dir }}/lg/server-config.json"

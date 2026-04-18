@@ -1,0 +1,8 @@
+---
+network_site_artifacts_root: "{{ artifacts_root_dir }}/network-site"
+network_site_build_workspace: "{{ repository_root_dir }}/bird-lg-rs/frontend"
+network_site_backend_url: https://lg-api.iris.dn42
+network_site_build_username: "{{ lookup('env', 'USER') }}"
+network_site_dist_dir: "{{ network_site_artifacts_root }}/dist"
+network_site_tarball_path: "{{ network_site_artifacts_root }}/site.tar.gz"
+network_site_commit_stamp: "{{ network_site_artifacts_root }}/last_build_commit"

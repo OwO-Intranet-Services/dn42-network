@@ -1,0 +1,8 @@
+---
+lg_proxy_packages:
+  - bind9-dnsutils
+  - build-essential
+
+lg_proxy_artifact_path: "{{ artifacts_root_dir }}/lg/proxy/proxy"
+lg_proxy_binary_path: "{{ automation_root_dir }}/lg/lg-proxy"
+lg_proxy_config_path: "{{ automation_root_dir }}/lg/proxy-config.json"

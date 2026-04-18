@@ -1,7 +1,3 @@
 ---
-- name: Setup WireGuard on nodes
-  hosts: nodes
-  become: true
-  gather_facts: true
-  roles:
-    - config-wireguard
+- name: Import canonical WireGuard playbook
+  import_playbook: playbooks/wireguard.yaml

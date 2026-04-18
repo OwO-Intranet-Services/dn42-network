@@ -1,4 +1,13 @@
 ---
+bird_packages:
+  - bird2
+
+bird_repo_enabled: true
+bird_repo_key_url: https://pkg.labs.nic.cz/gpg
+bird_repo_key_path: /usr/share/keyrings/cznic-labs-pkg.gpg
+bird_repo: deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird2 bookworm main
+bird_repo_filename: cznic-labs-bird2
+
 bird_rpki_servers:
   - host: rpki.akae.re
     port: 8082

@@ -1,0 +1,41 @@
+---
+- name: Add CZ.NIC Labs GPG key for bird2 (Debian 12 only)
+  ansible.builtin.get_url:
+    url: "{{ bird_repo_key_url }}"
+    dest: "{{ bird_repo_key_path }}"
+    mode: "0644"
+  when:
+    - bird_repo_enabled
+    - ansible_facts['distribution'] == "Debian"
+    - ansible_facts['distribution_major_version'] | int == 12
+
+- name: Add CZ.NIC Labs bird2 repository (Debian 12 only)
+  ansible.builtin.apt_repository:
+    repo: "{{ bird_repo }}"
+    state: present
+    filename: "{{ bird_repo_filename }}"
+  when:
+    - bird_repo_enabled
+    - ansible_facts['distribution'] == "Debian"
+    - ansible_facts['distribution_major_version'] | int == 12
+
+- name: Install BIRD packages
+  ansible.builtin.apt:
+    name: "{{ bird_packages }}"
+    state: present
+    update_cache: true
+
+- name: Check automation user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ automation_user }}"
+  register: bird_automation_user_getent
+  failed_when: false
+
+- name: Add automation user to bird group
+  ansible.builtin.user:
+    name: "{{ automation_user }}"
+    groups:
+      - bird
+    append: true
+  when: automation_user in (bird_automation_user_getent.ansible_facts.getent_passwd | default({}))

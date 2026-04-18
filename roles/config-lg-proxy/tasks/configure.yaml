@@ -1,0 +1,86 @@
+---
+- name: Check existing lg-proxy binary
+  ansible.builtin.stat:
+    path: "{{ lg_proxy_binary_path }}"
+  register: lg_existing_binary
+
+- name: Backup current lg-proxy binary
+  ansible.builtin.copy:
+    src: "{{ lg_proxy_binary_path }}"
+    dest: "{{ lg_proxy_binary_path }}.backup"
+    remote_src: true
+    owner: root
+    group: nogroup
+    mode: "0755"
+  when: lg_existing_binary.stat.exists
+
+- name: Resolve lg_server hostnames (IPv4)
+  ansible.builtin.command: "dig +short A {{ hostvars[item].ansible_host | default(item) }}"
+  loop: "{{ groups['lg_server'] | default([]) }}"
+  loop_control:
+    label: "{{ item }}"
+  register: lg_server_v4
+  changed_when: false
+
+- name: Resolve lg_server hostnames (IPv6)
+  ansible.builtin.command: "dig +short AAAA {{ hostvars[item].ansible_host | default(item) }}"
+  loop: "{{ groups['lg_server'] | default([]) }}"
+  loop_control:
+    label: "{{ item }}"
+  register: lg_server_v6
+  changed_when: false
+
+- name: Render lg proxy config
+  ansible.builtin.template:
+    src: proxy-config.json.j2
+    dest: "{{ lg_proxy_config_path }}"
+    owner: root
+    group: nogroup
+    mode: "0644"
+
+- name: Copy lg proxy binary
+  ansible.builtin.copy:
+    src: "{{ lg_proxy_artifact_path }}"
+    dest: "{{ lg_proxy_binary_path }}"
+    owner: root
+    group: nogroup
+    mode: "0755"
+  changed_when: true
+  notify: Restart lg-proxy
+
+- name: Setup lg-proxy systemd service
+  ansible.builtin.template:
+    src: lg-proxy.service.j2
+    dest: /etc/systemd/system/lg-proxy.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy wg-show wrapper source
+  ansible.builtin.copy:
+    src: wg-show.c
+    dest: "{{ automation_root_dir }}/wg-show.c"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Compile wg-show wrapper
+  ansible.builtin.command:
+    cmd: gcc -o wg-show wg-show.c
+    chdir: "{{ automation_root_dir }}"
+  changed_when: false
+
+- name: Set permissions on wg-show wrapper
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/wg-show"
+    owner: root
+    group: "{{ automation_user }}"
+    mode: "4750"
+  changed_when: false
+
+- name: Ensure lg-proxy service is enabled and running
+  ansible.builtin.systemd:
+    name: lg-proxy.service
+    enabled: true
+    state: started
+    daemon_reload: true

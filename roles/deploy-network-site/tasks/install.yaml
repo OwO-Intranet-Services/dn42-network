@@ -1,0 +1,8 @@
+---
+- name: Create network site directory
+  ansible.builtin.file:
+    path: "{{ network_site_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"

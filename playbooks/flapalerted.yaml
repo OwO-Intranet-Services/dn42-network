@@ -1,0 +1,11 @@
+---
+- name: FlapAlerted Deployment
+  hosts: flapalerted
+  become: true
+  gather_facts: true
+  tags:
+    - flapalerted
+  roles:
+    - role: config-flapalerted
+      tags:
+        - flapalerted

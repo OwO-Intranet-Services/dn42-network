@@ -1,0 +1,14 @@
+---
+- name: Install Looking Glass proxy packages
+  ansible.builtin.apt:
+    name: "{{ lg_proxy_packages }}"
+    state: present
+    update_cache: true
+
+- name: Create lg workspace
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/lg"
+    state: directory
+    owner: "{{ automation_user }}"
+    group: nogroup
+    mode: "0755"

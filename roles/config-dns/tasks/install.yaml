@@ -1,0 +1,14 @@
+---
+- name: Install BIND9
+  ansible.builtin.apt:
+    name: "{{ dns_service.packages }}"
+    state: present
+    update_cache: true
+
+- name: Ensure zone directory exists
+  ansible.builtin.file:
+    path: "{{ dns_service.zone_dir }}"
+    state: directory
+    owner: "{{ dns_service.user }}"
+    group: "{{ dns_service.group }}"
+    mode: "0755"

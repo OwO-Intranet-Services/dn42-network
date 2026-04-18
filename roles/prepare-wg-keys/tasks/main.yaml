@@ -3,7 +3,7 @@
   delegate_to: localhost
   become: false
   ansible.builtin.file:
-    path: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
     state: directory
     mode: '0700'
 
@@ -11,7 +11,7 @@
   delegate_to: localhost
   become: false
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
   register: local_wg_private_key
 
 - name: Generate WireGuard keys locally if missing
@@ -21,21 +21,21 @@
     cmd: |
       set -o pipefail
       wg genkey | tee privatekey | wg pubkey > publickey
-    chdir: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
-    creates: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+    chdir: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
+    creates: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
 
 - name: Read local WireGuard private key
   delegate_to: localhost
   become: false
   ansible.builtin.slurp:
-    src: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+    src: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
   register: local_wg_private_key_content
 
 - name: Read local WireGuard public key
   delegate_to: localhost
   become: false
   ansible.builtin.slurp:
-    src: "{{ playbook_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+    src: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
   register: local_wg_public_key_content
 
 - name: Set WireGuard key facts

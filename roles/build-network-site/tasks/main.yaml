@@ -1,0 +1,8 @@
+---
+- name: Prepare network site artifact directories
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Build network site artifact
+  ansible.builtin.include_tasks:
+    file: configure.yaml

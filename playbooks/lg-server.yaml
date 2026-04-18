@@ -1,0 +1,35 @@
+---
+- name: Build Looking Glass Server Artifact
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    repository_root_dir: "{{ playbook_dir | dirname }}"
+    artifacts_root_dir: "{{ (playbook_dir | dirname) ~ '/.artifacts' }}"
+  tags:
+    - build
+    - lg
+    - lg-server
+  roles:
+    - role: build-lg-artifacts
+      tags:
+        - build
+        - lg
+        - lg-server
+      vars:
+        lg_artifacts_packages:
+          - name: server
+            cargo_package: server
+
+- name: Looking Glass Server
+  hosts: lg_server
+  become: true
+  gather_facts: true
+  tags:
+    - lg
+    - lg-server
+  roles:
+    - role: config-lg-server
+      tags:
+        - lg
+        - lg-server

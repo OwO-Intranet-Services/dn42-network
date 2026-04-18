@@ -1,0 +1,29 @@
+{%- set nodes = namespace(items=[]) -%}
+
+{%- for lg_proxy in groups.get(dn42_group, []) -%}
+{%-   set lg_proxy_domain = lg_proxy_domain_fmt | format(lg_proxy) -%}
+{%-   set nodes.items = nodes.items + [{
+    "name": lg_proxy,
+    "url": "https://%s" % lg_proxy_domain,
+    "shared_secret": (lg_shared_secret | default(None))
+    }] -%}
+{%- endfor -%}
+
+{%- set config = {
+    "listen": lg_server_listen | mandatory,
+    "network": {
+    "name": network_name | mandatory,
+    "asn": asn | mandatory,
+    "comment": network_comment | default(None),
+    "contacts": network_contacts | default(None),
+    "ipv4_prefix": [ownnet4] + (ownnet4_extra | default([])),
+    "ipv6_prefix": [ownnet6] + (ownnet6_extra | default([]))
+    },
+    "nodes": nodes.items,
+} -%}
+
+{%- if lg_server_poll_idle_timeout is defined -%}
+{%-   set config = config | combine({"poll_idle_timeout": lg_server_poll_idle_timeout}) -%}
+{%- endif -%}
+
+{{ config | to_nice_json }}

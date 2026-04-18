@@ -1,0 +1,6 @@
+---
+- name: Ensure network site artifact root exists
+  ansible.builtin.file:
+    path: "{{ network_site_artifacts_root }}"
+    state: directory
+    mode: "0755"

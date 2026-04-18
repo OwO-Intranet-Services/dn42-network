@@ -1,9 +1,0 @@
-- name: Reload caddy
-  ansible.builtin.service:
-    name: caddy
-    state: reloaded
-
-- name: Restart caddy
-  ansible.builtin.service:
-    name: caddy
-    state: restarted

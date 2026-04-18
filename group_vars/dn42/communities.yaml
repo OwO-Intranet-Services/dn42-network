@@ -71,7 +71,7 @@ dn42_countries:
   KZ: 1398 # Kazakhstan
   MY: 1458 # Malaysia
   NL: 1528 # Netherlands
-  NO: 1578 # Norway
+  "NO": 1578 # Norway
   NZ: 1554 # New Zealand
   PH: 1608 # Philippines
   PK: 1586 # Pakistan

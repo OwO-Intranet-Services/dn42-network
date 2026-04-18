@@ -9,25 +9,30 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - direct script execution path
     from yaml_helpers import load_yaml_file
 
-DEFAULT_PEER_DIR = Path("group_vars/dn42/peers")
+DEFAULT_PEER_DIR = Path("host_vars")
+
+
+def _iter_peer_lists(data: object) -> list[dict[str, object]]:
+    if not isinstance(data, dict):
+        raise ValueError("peer file must contain a mapping at the top level")
+
+    if "peers" in data:
+        peers = data["peers"]
+        if not isinstance(peers, list):
+            raise ValueError("peer file has a non-list 'peers' value")
+        return [data]
+
+    return [node_config for node_config in data.values() if isinstance(node_config, dict)]
 
 
 def collect_unique_asns(peer_dir: Path) -> set[int]:
     unique_asns: set[int] = set()
 
-    for peer_file in sorted(peer_dir.glob("*.yaml")):
+    for peer_file in sorted(peer_dir.glob("*/dn42_peers.yaml")):
         data = load_yaml_file(peer_file)
-        if not isinstance(data, dict):
-            raise ValueError(f"{peer_file} must contain a mapping at the top level")
 
-        for node_config in data.values():
-            if not isinstance(node_config, dict):
-                continue
-
+        for node_config in _iter_peer_lists(data):
             peers = node_config.get("peers", [])
-            if not isinstance(peers, list):
-                raise ValueError(f"{peer_file} has a non-list 'peers' value")
-
             for peer in peers:
                 if not isinstance(peer, dict) or peer.get("removed"):
                     continue

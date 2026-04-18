@@ -10,7 +10,7 @@
 - name: Ensure PSK directory exists on controller
   become: false
   ansible.builtin.file:
-    path: "{{ playbook_dir }}/.secrets/wireguard_psks/{{ node_group }}"
+    path: "{{ repository_root_dir }}/.secrets/wireguard_psks/{{ node_group }}"
     state: directory
     mode: "0700"
   delegate_to: localhost
@@ -20,11 +20,11 @@
   become: false
   ansible.builtin.shell:
     cmd: |
-      if [ ! -f "{{ playbook_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key" ]; then
-        wg genpsk > "{{ playbook_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
-        chmod 600 "{{ playbook_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
+      if [ ! -f "{{ repository_root_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key" ]; then
+        wg genpsk > "{{ repository_root_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
+        chmod 600 "{{ repository_root_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
       fi
-      cat "{{ playbook_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
+      cat "{{ repository_root_dir }}/.secrets/wireguard_psks/{{ node_group }}/psk_{{ item.0 }}_{{ item.1 }}.key"
   delegate_to: localhost
   loop: "{{ node_hosts | product(node_hosts) | list }}"
   loop_control:

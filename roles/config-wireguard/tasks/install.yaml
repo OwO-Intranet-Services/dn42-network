@@ -1,0 +1,6 @@
+---
+- name: Install WireGuard packages
+  ansible.builtin.apt:
+    name: "{{ wireguard_packages }}"
+    state: present
+    update_cache: true

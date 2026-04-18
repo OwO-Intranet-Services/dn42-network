@@ -1,0 +1,48 @@
+---
+- name: Check existing lg-server binary
+  ansible.builtin.stat:
+    path: "{{ lg_server_binary_path }}"
+  register: lg_existing_binary
+
+- name: Backup current lg-server binary
+  ansible.builtin.copy:
+    src: "{{ lg_server_binary_path }}"
+    dest: "{{ lg_server_binary_path }}.backup"
+    remote_src: true
+    owner: root
+    group: nogroup
+    mode: "0755"
+  when: lg_existing_binary.stat.exists
+
+- name: Render lg server config
+  ansible.builtin.template:
+    src: server-config.json.j2
+    dest: "{{ lg_server_config_path }}"
+    owner: root
+    group: nogroup
+    mode: "0644"
+
+- name: Copy lg server binary
+  ansible.builtin.copy:
+    src: "{{ lg_server_artifact_path }}"
+    dest: "{{ lg_server_binary_path }}"
+    owner: root
+    group: nogroup
+    mode: "0755"
+  changed_when: true
+  notify: Restart lg-server
+
+- name: Install lg-server systemd service
+  ansible.builtin.template:
+    src: lg-server.service.j2
+    dest: /etc/systemd/system/lg-server.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure lg-server service is enabled and running
+  ansible.builtin.systemd:
+    name: lg-server.service
+    enabled: true
+    state: started
+    daemon_reload: true

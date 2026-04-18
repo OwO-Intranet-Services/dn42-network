@@ -1,6 +1,6 @@
 ---
 - name: Setup sysctl for DN42
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
     state: present

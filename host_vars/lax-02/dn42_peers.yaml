@@ -1,0 +1,102 @@
+peers:
+  - comment: cowgl
+    wg:
+      port: 23999
+      endpoint: lax.node.cowgl.xyz:31023
+      wg_pubkey: "jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg="
+      peer6: fe80::2:3999
+    bgp:
+      asn: 4242423999
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: iedon
+    wg:
+      port: 22189
+      endpoint: us-lax.dn42.iedon.net:41504
+      wg_pubkey: "DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA="
+      peer6: fe80::2189:ef
+    bgp:
+      asn: 4242422189
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: iyoroy
+    wg:
+      port: 21023
+      endpoint: lax-us.ecs.iyoroy-infra.top:21023
+      wg_pubkey: "As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU="
+      peer6: fe80::2024
+    bgp:
+      asn: 4242422024
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: HExpNetwork
+    wg:
+      port: 20298
+      endpoint: node3.ox5.cc:21023
+      wg_pubkey: "qIqq1s5f0OMr1h9bZ5sRSo3+z5VaCfpzlbI/MG+JdhU="
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        33356663316165663136353433663865373534393861393932323933333062356162346463326238
+        6436396161316238336637316336336566386633313534610a386638646364313534613734323336
+        34373864613563353337383835666136373930613864386666336337613736353961363836356364
+        3538656236336566630a316664333331386333653032623666626233353161343430613135363263
+        65323366623463333661376135393536653531346235353861316531336436646638643637316630
+        6239623734653333663863633161343633303937613261373638
+      peer6: fe80::298
+    bgp:
+      asn: 4242420298
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: qiuxin
+    wg:
+      endpoint: lax1.exploro.one:32641
+      wg_pubkey: "Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E="
+      peer6: fe80::1771
+    bgp:
+      asn: 4242421771
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: launchpadx
+    wg:
+      endpoint: svz.s.launchpadx.top:51023
+      wg_pubkey: "VVQeVruKQ50/KTUo8k5PF3Y7mR4Jvro7j39pBRZMI28="
+      peer6: fe80::3702
+      mtu: 1392
+    bgp:
+      asn: 4242423702
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: Maoyue
+    wg:
+      endpoint: 192.161.163.236:21023
+      wg_pubkey: "vUtdpRO5g/sTLW005E8nZAMoYEkoJk9qU+aHIK2iYTM="
+      peer6: fe80::3942
+    bgp:
+      asn: 4242423942
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+  - comment: "@Ykino233"
+    wg:
+      endpoint: node01-bgp.us.peakcomet.dpdns.org:21023
+      wg_pubkey: "fxtgu29lj4VqYPxNY0VJCKVin6sh5JTdqeU7x7ts92s="
+      peer6: fe80::3311
+    bgp:
+      asn: 4242423311
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true

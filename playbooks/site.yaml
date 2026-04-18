@@ -1,0 +1,24 @@
+---
+- name: Import system configuration playbook
+  import_playbook: system.yaml
+
+- name: Import WireGuard configuration playbook
+  import_playbook: wireguard.yaml
+
+- name: Import BIRD configuration playbook
+  import_playbook: bird.yaml
+
+- name: Import FlapAlerted configuration playbook
+  import_playbook: flapalerted.yaml
+
+- name: Import DNS configuration playbook
+  import_playbook: dns.yaml
+
+- name: Import Looking Glass proxy playbook
+  import_playbook: lg-proxy.yaml
+
+- name: Import Looking Glass server playbook
+  import_playbook: lg-server.yaml
+
+- name: Import websites playbook
+  import_playbook: websites.yaml

@@ -1,5 +1,6 @@
 .ansible
 .vscode
+.artifacts/
 *.retry
 vault_pass.txt
 .secrets/
@@ -17,9 +18,11 @@ __pycache__/
 *.swo
 *~
 
-# FIXME
+# Build artifacts
 bird-lg-web/
 dist-network-site/
 dist-network-site.tar.gz
 bird-lg-rs/target/
 .last_build_commit_*
+
+AGENTS.md

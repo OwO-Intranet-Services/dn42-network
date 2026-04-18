@@ -1,0 +1,17 @@
+---
+- name: Stop and disable lg-server service
+  ansible.builtin.systemd:
+    name: lg-server.service
+    state: stopped
+    enabled: false
+  ignore_errors: true
+
+- name: Remove lg-server systemd service file
+  ansible.builtin.file:
+    path: /etc/systemd/system/lg-server.service
+    state: absent
+
+- name: Remove lg workspace directory
+  ansible.builtin.file:
+    path: "{{ automation_root_dir }}/lg"
+    state: absent

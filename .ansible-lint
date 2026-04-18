@@ -1,6 +1,7 @@
 ---
 exclude_paths:
   - .ansible/
+  - .artifacts/
   - .vscode/
 
 enable_list:
@@ -17,4 +18,3 @@ warn_list:
   - role-name
 
 use_default_rules: true
-parseable: true

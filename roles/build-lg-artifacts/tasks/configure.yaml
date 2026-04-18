@@ -1,0 +1,8 @@
+---
+- name: Build requested Looking Glass artifacts
+  ansible.builtin.include_tasks:
+    file: build_package.yaml
+  loop: "{{ lg_artifacts_packages }}"
+  loop_control:
+    loop_var: lg_package
+    label: "{{ lg_package.name }}"

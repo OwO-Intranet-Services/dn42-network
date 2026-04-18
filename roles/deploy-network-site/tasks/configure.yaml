@@ -1,0 +1,7 @@
+---
+- name: Unarchive network site assets
+  ansible.builtin.unarchive:
+    src: "{{ network_site_tarball_path }}"
+    dest: "{{ network_site_root }}/"
+    owner: www-data
+    group: www-data

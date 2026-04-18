@@ -1,7 +1,3 @@
 ---
-- name: Setup websites
-  hosts: dn42
-  become: true
-  gather_facts: true
-  roles:
-    - config-websites
+- name: Import canonical websites playbook
+  import_playbook: playbooks/websites.yaml

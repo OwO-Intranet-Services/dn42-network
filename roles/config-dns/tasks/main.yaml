@@ -1,5 +1,5 @@
 ---
-- name: Run Cleanup
+- name: Run cleanup when removing node
   ansible.builtin.include_tasks:
     file: cleanup.yaml
   when: remove_node | default(false)
@@ -8,83 +8,15 @@
   ansible.builtin.meta: end_host
   when: remove_node | default(false)
 
-- name: Set DNS role facts
-  ansible.builtin.set_fact:
-    dns_is_anycast_node: "{{ inventory_hostname in groups.get(anycast_group, []) }}"
-    dns_validate_except_block: |
-      validate-except {
-        {% for zone in dns_forward_zones_list %}
-        "{{ zone }}";
-        {% endfor %}
-      };
-
 - name: Install DNS packages and directories
+  ansible.builtin.include_tasks:
+    file: install.yaml
   when:
     - target is undefined
     - task_type is undefined
     - not (remove | default(false))
     - not (remove_node | default(false))
-  block:
-    - name: Install BIND9
-      ansible.builtin.apt:
-        name: "{{ dns_service.packages }}"
-        state: present
-        update_cache: true
 
-    - name: Ensure zone directory exists
-      ansible.builtin.file:
-        path: "{{ dns_service.zone_dir }}"
-        state: directory
-        owner: "{{ dns_service.user }}"
-        group: "{{ dns_service.group }}"
-        mode: '0755'
-
-- name: Configure authoritative DNS on anycast nodes
+- name: Configure DNS service
   ansible.builtin.include_tasks:
-    file: anycast.yaml
-  when: dns_is_anycast_node
-
-- name: Configure forwarding DNS on non-anycast nodes
-  ansible.builtin.include_tasks:
-    file: resolver.yaml
-  when: not dns_is_anycast_node
-
-- name: Ensure BIND is enabled and started
-  ansible.builtin.service:
-    name: "{{ dns_service.service_name }}"
-    state: started
-    enabled: true
-
-- name: Disable systemd-resolved (if present)
-  ansible.builtin.service:
-    name: systemd-resolved
-    state: stopped
-    enabled: false
-  ignore_errors: true
-  failed_when: false
-
-- name: Remove immutable flag from resolv.conf (if present)
-  ansible.builtin.file:
-    path: /etc/resolv.conf
-    attributes: -i
-  ignore_errors: true
-  changed_when: false
-
-- name: Point system DNS to local BIND instance
-  ansible.builtin.copy:
-    dest: /etc/resolv.conf
-    content: |
-      # Managed by Ansible
-      nameserver 127.0.0.1
-      nameserver ::1
-      search iris.dn42 dn42
-      options timeout:2
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Lock resolv.conf
-  ansible.builtin.file:
-    path: /etc/resolv.conf
-    attributes: +i
-  changed_when: false
+    file: configure.yaml

@@ -1,0 +1,8 @@
+---
+- name: Prepare Looking Glass artifact directories
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Build requested Looking Glass artifacts
+  ansible.builtin.include_tasks:
+    file: configure.yaml

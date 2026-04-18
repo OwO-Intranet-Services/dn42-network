@@ -1,0 +1,19 @@
+---
+- name: Cleanup Looking Glass proxy configuration
+  ansible.builtin.include_tasks:
+    file: cleanup.yaml
+  when: remove_node | default(false)
+
+- name: End play if removing node
+  ansible.builtin.meta: end_host
+  when: remove_node | default(false)
+
+- name: Install Looking Glass proxy prerequisites
+  ansible.builtin.include_tasks:
+    file: install.yaml
+  when: not (remove | default(false))
+
+- name: Configure Looking Glass proxy
+  ansible.builtin.include_tasks:
+    file: configure.yaml
+  when: not (remove | default(false))

@@ -1,7 +1,3 @@
 ---
-- name: Setup BIRD on dn42 nodes
-  hosts: dn42
-  become: true
-  gather_facts: true
-  roles:
-    - config-bird
+- name: Import canonical BIRD playbook
+  import_playbook: playbooks/bird.yaml

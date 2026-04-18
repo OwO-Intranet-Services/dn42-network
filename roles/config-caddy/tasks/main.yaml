@@ -1,0 +1,8 @@
+---
+- name: Install Caddy prerequisites
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Configure websites and Caddy
+  ansible.builtin.include_tasks:
+    file: configure.yaml

@@ -1,4 +1,8 @@
 ---
+wireguard_packages:
+  - wireguard
+  - wireguard-tools
+
 wireguard_allowed_ips:
   - 10.0.0.0/8
   - 172.20.0.0/14

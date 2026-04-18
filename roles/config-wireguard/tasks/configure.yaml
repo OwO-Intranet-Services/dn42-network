@@ -1,0 +1,48 @@
+---
+- name: Initialize WireGuard peer lists
+  ansible.builtin.set_fact:
+    wg_rendered_peers: []
+    wg_removed_peers: []
+
+- name: Setup WireGuard tunnels for nodes
+  ansible.builtin.include_tasks:
+    file: node.yaml
+  when: task_type is undefined or task_type == 'node'
+
+- name: Setup WireGuard tunnels for DN42 peers
+  ansible.builtin.include_tasks:
+    file: dn42.yaml
+  when:
+    - inventory_hostname in groups.get(dn42_group, [])
+    - task_type is undefined or task_type == 'dn42'
+
+- name: Restart WireGuard services when configuration changes
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ item.peer.interface_name }}"
+    state: restarted
+  loop: "{{ wg_rendered_peers }}"
+  loop_control:
+    label: "{{ item.peer.interface_name }}"
+  when:
+    - item.changed
+    - true
+  timeout: 10
+
+- name: Ensure wg-quick services are enabled and started
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ item.peer.interface_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+  loop: "{{ wg_rendered_peers }}"
+  loop_control:
+    label: "{{ item.peer.interface_name }}"
+
+- name: Ensure wg-quick services are stopped and disabled
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ item.peer.interface_name }}"
+    state: stopped
+    enabled: false
+  loop: "{{ wg_removed_peers }}"
+  loop_control:
+    label: "{{ item.peer.interface_name }}"

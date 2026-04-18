@@ -1,0 +1,3 @@
+---
+network_site_root: /var/www/html/network.iris.dn42
+network_site_tarball_path: "{{ artifacts_root_dir }}/network-site/site.tar.gz"

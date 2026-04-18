@@ -1,7 +1,3 @@
 ---
-- name: Setup DNS on nameservers
-  hosts: dn42
-  become: true
-  gather_facts: true
-  roles:
-    - config-dns
+- name: Import canonical DNS playbook
+  import_playbook: playbooks/dns.yaml

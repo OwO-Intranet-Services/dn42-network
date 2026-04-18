@@ -1,0 +1,6 @@
+---
+- name: Restart lg-server
+  ansible.builtin.systemd:
+    name: lg-server.service
+    state: restarted
+    daemon_reload: true

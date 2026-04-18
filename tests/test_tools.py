@@ -13,36 +13,36 @@ class CountDn42PeersTests(unittest.TestCase):
     def test_collect_unique_asns_ignores_removed_peers_and_unknown_tags(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             peer_dir = Path(tmpdir)
-            (peer_dir / "lax-01.yaml").write_text(
+            (peer_dir / "lax-01").mkdir()
+            (peer_dir / "ams-01").mkdir()
+            (peer_dir / "lax-01" / "dn42_peers.yaml").write_text(
                 textwrap.dedent(
                     """\
-                    lax-01:
-                      peers:
-                        - comment: active
-                          wg:
-                            psk: !vault |
-                              encrypted
-                          bgp:
-                            asn: 4242420001
-                        - comment: removed
-                          removed: true
-                          bgp:
-                            asn: 4242420002
+                    peers:
+                      - comment: active
+                        wg:
+                          psk: !vault |
+                            encrypted
+                        bgp:
+                          asn: 4242420001
+                      - comment: removed
+                        removed: true
+                        bgp:
+                          asn: 4242420002
                     """
                 ),
                 encoding="utf-8",
             )
-            (peer_dir / "ams-01.yaml").write_text(
+            (peer_dir / "ams-01" / "dn42_peers.yaml").write_text(
                 textwrap.dedent(
                     """\
-                    ams-01:
-                      peers:
-                        - comment: duplicate
-                          bgp:
-                            asn: 4242420001
-                        - comment: active
-                          bgp:
-                            asn: 4242420003
+                    peers:
+                      - comment: duplicate
+                        bgp:
+                          asn: 4242420001
+                      - comment: active
+                        bgp:
+                          asn: 4242420003
                     """
                 ),
                 encoding="utf-8",
