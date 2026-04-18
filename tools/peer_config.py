@@ -10,7 +10,9 @@ from yaml.nodes import MappingNode, ScalarNode, SequenceNode
 
 PEER_KEY_ORDER = ("comment", "wg", "bgp", "removed")
 WG_KEY_ORDER = ("port", "endpoint", "wg_pubkey", "psk", "peer4", "peer6", "own6", "keepalive", "mtu")
-BGP_KEY_ORDER = ("asn", "ipv4", "ipv6", "extended_next_hop", "mp_bgp")
+DEFAULT_PEERING_STRATEGY = "full_table"
+PEERING_STRATEGIES = (DEFAULT_PEERING_STRATEGY, "transit", "peer", "downstream")
+BGP_KEY_ORDER = ("asn", "ipv4", "ipv6", "extended_next_hop", "mp_bgp", "peering_strategy")
 BASE64_LIKE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
 HOSTNAME_LABEL_RE = re.compile(r"^[A-Za-z0-9-]{1,63}$")
 
@@ -177,6 +179,21 @@ def _require_bool(value: Any, *, field: str, peer_label: str) -> bool:
     return value
 
 
+def _normalize_peering_strategy(value: Any, *, field: str, peer_label: str) -> str:
+    if value is None:
+        return DEFAULT_PEERING_STRATEGY
+    if not isinstance(value, str):
+        raise ValueError(
+            f"{peer_label} has invalid {field}: expected one of {', '.join(PEERING_STRATEGIES)}"
+        )
+    strategy = value.strip()
+    if strategy not in PEERING_STRATEGIES:
+        raise ValueError(
+            f"{peer_label} has invalid {field}: expected one of {', '.join(PEERING_STRATEGIES)}"
+        )
+    return strategy
+
+
 def _require_port(value: Any, *, field: str, peer_label: str) -> int:
     port = _coerce_int(value)
     if port is None or not 1 <= port <= 65535:
@@ -313,6 +330,11 @@ def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> None:
         peer_label=peer_label,
     )
     _require_bool(bgp.get("mp_bgp", True), field="bgp.mp_bgp", peer_label=peer_label)
+    _normalize_peering_strategy(
+        bgp.get("peering_strategy", DEFAULT_PEERING_STRATEGY),
+        field="bgp.peering_strategy",
+        peer_label=peer_label,
+    )
     if not ipv4 and not ipv6:
         raise ValueError(f"{peer_label} must enable at least one address family")
 
@@ -374,6 +396,13 @@ def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
         "extended_next_hop": _normalize_known_value(bgp, "extended_next_hop", True),
         "mp_bgp": _normalize_known_value(bgp, "mp_bgp", True),
     }
+    peering_strategy = _normalize_peering_strategy(
+        _normalize_generic(bgp.get("peering_strategy")),
+        field="bgp.peering_strategy",
+        peer_label=_peer_label(asn),
+    )
+    if peering_strategy != DEFAULT_PEERING_STRATEGY:
+        normalized_bgp["peering_strategy"] = peering_strategy
     for key, value in bgp.items():
         if key in BGP_KEY_ORDER:
             continue

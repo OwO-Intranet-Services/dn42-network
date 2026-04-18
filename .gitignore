@@ -27,4 +27,6 @@ bird-lg-rs/target/
 
 AGENTS.md
 
-tests/
+tests/*
+!tests/test_peer_config.py
+!tests/test_peer_session_diff.py
