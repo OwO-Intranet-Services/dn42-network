@@ -1,0 +1,124 @@
+name: peer-session-apply
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - host_vars/*/dn42_peers.yaml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: peer-session-apply-main
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      has_changes: ${{ steps.export.outputs.has_changes }}
+      deploy_hosts: ${{ steps.export.outputs.deploy_hosts }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Detect peer session changes
+        run: |
+          python3 tools/peer_session_diff.py \
+            --base-ref "${{ github.event.before }}" \
+            --head-ref "${{ github.sha }}" \
+            --json-output peer-session-report.json
+
+      - name: Export deploy matrix
+        id: export
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open("peer-session-report.json", "r", encoding="utf-8") as handle:
+              report = json.load(handle)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write(f"has_changes={'true' if report['has_changes'] else 'false'}\n")
+              handle.write(f"deploy_hosts={json.dumps(report['deploy_hosts'])}\n")
+          PY
+
+  apply:
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: dn42-peer-prod
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        host: ${{ fromJson(needs.detect.outputs.deploy_hosts) }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deployment dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core
+          ansible-galaxy collection install -r collections/requirements.yml
+
+      - name: Validate deployment secrets
+        env:
+          ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          test -n "$ANSIBLE_SSH_PRIVATE_KEY" || {
+            echo "ANSIBLE_SSH_PRIVATE_KEY secret is required for deployment."
+            exit 1
+          }
+          test -n "$ANSIBLE_VAULT_PASSWORD" || {
+            echo "ANSIBLE_VAULT_PASSWORD secret is required for deployment."
+            exit 1
+          }
+
+      - name: Configure SSH
+        env:
+          ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$ANSIBLE_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cp .github/ssh_known_hosts ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Write vault password file
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          mkdir -p .secrets
+          printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
+          chmod 600 .secrets/vault_pass.txt
+
+      - name: Apply DN42 WireGuard peer config
+        run: ansible-playbook setup-wg.yaml --limit "${{ matrix.host }}" -e task_type=dn42
+
+      - name: Apply DN42 BIRD peer config
+        run: ansible-playbook setup-bird.yaml --limit "${{ matrix.host }}" -e task_type=dn42

@@ -1,0 +1,79 @@
+name: peer-session-check
+
+on:
+  pull_request:
+    paths:
+      - host_vars/*/dn42_peers.yaml
+  push:
+    branches:
+      - main
+    paths:
+      - host_vars/*/dn42_peers.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install CI dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core
+          ansible-galaxy collection install -r collections/requirements.yml
+
+      - name: Resolve diff refs
+        id: refs
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate vault secret
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          test -n "$ANSIBLE_VAULT_PASSWORD" || {
+            echo "ANSIBLE_VAULT_PASSWORD secret is required for Ansible syntax checks."
+            exit 1
+          }
+
+      - name: Write vault password file
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          mkdir -p .secrets
+          printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
+          chmod 600 .secrets/vault_pass.txt
+
+      - name: Detect peer session changes
+        run: |
+          python3 tools/peer_session_diff.py \
+            --base-ref "${{ steps.refs.outputs.base }}" \
+            --head-ref "${{ steps.refs.outputs.head }}" \
+            --json-output peer-session-report.json
+
+      - name: Run Python unit tests
+        run: python3 -m unittest tests/test_tools.py tests/test_peer_session_diff.py
+
+      - name: Run Ansible syntax checks
+        run: |
+          ansible-playbook setup-wg.yaml --syntax-check
+          ansible-playbook setup-bird.yaml --syntax-check
