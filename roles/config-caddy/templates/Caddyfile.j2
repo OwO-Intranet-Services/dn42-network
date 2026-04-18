@@ -82,6 +82,15 @@
         }
     }
 
+    handle /auth/* {
+        reverse_proxy {{ site.backend_upstream }} {
+            header_up Host {{ site.backend_host }}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
     handle {
         file_server
         try_files {path} {path}/ /index.html
