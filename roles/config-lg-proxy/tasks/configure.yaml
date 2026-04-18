@@ -1,19 +1,4 @@
 ---
-- name: Check existing lg-proxy binary
-  ansible.builtin.stat:
-    path: "{{ lg_proxy_binary_path }}"
-  register: lg_existing_binary
-
-- name: Backup current lg-proxy binary
-  ansible.builtin.copy:
-    src: "{{ lg_proxy_binary_path }}"
-    dest: "{{ lg_proxy_binary_path }}.backup"
-    remote_src: true
-    owner: root
-    group: nogroup
-    mode: "0755"
-  when: lg_existing_binary.stat.exists
-
 - name: Resolve lg_server hostnames (IPv4)
   ansible.builtin.command: "dig +short A {{ hostvars[item].ansible_host | default(item) }}"
   loop: "{{ groups['lg_server'] | default([]) }}"
