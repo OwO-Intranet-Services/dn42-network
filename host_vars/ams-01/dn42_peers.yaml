@@ -370,6 +370,7 @@ peers:
         6134633365383639650a313430346331363933326339363930333038616435636532626565343930
         32613166616631383064336631366163363238333561656435633334613430613765386361616163
         3338633931363438663232633665396133363232613834613839
+        
       peer4: null
       peer6: fe80::129:1
       own6: null
@@ -449,3 +450,23 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - wg:
+      port: 80
+      endpoint: 1:2
+      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+      psk: null
+      peer4: 0.0.0.0
+      peer6: ::
+      own6: null
+      keepalive: 9999
+      mtu: 11451
+    bgp:
+      asn: 4242420298
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: HEXPNET-MNT
+      auth_provider: registry_pgp
