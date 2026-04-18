@@ -114,7 +114,7 @@ jobs:
   apply:
     needs: detect
     if: needs.detect.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, ipv6, fra-01]
     timeout-minutes: 30
     environment: dn42-peer-prod
     strategy:
