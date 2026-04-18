@@ -45,7 +45,7 @@ peers:
       mtu: 1420
     bgp:
       asn: 4242420454
-      ipv4: true
+      ipv4: false
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
