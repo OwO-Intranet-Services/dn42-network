@@ -129,10 +129,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Verify runner Python
+        run: |
+          python3 --version
+          if ! python3 -m pip --version >/dev/null 2>&1; then
+            python3 -m ensurepip --upgrade >/dev/null 2>&1 || true
+          fi
+          if ! python3 -m pip --version >/dev/null 2>&1; then
+            if command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then
+              sudo apt-get update
+              sudo apt-get install -y python3-pip
+            else
+              echo "python3-pip is required on the self-hosted runner."
+              exit 1
+            fi
+          fi
+          python3 -m pip --version
 
       - name: Install deployment dependencies
         run: |
