@@ -135,15 +135,23 @@
     label: "{{ peer.name }}"
   register: peer_update_wireguard_templates
 
-- name: Remove targeted WireGuard peer configurations
-  ansible.builtin.file:
-    path: "/etc/wireguard/{{ peer.name }}.conf"
-    state: absent
-  loop: "{{ peer_update_wireguard_remove }}"
+- name: Remove lingering targeted WireGuard interfaces for inactive services
+  ansible.builtin.shell: |
+    service_name="wg-quick@{{ item.interface_name }}"
+    current_state="$(systemctl is-active "$service_name" 2>/dev/null || true)"
+    if [ "$current_state" = "failed" ]; then
+      systemctl reset-failed "$service_name"
+      echo reset-failed
+    fi
+    if [ "$current_state" != "active" ] && ip link show dev "{{ item.interface_name }}" >/dev/null 2>&1; then
+      ip link delete dev "{{ item.interface_name }}"
+      echo deleted-link
+    fi
+  loop: "{{ peer_update_wireguard_configure }}"
   loop_control:
-    loop_var: peer
-    label: "{{ peer.name }}"
-  register: peer_update_wireguard_removals
+    label: "{{ item.interface_name }}"
+  register: peer_update_wireguard_orphan_cleanup
+  changed_when: false
 
 - name: Restart targeted WireGuard services when configuration changes
   ansible.builtin.systemd:
@@ -173,6 +181,16 @@
   loop: "{{ peer_update_wireguard_remove }}"
   loop_control:
     label: "{{ item.interface_name }}"
+
+- name: Remove targeted WireGuard peer configurations
+  ansible.builtin.file:
+    path: "/etc/wireguard/{{ peer.name }}.conf"
+    state: absent
+  loop: "{{ peer_update_wireguard_remove }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.name }}"
+  register: peer_update_wireguard_removals
 
 - name: Copy latency probe script
   ansible.builtin.copy:

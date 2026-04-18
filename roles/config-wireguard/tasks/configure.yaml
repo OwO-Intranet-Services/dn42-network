@@ -16,6 +16,24 @@
     - inventory_hostname in groups.get(dn42_group, [])
     - task_type is undefined or task_type == 'dn42'
 
+- name: Remove lingering WireGuard interfaces for inactive services
+  ansible.builtin.shell: |
+    service_name="wg-quick@{{ item.peer.interface_name }}"
+    current_state="$(systemctl is-active "$service_name" 2>/dev/null || true)"
+    if [ "$current_state" = "failed" ]; then
+      systemctl reset-failed "$service_name"
+      echo reset-failed
+    fi
+    if [ "$current_state" != "active" ] && ip link show dev "{{ item.peer.interface_name }}" >/dev/null 2>&1; then
+      ip link delete dev "{{ item.peer.interface_name }}"
+      echo deleted-link
+    fi
+  loop: "{{ wg_rendered_peers }}"
+  loop_control:
+    label: "{{ item.peer.interface_name }}"
+  register: wg_orphan_cleanup
+  changed_when: false
+
 - name: Restart WireGuard services when configuration changes
   ansible.builtin.systemd:
     name: "wg-quick@{{ item.peer.interface_name }}"
@@ -43,6 +61,14 @@
     name: "wg-quick@{{ item.peer.interface_name }}"
     state: stopped
     enabled: false
+  loop: "{{ wg_removed_peers }}"
+  loop_control:
+    label: "{{ item.peer.interface_name }}"
+
+- name: Remove wg-quick configuration files for removed peers
+  ansible.builtin.file:
+    path: "/etc/wireguard/{{ item.peer.interface_name }}.conf"
+    state: absent
   loop: "{{ wg_removed_peers }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
