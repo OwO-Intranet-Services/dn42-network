@@ -12,6 +12,7 @@ peers:
         3537373164656236650a386537663266336465613735343639353635353266653765613334316135
         65396136383564626463633164643731373137623932646162626439623135343135306263346532
         3539623133636664636464316239393236366265303333386337
+        
       peer4: null
       peer6: fe80::298
       own6: null
@@ -416,7 +417,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: '@Auride'
+  - comment: @Auride
     wg:
       port: 23310
       endpoint: hkg01.edge.r1.tmpfs.dev:21023
@@ -501,3 +502,23 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  - wg:
+      port: 21510
+      endpoint: hk01.dn42.moitr.com:21023
+      wg_pubkey: "KxBQoQM6EZV2QaCsXpI2vcp2jJRYB7I+EqKQLW77xk8="
+      psk: null
+      peer4: null
+      peer6: fe80::93d4:3358:6
+      own6: null
+      keepalive: null
+      mtu: 1408
+    bgp:
+      asn: 4242421510
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: YUZU-MNT
+      auth_provider: registry_pgp
