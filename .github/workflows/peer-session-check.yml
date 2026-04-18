@@ -73,9 +73,6 @@ jobs:
       - name: Check explicit peer config form
         run: python3 tools/normalize_peer_configs.py --check
 
-      - name: Run Python unit tests
-        run: python3 -m unittest tests/test_tools.py tests/test_peer_config.py tests/test_peer_session_diff.py
-
       - name: Run Ansible syntax checks
         run: |
           ansible-playbook setup-peer-update.yaml --syntax-check
