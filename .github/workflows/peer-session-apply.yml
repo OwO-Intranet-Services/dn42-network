@@ -85,6 +85,8 @@ jobs:
 
       - name: Install deployment dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install --yes wireguard-tools
           python3 -m pip install --upgrade pip
           python3 -m pip install ansible-core
           ansible-galaxy collection install -r collections/requirements.yml
