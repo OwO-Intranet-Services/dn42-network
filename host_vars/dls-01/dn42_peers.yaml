@@ -1,5 +1,5 @@
 peers:
-  - comment: highdef.network
+  -     comment: highdef.network
     wg:
       port: 21080
       endpoint: yvr.peer.highdef.network:21023
@@ -16,7 +16,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: Session Hikari
+  -     comment: Session Hikari
     wg:
       port: 22466
       endpoint: ne-e2-goog.xhustudio.eu.org:21023
@@ -33,3 +33,23 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+  -     wg:
+      port: 20454
+      endpoint: dn42a.nedifinita.com:52381
+      wg_pubkey: "8EXT6zciVdil3Zg6dqB0YT2SssTh2OTKDeBBfrVGUkE="
+      psk: null
+      peer4: null
+      peer6: fe80::454
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242420454
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: NEDIFINITA-MNT
+      auth_provider: host_impersonation
