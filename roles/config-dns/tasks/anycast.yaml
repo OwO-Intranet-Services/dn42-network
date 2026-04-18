@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     dns_anycast_ips_v4: "{{ dns_anycast_records | selectattr('ipv4', 'defined') | map(attribute='ipv4') | list }}"
     dns_anycast_ips_v6: "{{ dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list }}"
-    dns_auto_serial: "{{ ansible_date_time.epoch }}"
+    dns_auto_serial: "{{ ansible_facts['date_time']['epoch'] }}"
 
 - name: Normalize master zones with defaults
   ansible.builtin.set_fact:
