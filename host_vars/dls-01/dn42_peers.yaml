@@ -52,4 +52,4 @@ peers:
     autopeer:
       managed: true
       effective_mnt: NEDIFINITA-MNT
-      auth_provider: host_impersonation
+      auth_provider: migration
