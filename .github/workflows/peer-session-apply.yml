@@ -132,24 +132,28 @@ jobs:
       - name: Verify runner Python
         run: |
           python3 --version
-          if ! python3 -m pip --version >/dev/null 2>&1; then
+          if ! python3 -m pip --version >/dev/null 2>&1 || ! python3 -m venv --help >/dev/null 2>&1; then
             python3 -m ensurepip --upgrade >/dev/null 2>&1 || true
           fi
-          if ! python3 -m pip --version >/dev/null 2>&1; then
+          if ! python3 -m pip --version >/dev/null 2>&1 || ! python3 -m venv --help >/dev/null 2>&1; then
             if command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then
               sudo apt-get update
-              sudo apt-get install -y python3-pip
+              sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip python3-venv
             else
-              echo "python3-pip is required on the self-hosted runner."
+              echo "python3-pip and python3-venv are required on the self-hosted runner."
               exit 1
             fi
           fi
           python3 -m pip --version
+          python3 -m venv --help >/dev/null
 
       - name: Install deployment dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install ansible-core
+          python3 -m venv .ci-venv
+          echo "$PWD/.ci-venv/bin" >> "$GITHUB_PATH"
+          . .ci-venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install ansible-core
           ansible-galaxy collection install -r collections/requirements.yml
 
       - name: Validate deployment secrets
