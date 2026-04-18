@@ -4,18 +4,13 @@ on:
   pull_request:
     paths:
       - host_vars/*/dn42_peers.yaml
-  push:
-    branches-ignore:
-      - main
-    paths:
-      - host_vars/*/dn42_peers.yaml
 
 permissions:
   contents: write
 
 jobs:
   normalize:
-    if: github.actor != 'github-actions[bot]' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.actor != 'github-actions[bot]' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -39,18 +34,8 @@ jobs:
       - name: Resolve diff refs
         id: refs
         run: |
-          empty_tree_sha="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
-            echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
-          else
-            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-              echo "base=$empty_tree_sha" >> "$GITHUB_OUTPUT"
-            else
-              echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
-            fi
-            echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
 
       - name: Normalize changed peer files
         env:

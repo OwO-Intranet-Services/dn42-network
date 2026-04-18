@@ -33,6 +33,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install detect dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install PyYAML
+
       - name: Detect peer session changes
         run: |
           python3 tools/peer_session_diff.py \
