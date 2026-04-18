@@ -1,6 +1,7 @@
 peers:
   - comment: HExpNetwork
     wg:
+      port: 20298
       endpoint: node2.ox5.cc:21023
       wg_pubkey: "pS0Xt7cbWU6Pjfq7+OCKQkpT9sSrI3y4gIUY8WdaLhM="
       psk: !vault |
@@ -11,7 +12,11 @@ peers:
         3537373164656236650a386537663266336465613735343639353635353266653765613334316135
         65396136383564626463633164643731373137623932646162626439623135343135306263346532
         3539623133636664636464316239393236366265303333386337
+      peer4: null
       peer6: fe80::298
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420298
       ipv4: true
@@ -20,9 +25,15 @@ peers:
       mp_bgp: true
   - comment: Stevie
     wg:
+      port: 20337
       endpoint: hkg01.dn42.wwrr.ru:21023
       wg_pubkey: "jQAdLlfZ0mQBAAxIfSnltEBQQRIlf9/jMGWWPIOZY0Q="
+      psk: null
+      peer4: null
       peer6: fe80::337
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420337
       ipv4: true
@@ -31,9 +42,15 @@ peers:
       mp_bgp: true
   - comment: yuyuko
     wg:
+      port: 21117
       endpoint: hk01.dn42.yuyuko.com:21023
       wg_pubkey: "gqwdC9p6jdSy80oRxdatr9QdSrNMLCvRMadaCeOBqDY="
+      psk: null
+      peer4: null
       peer6: fe80::1117
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421117
       ipv4: true
@@ -42,9 +59,15 @@ peers:
       mp_bgp: true
   - comment: iedon
     wg:
+      port: 22189
       endpoint: hk-hkg.dn42.iedon.net:47122
       wg_pubkey: "OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34="
+      psk: null
+      peer4: null
       peer6: fe80::2189:120
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422189
       ipv4: true
@@ -54,9 +77,15 @@ peers:
     removed: true
   - comment: potat0
     wg:
+      port: 21816
       endpoint: hkg.node.potat0.cc:21023
       wg_pubkey: "Tv1+HniELrS4Br2i7oQgwqBJFXQKculsW8r+UOqQXH0="
+      psk: null
+      peer4: null
       peer6: fe80::1816
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421816
       ipv4: true
@@ -65,9 +94,15 @@ peers:
       mp_bgp: true
   - comment: iyoroy
     wg:
+      port: 22024
       endpoint: hkg02-cn.ecs.iyoroy-infra.top:21023
       wg_pubkey: "bg+KnzVupBrOQntHFFVzvBx+3sqYVoyJRantT6m5fm8="
+      psk: null
+      peer4: null
       peer6: fe80::2024
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422024
       ipv4: true
@@ -76,9 +111,15 @@ peers:
       mp_bgp: true
   - comment: BingxinBaka
     wg:
+      port: 23374
       endpoint: hk01.dn42.baka.pub:21023
       wg_pubkey: "zcxhWeI3SrJtqlHuqdeNaCeWSwJIYOTjAraXm655+VY="
+      psk: null
+      peer4: null
       peer6: fe80::2999:225
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423374
       ipv4: true
@@ -87,9 +128,15 @@ peers:
       mp_bgp: true
   - comment: cowgl
     wg:
+      port: 23999
       endpoint: v6.hkg.node.cowgl.xyz:31023
       wg_pubkey: "mGGBczSVKW+7UKRquI2GkbKrfxiATv9r4uF5WTP+vWI="
+      psk: null
+      peer4: null
       peer6: fe80::3999
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423999
       ipv4: true
@@ -98,9 +145,15 @@ peers:
       mp_bgp: true
   - comment: qiuxin
     wg:
+      port: 21771
       endpoint: hkg1.exploro.one:32615
       wg_pubkey: "hsEWaH80s3f0+PNsfLbyHUnFTNOwdqoJMHHyhOUqdFs="
+      psk: null
+      peer4: null
       peer6: fe80::1771
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421771
       ipv4: true
@@ -109,9 +162,15 @@ peers:
       mp_bgp: true
   - comment: mhr
     wg:
+      port: 22279
       endpoint: 6.hk-hkg1.bb.mhr.hk:21023
       wg_pubkey: "PUjqyQ3ATLp8Cxp3YFVQ44QLoZEpoPgdXsbMfXhDMRk="
+      psk: null
+      peer4: null
       peer6: fe80::2279
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422279
       ipv4: true
@@ -120,9 +179,15 @@ peers:
       mp_bgp: true
   - comment: darkpoint
     wg:
+      port: 20150
       endpoint: sin.darkpoint.xyz:21023
       wg_pubkey: "LbAFxxPonoNUzWiaxa/ulNYfv0d729DG6qAmg2X5egc="
+      psk: null
+      peer4: null
       peer6: fe80::150
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420150
       ipv4: true
@@ -132,9 +197,15 @@ peers:
     removed: true
   - comment: sun
     wg:
+      port: 23088
       endpoint: v6.hk1-hk.dn42.6700.cc:21023
       wg_pubkey: "rBTH+JyZB0X/DkwHByrCjCojxBKr/kEOm1dTAFGHR1w="
+      psk: null
+      peer4: null
       peer6: fe80::3088:192
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423088
       ipv4: true
@@ -143,9 +214,15 @@ peers:
       mp_bgp: true
   - comment: factor2431
     wg:
+      port: 21534
       endpoint: hk-hkg.factor2431.com:21023
       wg_pubkey: "VncCNj0rfJ8xF4ms7yqvt+WzAS0ePC+pLiiG4FPPHkw="
+      psk: null
+      peer4: null
       peer6: fe80::1534
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421534
       ipv4: true
@@ -154,9 +231,15 @@ peers:
       mp_bgp: true
   - comment: highdef.network
     wg:
+      port: 21080
       endpoint: hkg.peer.highdef.network:21023
       wg_pubkey: "eedTHubyl5caiHH50GkknQa8SQtAF8q7aqmL26w5qSs="
+      psk: null
+      peer4: null
       peer6: fe80::1080:38
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421080
       ipv4: true
@@ -165,11 +248,15 @@ peers:
       mp_bgp: true
   - comment: kioubit
     wg:
+      port: 23914
       endpoint: hk1.g-load.eu:21023
       wg_pubkey: "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8="
       psk: null
       peer4: null
       peer6: fe80::ade0
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423914
       ipv4: true
@@ -178,9 +265,15 @@ peers:
       mp_bgp: true
   - comment: Nisbett
     wg:
+      port: 20398
       endpoint: hkl.dn42.boletus.icu:21023
       wg_pubkey: "XD66eoHp06VmDUNFUguJeOY8gFLiLZ7Lkyz/WsMQSWU="
+      psk: null
+      peer4: null
       peer6: fe80::398
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420398
       ipv4: true
@@ -189,10 +282,15 @@ peers:
       mp_bgp: true
   - comment: Maraun
     wg:
+      port: 22225
       endpoint: dn42-sg.maraun.de:21023
       wg_pubkey: "rWTIK93+XJaP4sRvrk1gqXxAZgkz6y/axLC4mjuay1I="
+      psk: null
+      peer4: null
       peer6: fe80::2225
       own6: fe80::1023
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422225
       ipv4: true
@@ -201,10 +299,15 @@ peers:
       mp_bgp: true
   - comment: tech9
     wg:
+      port: 21588
       endpoint: sg-sin01.dn42.tech9.io:51143
       wg_pubkey: "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY="
+      psk: null
+      peer4: null
       peer6: fe80::1588
       own6: fe80::100
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421588
       ipv4: true
@@ -213,9 +316,15 @@ peers:
       mp_bgp: true
   - comment: RoutedBits
     wg:
+      port: 20207
       endpoint: router.sin1.routedbits.com:51023
       wg_pubkey: "8sTnWN7ykPaDe1WIZOlnqECiGMJzwXB8TXWHcT7qnEw="
+      psk: null
+      peer4: null
       peer6: fe80::207
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420207
       ipv4: true
@@ -224,9 +333,15 @@ peers:
       mp_bgp: true
   - comment: allnet
     wg:
+      port: 20387
       endpoint: 156.226.173.78:21023
       wg_pubkey: "krJb3l8hypXbDs8h6zNw5QQy5zdwVsRKRm1g30KnYBU="
+      psk: null
+      peer4: null
       peer6: fe80::387
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420387
       ipv4: true
@@ -235,9 +350,15 @@ peers:
       mp_bgp: true
   - comment: moraxyc
     wg:
+      port: 23011
       endpoint: hk4.dn42.moraxyc.com:21023
       wg_pubkey: "VLapquicGRZmdMAamgQ19jyo7LbmK3X3nNCffGo6ID4="
+      psk: null
+      peer4: null
       peer6: fe80::3011
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423011
       ipv4: true
@@ -246,9 +367,14 @@ peers:
       mp_bgp: true
   - comment: MoonWX
     wg:
+      port: 20985
       endpoint: 6.dn42.hk01.moonwx.net:21023
       wg_pubkey: "NfLhJvm5GiJ7emKFtRRLMM68H+tAkzSVrOAqfQJY1Ts="
+      psk: null
+      peer4: null
       peer6: fe80::985:1
+      own6: null
+      keepalive: null
       mtu: 1340
     bgp:
       asn: 4242420985
@@ -258,9 +384,15 @@ peers:
       mp_bgp: true
   - comment: PuduNet
     wg:
+      port: 22227
       endpoint: sin01.pudunet.net:61023
       wg_pubkey: "prifvN1CEXmuOAM3I1ykzaa6vD97Hy84j4Ag99x9CmA="
+      psk: null
+      peer4: null
       peer6: fe80::2003
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422227
       ipv4: true
@@ -269,20 +401,31 @@ peers:
       mp_bgp: true
   - comment: leziblog
     wg:
+      port: 23377
       endpoint: v6.hk1.peer.dn42.leziblog.com:21023
       wg_pubkey: "XaX6/G7EQbcjsrtlxNmDc/s/VSdTxtkBxZKB2JpWIHo="
+      psk: null
+      peer4: null
       peer6: fe80::3377
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423377
       ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: "@Auride"
+  - comment: '@Auride'
     wg:
+      port: 23310
       endpoint: hkg01.edge.r1.tmpfs.dev:21023
       wg_pubkey: "aC9pjzMWZhbA/sLPljUFGU1K28MSopHbKNj5yyv4uzg="
+      psk: null
+      peer4: null
       peer6: fe80::1023:3310
+      own6: null
+      keepalive: null
       mtu: 1420
     bgp:
       asn: 4242423310
@@ -292,31 +435,49 @@ peers:
       mp_bgp: true
   - comment: nedifinita
     wg:
+      port: 20454
       endpoint: dn42hk0.nedifinita.com:56689
       wg_pubkey: "8auu/+HFce5JAexe1b5MDg+nh4vutQVlXd0kJySXVGc="
+      psk: null
+      peer4: null
       peer6: fe80::454:112
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420454
       ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: "imlonghao"
+  - comment: imlonghao
     wg:
+      port: 21888
       endpoint: hk1.dn42.ni.sb:21023
       wg_pubkey: "RyP2/n///CanKOD1EFtiPawHfUZb14+Fg0v4pbpsrnY="
+      psk: null
+      peer4: null
       peer6: fe80::1888
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421888
       ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: "vctop"
+  - comment: vctop
     wg:
+      port: 23322
       endpoint: hk.node.vconet.top:21023
       wg_pubkey: "AHEJ0dXDDxJF0EapR7Ssx2eQV9ReB/OvkWPu7ypWbkA="
+      psk: null
+      peer4: null
       peer6: fe80::3322
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423322
       ipv4: true
@@ -325,9 +486,15 @@ peers:
       mp_bgp: true
   - comment: Kaede
     wg:
+      port: 22212
       endpoint: hkg1.hk.dn42.akinokaede.com:21023
       wg_pubkey: "ZCTsAWqaiEnrmtX/2j9YNgB1vQ4HnodFtI9m/lwQLnU="
+      psk: null
+      peer4: null
       peer6: fe80::2212
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422212
       ipv4: true

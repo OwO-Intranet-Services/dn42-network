@@ -1,0 +1,94 @@
+name: peer-config-normalize
+
+on:
+  pull_request:
+    paths:
+      - host_vars/*/dn42_peers.yaml
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - host_vars/*/dn42_peers.yaml
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install formatter dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install PyYAML
+
+      - name: Resolve diff refs
+        id: refs
+        run: |
+          empty_tree_sha="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+              echo "base=$empty_tree_sha" >> "$GITHUB_OUTPUT"
+            else
+              echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+            fi
+            echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Normalize changed peer files
+        env:
+          BASE_REF: ${{ steps.refs.outputs.base }}
+          HEAD_REF: ${{ steps.refs.outputs.head }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+
+          completed = subprocess.run(
+              ["git", "diff", "--name-only", os.environ["BASE_REF"], os.environ["HEAD_REF"]],
+              check=True,
+              capture_output=True,
+              text=True,
+          )
+          changed_paths = [
+              line.strip()
+              for line in completed.stdout.splitlines()
+              if line.strip().startswith("host_vars/") and line.strip().endswith("/dn42_peers.yaml")
+          ]
+
+          if not changed_paths:
+              print("No changed peer files to normalize.")
+              raise SystemExit(0)
+
+          subprocess.run([sys.executable, "tools/normalize_peer_configs.py", *changed_paths], check=True)
+          print("Normalized peer files:")
+          for path in changed_paths:
+              print(f"- {path}")
+          PY
+
+      - name: Commit normalized peer files
+        run: |
+          git diff --quiet --exit-code && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add host_vars/*/dn42_peers.yaml
+          git commit -m "fix: normalize peer config to explicit form"
+          git push

@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 try:
-    from tools.yaml_helpers import LenientSafeLoader, load_yaml_file
+    from tools.peer_config import load_peer_yaml_text, normalize_peer_entry_for_compare
+    from tools.yaml_helpers import load_yaml_file
 except ModuleNotFoundError:  # pragma: no cover - direct script execution path
-    from yaml_helpers import LenientSafeLoader, load_yaml_file
+    from peer_config import load_peer_yaml_text, normalize_peer_entry_for_compare
+    from yaml_helpers import load_yaml_file
 
 DEFAULT_INVENTORY = Path("inventory.yaml")
 EMPTY_TREE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
@@ -91,28 +91,10 @@ def read_git_file(repo_root: Path, ref: str, path: Path) -> str | None:
     raise PeerSessionDiffError(f"Unable to read {path} from {ref}: {detail}")
 
 
-def normalize_value(value: Any) -> Any:
-    if isinstance(value, dict):
-        normalized: dict[str, Any] = {}
-        for key, child in value.items():
-            normalized_child = normalize_value(child)
-            if normalized_child is None:
-                continue
-            if key == "removed" and normalized_child is False:
-                continue
-            normalized[str(key)] = normalized_child
-        return normalized
-
-    if isinstance(value, list):
-        return [normalize_value(item) for item in value]
-
-    return value
-
-
 def parse_peer_file(text: str, source: str) -> dict[int, dict[str, Any]]:
     try:
-        data = yaml.load(text, Loader=LenientSafeLoader)
-    except yaml.YAMLError as exc:
+        data = load_peer_yaml_text(text)
+    except Exception as exc:
         raise PeerSessionDiffError(f"{source}: invalid YAML: {exc}") from exc
 
     if data is None:
@@ -148,17 +130,10 @@ def parse_peer_file(text: str, source: str) -> dict[int, dict[str, Any]]:
         if not isinstance(removed, bool):
             raise PeerSessionDiffError(f"{item_source}: 'removed' must be a boolean")
 
-        normalized = normalize_value(peer)
-        if not isinstance(normalized, dict):
-            raise PeerSessionDiffError(f"{item_source}: peer entry must normalize to a mapping")
-
-        normalized.setdefault("bgp", {})
-        if not isinstance(normalized["bgp"], dict):
-            raise PeerSessionDiffError(f"{item_source}: 'bgp' must remain a mapping")
-        normalized["bgp"]["asn"] = asn
-
-        if removed:
-            normalized = {"bgp": {"asn": asn}, "removed": True}
+        try:
+            normalized = normalize_peer_entry_for_compare(peer)
+        except ValueError as exc:
+            raise PeerSessionDiffError(f"{item_source}: {exc}") from exc
 
         if asn in parsed:
             raise PeerSessionDiffError(f"{source}: duplicate ASN {asn}")

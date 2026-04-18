@@ -289,6 +289,56 @@ class PeerSessionDiffTests(unittest.TestCase):
         self.assertEqual(report["deploy_hosts"], [])
         self.assertEqual(report["errors"], [])
 
+    def test_normalization_only_changes_do_not_trigger_deploy(self) -> None:
+        root = self.create_repo()
+        self.write_peer_file(
+            root,
+            "lax-01",
+            """\
+            peers:
+              - comment: alpha
+                wg:
+                  port: 23914
+                  endpoint: alpha.example:21023
+                  wg_pubkey: AAA
+                  psk: null
+                  peer4: null
+                  peer6: fe80::1
+                  own6: null
+                  keepalive: null
+                bgp:
+                  asn: 4242423914
+                  ipv4: true
+                  ipv6: true
+                  extended_next_hop: true
+                  mp_bgp: true
+            """,
+        )
+        base_ref = self.commit_all(root, "base")
+
+        self.write_peer_file(
+            root,
+            "lax-01",
+            """\
+            peers:
+              - comment: alpha
+                wg:
+                  endpoint: alpha.example:21023
+                  wg_pubkey: AAA
+                  peer6: fe80::1
+                bgp:
+                  asn: 4242423914
+            """,
+        )
+        head_ref = self.commit_all(root, "head")
+
+        report = build_report(root, root / "inventory.yaml", base_ref, head_ref)
+
+        self.assertFalse(report["has_changes"])
+        self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["host_changes"], {})
+        self.assertEqual(report["errors"], [])
+
     def test_duplicate_asn_is_reported_as_error(self) -> None:
         root = self.create_repo()
         self.write_peer_file(root, "lax-01", "peers: []\n")

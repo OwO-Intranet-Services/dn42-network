@@ -4,7 +4,12 @@ peers:
       port: 23999
       endpoint: lax.node.cowgl.xyz:31023
       wg_pubkey: "jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg="
+      psk: null
+      peer4: null
       peer6: fe80::2:3999
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423999
       ipv4: true
@@ -16,7 +21,12 @@ peers:
       port: 22189
       endpoint: us-lax.dn42.iedon.net:41504
       wg_pubkey: "DIw4TKAQelurK10Sh1qE6IiDKTqL1yciI5ItwBgcHFA="
+      psk: null
+      peer4: null
       peer6: fe80::2189:ef
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422189
       ipv4: true
@@ -28,7 +38,12 @@ peers:
       port: 21023
       endpoint: lax-us.ecs.iyoroy-infra.top:21023
       wg_pubkey: "As0rZo5b9Bwt4loPGl6iSdtOqkd2p6ExK/Xyoy9OmTU="
+      psk: null
+      peer4: null
       peer6: fe80::2024
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242422024
       ipv4: true
@@ -48,7 +63,11 @@ peers:
         3538656236336566630a316664333331386333653032623666626233353161343430613135363263
         65323366623463333661376135393536653531346235353861316531336436646638643637316630
         6239623734653333663863633161343633303937613261373638
+      peer4: null
       peer6: fe80::298
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242420298
       ipv4: true
@@ -57,9 +76,15 @@ peers:
       mp_bgp: true
   - comment: qiuxin
     wg:
+      port: 21771
       endpoint: lax1.exploro.one:32641
       wg_pubkey: "Fa6VU4TeRXm1qhUDk2qlunKtdM3GzwJR4TMaQg0jh2E="
+      psk: null
+      peer4: null
       peer6: fe80::1771
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242421771
       ipv4: true
@@ -68,9 +93,14 @@ peers:
       mp_bgp: true
   - comment: launchpadx
     wg:
+      port: 23702
       endpoint: svz.s.launchpadx.top:51023
       wg_pubkey: "VVQeVruKQ50/KTUo8k5PF3Y7mR4Jvro7j39pBRZMI28="
+      psk: null
+      peer4: null
       peer6: fe80::3702
+      own6: null
+      keepalive: null
       mtu: 1392
     bgp:
       asn: 4242423702
@@ -80,20 +110,32 @@ peers:
       mp_bgp: true
   - comment: Maoyue
     wg:
+      port: 23942
       endpoint: 192.161.163.236:21023
       wg_pubkey: "vUtdpRO5g/sTLW005E8nZAMoYEkoJk9qU+aHIK2iYTM="
+      psk: null
+      peer4: null
       peer6: fe80::3942
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423942
       ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: "@Ykino233"
+  - comment: '@Ykino233'
     wg:
+      port: 23311
       endpoint: node01-bgp.us.peakcomet.dpdns.org:21023
       wg_pubkey: "fxtgu29lj4VqYPxNY0VJCKVin6sh5JTdqeU7x7ts92s="
+      psk: null
+      peer4: null
       peer6: fe80::3311
+      own6: null
+      keepalive: null
+      mtu: null
     bgp:
       asn: 4242423311
       ipv4: true
