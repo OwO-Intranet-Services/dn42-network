@@ -26,3 +26,5 @@ bird-lg-rs/target/
 .last_build_commit_*
 
 AGENTS.md
+
+tests/
