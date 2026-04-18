@@ -17,6 +17,8 @@ except ModuleNotFoundError:  # pragma: no cover - direct script execution path
     from yaml_helpers import load_yaml_file
 
 DEFAULT_INVENTORY = Path("inventory.yaml")
+DEFAULT_COMMON_VARS = Path("group_vars/all/common.yaml")
+DEFAULT_DN42_PREFIX = "dn42_"
 EMPTY_TREE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 
@@ -62,6 +64,50 @@ def load_active_dn42_hosts(inventory_path: Path) -> set[str]:
         raise PeerSessionDiffError("Inventory dn42 group must expose a hosts mapping")
 
     return {str(host_name) for host_name in hosts}
+
+
+def load_dn42_prefix(repo_root: Path) -> str:
+    common_vars_path = repo_root / DEFAULT_COMMON_VARS
+    if not common_vars_path.exists():
+        return DEFAULT_DN42_PREFIX
+
+    try:
+        data = load_yaml_file(common_vars_path)
+    except Exception:
+        return DEFAULT_DN42_PREFIX
+
+    if not isinstance(data, dict):
+        return DEFAULT_DN42_PREFIX
+
+    prefix = data.get("dn42_prefix")
+    if isinstance(prefix, str) and prefix:
+        return prefix
+
+    return DEFAULT_DN42_PREFIX
+
+
+def dn42_target_name(asn: int, prefix: str) -> str:
+    return f"{prefix}{str(asn)[-4:]}"
+
+
+def build_deploy_matrix(
+    host_changes: dict[str, dict[str, list[dict[str, Any]]]],
+    dn42_prefix: str,
+) -> list[dict[str, Any]]:
+    deploy_matrix: list[dict[str, Any]] = []
+
+    for host in sorted(host_changes):
+        targets = sorted(
+            {
+                dn42_target_name(entry["asn"], dn42_prefix)
+                for change_type in ("added", "updated", "removed")
+                for entry in host_changes[host][change_type]
+            }
+        )
+        if targets:
+            deploy_matrix.append({"host": host, "targets": targets})
+
+    return deploy_matrix
 
 
 def list_changed_peer_paths(repo_root: Path, base_ref: str, head_ref: str) -> list[Path]:
@@ -210,7 +256,10 @@ def summarize_report(report: dict[str, Any]) -> str:
             [
                 "",
                 "## Deploy Hosts",
-                *[f"- `{host}`" for host in report["deploy_hosts"]],
+                *[
+                    f"- `{entry['host']}`: {', '.join(f'`{target}`' for target in entry['targets'])}"
+                    for entry in report["deploy_matrix"]
+                ],
             ]
         )
     else:
@@ -261,6 +310,7 @@ def build_report(
     normalized_base = normalize_ref(base_ref)
     normalized_head = normalize_ref(head_ref)
     active_hosts = load_active_dn42_hosts(inventory_path)
+    dn42_prefix = load_dn42_prefix(repo_root)
     changed_paths = list_changed_peer_paths(repo_root, normalized_base, normalized_head)
 
     host_changes: dict[str, dict[str, list[dict[str, Any]]]] = {}
@@ -300,12 +350,14 @@ def build_report(
         if any(changes.values()):
             host_changes[host] = changes
 
-    deploy_hosts = sorted(host_changes)
+    deploy_matrix = build_deploy_matrix(host_changes, dn42_prefix)
+    deploy_hosts = [entry["host"] for entry in deploy_matrix]
     report = {
         "base_ref": normalized_base,
         "head_ref": normalized_head,
-        "has_changes": bool(deploy_hosts),
+        "has_changes": bool(deploy_matrix),
         "deploy_hosts": deploy_hosts,
+        "deploy_matrix": deploy_matrix,
         "host_changes": host_changes,
         "hard_delete_errors": hard_delete_errors,
         "errors": errors,
@@ -366,6 +418,7 @@ def main() -> int:
             "head_ref": normalize_ref(args.head_ref),
             "has_changes": False,
             "deploy_hosts": [],
+            "deploy_matrix": [],
             "host_changes": {},
             "hard_delete_errors": [],
             "errors": [str(exc)],

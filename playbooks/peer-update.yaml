@@ -1,0 +1,11 @@
+---
+- name: Automated DN42 Peer Update
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - peer-update
+  roles:
+    - role: config-peer-update
+      tags:
+        - peer-update

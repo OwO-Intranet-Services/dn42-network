@@ -131,6 +131,10 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertEqual(report["deploy_hosts"], ["lax-01"])
         self.assertEqual(
+            report["deploy_matrix"],
+            [{"host": "lax-01", "targets": ["dn42_0001", "dn42_0002", "dn42_0003"]}],
+        )
+        self.assertEqual(
             [entry["asn"] for entry in report["host_changes"]["lax-01"]["added"]],
             [4242420003],
         )
@@ -177,6 +181,7 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertFalse(report["has_changes"])
         self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["deploy_matrix"], [])
         self.assertEqual(len(report["hard_delete_errors"]), 1)
         self.assertIn("removed: true", report["hard_delete_errors"][0])
 
@@ -223,6 +228,7 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertFalse(report["has_changes"])
         self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["deploy_matrix"], [])
         self.assertEqual(report["errors"], [])
         self.assertEqual(report["ignored_paths"], ["host_vars/bom-01/dn42_peers.yaml"])
 
@@ -287,6 +293,7 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertFalse(report["has_changes"])
         self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["deploy_matrix"], [])
         self.assertEqual(report["errors"], [])
 
     def test_normalization_only_changes_do_not_trigger_deploy(self) -> None:
@@ -336,6 +343,7 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertFalse(report["has_changes"])
         self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["deploy_matrix"], [])
         self.assertEqual(report["host_changes"], {})
         self.assertEqual(report["errors"], [])
 
@@ -375,6 +383,7 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         self.assertFalse(report["has_changes"])
         self.assertEqual(report["deploy_hosts"], [])
+        self.assertEqual(report["deploy_matrix"], [])
         self.assertEqual(len(report["errors"]), 1)
         self.assertIn("duplicate ASN 4242420001", report["errors"][0])
 

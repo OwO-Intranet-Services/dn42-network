@@ -1,0 +1,15 @@
+---
+wireguard_private_key_path: "/etc/wireguard/privatekey"
+
+wireguard_allowed_ips:
+  - 10.0.0.0/8
+  - 172.20.0.0/14
+  - 172.31.0.0/16
+  - fd00::/8
+  - fe80::/64
+
+dn42_latency_ping_count: 5
+dn42_latency_ping_timeout: 2
+
+dn42_latency_community_default: 9
+dn42_bandwidth_community_default: 24

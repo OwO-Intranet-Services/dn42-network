@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       has_changes: ${{ steps.export.outputs.has_changes }}
-      deploy_hosts: ${{ steps.export.outputs.deploy_hosts }}
+      deploy_matrix: ${{ steps.export.outputs.deploy_matrix }}
 
     steps:
       - name: Check out repository
@@ -57,7 +57,7 @@ jobs:
 
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
               handle.write(f"has_changes={'true' if report['has_changes'] else 'false'}\n")
-              handle.write(f"deploy_hosts={json.dumps(report['deploy_hosts'])}\n")
+              handle.write(f"deploy_matrix={json.dumps(report['deploy_matrix'])}\n")
           PY
 
   apply:
@@ -70,7 +70,7 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        host: ${{ fromJson(needs.detect.outputs.deploy_hosts) }}
+        deploy: ${{ fromJson(needs.detect.outputs.deploy_matrix) }}
 
     steps:
       - name: Check out repository
@@ -85,8 +85,6 @@ jobs:
 
       - name: Install deployment dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes wireguard-tools
           python3 -m pip install --upgrade pip
           python3 -m pip install ansible-core
           ansible-galaxy collection install -r collections/requirements.yml
@@ -124,8 +122,19 @@ jobs:
           printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
           chmod 600 .secrets/vault_pass.txt
 
-      - name: Apply DN42 WireGuard peer config
-        run: ansible-playbook setup-wg.yaml --limit "${{ matrix.host }}" -e task_type=dn42
+      - name: Apply targeted DN42 peer update
+        env:
+          DEPLOY_HOST: ${{ matrix.deploy.host }}
+          DEPLOY_TARGETS_JSON: ${{ toJson(matrix.deploy.targets) }}
+        run: |
+          python3 - <<'PY' > .peer-update-vars.json
+          import json
+          import os
 
-      - name: Apply DN42 BIRD peer config
-        run: ansible-playbook setup-bird.yaml --limit "${{ matrix.host }}" -e task_type=dn42
+          payload = {
+              "peer_update_targets": json.loads(os.environ["DEPLOY_TARGETS_JSON"]),
+          }
+          print(json.dumps(payload))
+          PY
+
+          ansible-playbook setup-peer-update.yaml --limit "$DEPLOY_HOST" -e @.peer-update-vars.json
