@@ -14,7 +14,64 @@
     path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
   register: local_wg_private_key
 
-- name: Generate WireGuard keys locally if missing
+- name: Check if local WireGuard public key exists
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+  register: local_wg_public_key
+
+- name: Check if remote WireGuard private key exists
+  ansible.builtin.stat:
+    path: "{{ wireguard_private_key_path }}"
+  register: remote_wg_private_key
+
+- name: Check if remote WireGuard public key exists
+  ansible.builtin.stat:
+    path: "{{ wireguard_public_key_path }}"
+  register: remote_wg_public_key
+
+- name: Read remote WireGuard private key when controller cache is missing
+  ansible.builtin.slurp:
+    src: "{{ wireguard_private_key_path }}"
+  register: remote_wg_private_key_content
+  when:
+    - not local_wg_private_key.stat.exists
+    - remote_wg_private_key.stat.exists
+  no_log: true
+
+- name: Read remote WireGuard public key when controller cache is missing
+  ansible.builtin.slurp:
+    src: "{{ wireguard_public_key_path }}"
+  register: remote_wg_public_key_content
+  when:
+    - not local_wg_public_key.stat.exists
+    - remote_wg_public_key.stat.exists
+
+- name: Cache remote WireGuard private key locally if missing
+  delegate_to: localhost
+  become: false
+  ansible.builtin.copy:
+    content: "{{ remote_wg_private_key_content.content | b64decode }}"
+    dest: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+    mode: "0600"
+  when:
+    - not local_wg_private_key.stat.exists
+    - remote_wg_private_key.stat.exists
+  no_log: true
+
+- name: Cache remote WireGuard public key locally if missing
+  delegate_to: localhost
+  become: false
+  ansible.builtin.copy:
+    content: "{{ remote_wg_public_key_content.content | b64decode }}"
+    dest: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+    mode: "0644"
+  when:
+    - not local_wg_public_key.stat.exists
+    - remote_wg_public_key.stat.exists
+
+- name: Generate WireGuard keys locally if missing everywhere
   delegate_to: localhost
   become: false
   ansible.builtin.shell:
@@ -25,6 +82,43 @@
       printf '%s\n' "${private_key}" | wg pubkey > publickey
     chdir: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
     creates: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+  when:
+    - not local_wg_private_key.stat.exists
+    - not remote_wg_private_key.stat.exists
+
+- name: Refresh local WireGuard private key status
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
+  register: local_wg_private_key
+
+- name: Refresh local WireGuard public key status
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+  register: local_wg_public_key
+
+- name: Generate local WireGuard public key from cached private key if missing
+  delegate_to: localhost
+  become: false
+  ansible.builtin.shell:
+    cmd: |
+      umask 077
+      wg pubkey < privatekey > publickey
+    chdir: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}"
+    creates: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+  when:
+    - local_wg_private_key.stat.exists
+    - not local_wg_public_key.stat.exists
+
+- name: Refresh local WireGuard public key status after generation
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/publickey"
+  register: local_wg_public_key
 
 - name: Read local WireGuard private key
   delegate_to: localhost
