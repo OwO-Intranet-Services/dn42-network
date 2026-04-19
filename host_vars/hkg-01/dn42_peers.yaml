@@ -58,22 +58,21 @@ peers:
       extended_next_hop: true
       mp_bgp: true
   - wg:
-      port: 34169
-      endpoint: 'hk-hkg.dn42.iedon.net:34169'
-      wg_pubkey: 'OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34='
+      port: 22189
+      endpoint: 'sg-sin.dn42.iedon.net:40523'
+      wg_pubkey: 'XAmCHa9+dnC6uba+gFn5ucl7B69k8vmIAgJm3a8XlGQ='
       psk: null
       peer4: null
-      peer6: 'fe80::2189:120'
+      peer6: 'fe80::2189:119'
       own6: null
       keepalive: null
-      mtu: null
+      mtu: 1420
     bgp:
       asn: 4242422189
       ipv4: true
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-    removed: true
     autopeer:
       managed: true
       effective_mnt: 'IEDON-MNT'
