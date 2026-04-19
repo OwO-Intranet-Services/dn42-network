@@ -293,6 +293,10 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'ROUTEDBITS-MNT'
+      auth_provider: 'migration'
   - comment: 'allnet'
     wg:
       port: 20387
