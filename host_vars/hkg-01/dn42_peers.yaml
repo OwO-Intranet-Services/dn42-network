@@ -58,8 +58,8 @@ peers:
       extended_next_hop: true
       mp_bgp: true
   - wg:
-      port: 22189
-      endpoint: 'v6.hk-hkg.dn42.iedon.net:34169'
+      port: 34169
+      endpoint: 'hk-hkg.dn42.iedon.net:34169'
       wg_pubkey: 'OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34='
       psk: null
       peer4: null
