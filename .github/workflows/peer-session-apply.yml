@@ -1,9 +1,7 @@
 name: peer-session-apply
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
     paths:
       - host_vars/*/dn42_peers.yaml
   workflow_dispatch:
@@ -19,13 +17,23 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
-  group: peer-session-apply-${{ github.event_name == 'workflow_dispatch' && inputs.deploy_host || 'main' }}
+  group: >-
+    peer-session-apply-${{
+      github.event_name == 'workflow_dispatch' && inputs.deploy_host
+      || format('pr-{0}', github.event.pull_request.number)
+    }}
   cancel-in-progress: false
 
 jobs:
   detect:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'pull_request'
+          && github.event.pull_request.user.login == 'iris-as-a-bot'
+          && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -37,6 +45,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -52,8 +61,8 @@ jobs:
         id: export
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.event.before }}
-          HEAD_REF: ${{ github.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha }}
           DEPLOY_HOST: ${{ inputs.deploy_host }}
           PEER_TARGETS: ${{ inputs.peer_targets }}
         run: |
@@ -64,7 +73,7 @@ jobs:
           import sys
 
           event_name = os.environ["EVENT_NAME"]
-          if event_name == "push":
+          if event_name == "pull_request":
               subprocess.run(
                   [
                       sys.executable,
@@ -111,8 +120,70 @@ jobs:
               handle.write(f"deploy_matrix={json.dumps(deploy_matrix)}\n")
           PY
 
-  apply:
+  preflight:
     needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
+    runs-on: [self-hosted, Linux, X64, ipv6, fra-01]
+    timeout-minutes: 5
+    environment: dn42-peer-prod
+    strategy:
+      fail-fast: false
+      matrix:
+        deploy: ${{ fromJson(needs.detect.outputs.deploy_matrix) }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install preflight dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core
+
+      - name: Configure SSH
+        env:
+          ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$ANSIBLE_SSH_PRIVATE_KEY" || {
+            echo "::error::ANSIBLE_SSH_PRIVATE_KEY secret is required for preflight."
+            exit 1
+          }
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$ANSIBLE_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cp .github/ssh_known_hosts ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Probe deploy host
+        env:
+          DEPLOY_HOST: ${{ matrix.deploy.host }}
+        run: |
+          echo "::group::Ansible ping ${DEPLOY_HOST}"
+          if ! ansible -i inventory.yaml "${DEPLOY_HOST}" -m ansible.builtin.ping -o; then
+            echo "::error title=Preflight failed::${DEPLOY_HOST} is unreachable. Refusing to apply; would have crashed WireGuard."
+            exit 1
+          fi
+          echo "::endgroup::"
+
+          echo "::group::WireGuard status ${DEPLOY_HOST}"
+          if ! ansible -i inventory.yaml "${DEPLOY_HOST}" \
+            -m ansible.builtin.command -a "wg show interfaces" -b -o; then
+            echo "::error title=Preflight failed::${DEPLOY_HOST} WireGuard control plane is not responding."
+            exit 1
+          fi
+          echo "::endgroup::"
+
+  apply:
+    needs: [detect, preflight]
     if: needs.detect.outputs.has_changes == 'true'
     runs-on: [self-hosted, Linux, X64, ipv6, fra-01]
     timeout-minutes: 30
@@ -128,6 +199,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
 
       - name: Verify runner Python
         run: |
