@@ -37,6 +37,7 @@ all:
           wg_pubkey: "pv0bwaUm/ppI7Yaoi7w0qrXX5EW7Qo2njTSNG19AHgM="
           region: ASIA_E
           country: JP
+          autopeer: false
 
         dls-01:
           ansible_host: dls-01.node.svc.moe
