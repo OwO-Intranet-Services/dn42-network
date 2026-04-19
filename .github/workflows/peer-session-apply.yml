@@ -246,30 +246,43 @@ jobs:
               print("No active peer endpoints to verify; skipping reachability check.")
               sys.exit(0)
 
-          failures: list[tuple[str, str, str]] = []
+          failures: list[tuple[str, str, str, str]] = []
           for target, host_part in endpoints:
               print(f"::group::{target} endpoint {host_part}")
               cmd = (
-                  f"ping -4 -c 2 -W 3 {host_part!r} >/dev/null 2>&1 "
-                  f"|| ping -6 -c 2 -W 3 {host_part!r} >/dev/null 2>&1"
+                  f"ping -4 -c 2 -W 3 {host_part!r} "
+                  f"|| ping -6 -c 2 -W 3 {host_part!r}"
               )
-              rc = subprocess.run(
+              result = subprocess.run(
                   [
                       "ansible", "-i", "inventory.yaml", host,
-                      "-m", "ansible.builtin.shell", "-a", cmd, "-o",
+                      "-m", "ansible.builtin.shell", "-a", cmd,
                   ],
                   check=False,
-              ).returncode
+                  capture_output=True,
+                  text=True,
+              )
+              if result.stdout:
+                  sys.stdout.write(result.stdout)
+              if result.stderr:
+                  sys.stderr.write(result.stderr)
               print("::endgroup::")
-              if rc != 0:
-                  failures.append((target, host_part, host))
+              if result.returncode != 0:
+                  combined = (result.stdout or "") + (result.stderr or "")
+                  failures.append((target, host_part, host, combined))
 
           if failures:
-              for target, host_part, deploy_host in failures:
+              for target, host_part, deploy_host, output in failures:
+                  tail = "\n".join(output.strip().splitlines()[-15:]) or "(no output from ansible)"
+                  encoded = (
+                      tail.replace("%", "%25")
+                      .replace("\r", "%0D")
+                      .replace("\n", "%0A")
+                  )
                   print(
                       f"::error title=Preflight failed::Peer {target} endpoint "
                       f"{host_part} is not reachable from {deploy_host}; "
-                      "refusing to apply."
+                      f"refusing to apply.%0A%0A{encoded}"
                   )
               sys.exit(1)
           PY
