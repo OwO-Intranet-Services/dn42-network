@@ -53,3 +53,24 @@ peers:
       managed: true
       effective_mnt: 'NEDIFINITA-MNT'
       auth_provider: 'migration'
+  - comment: 'RoutedBits'
+    wg:
+      port: 20207
+      endpoint: 'router.sea1.routedbits.com:51023'
+      wg_pubkey: '/aY73VNAGQ7W+GersZUSO6PqHJV8nWKb12Op9EQzY3k='
+      psk: null
+      peer4: null
+      peer6: 'fe80::207'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420207
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'ROUTEDBITS-MNT'
+      auth_provider: 'host_impersonation'
