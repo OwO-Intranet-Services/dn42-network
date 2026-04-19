@@ -12,81 +12,12 @@
   register: lg_build_current_commit
   changed_when: false
 
-- name: Check build stamp for {{ lg_package.name }}
-  ansible.builtin.stat:
-    path: "{{ lg_artifacts_root }}/{{ lg_package.name }}/last_build_commit"
-  register: lg_build_stamp
-
-- name: Check current artifact for {{ lg_package.name }}
-  ansible.builtin.stat:
-    path: "{{ lg_artifacts_root }}/{{ lg_package.name }}/{{ lg_package.name }}"
-  register: lg_build_artifact
-
-- name: Read last built commit hash for {{ lg_package.name }}
-  ansible.builtin.slurp:
-    src: "{{ lg_artifacts_root }}/{{ lg_package.name }}/last_build_commit"
-  register: lg_build_last_commit
-  when: lg_build_stamp.stat.exists
-
-- name: Decide whether rebuild is needed for {{ lg_package.name }}
-  ansible.builtin.set_fact:
-    lg_build_needed: >-
-      {{
-        (not lg_build_stamp.stat.exists) or
-        ((lg_build_last_commit.content | default('') | b64decode | trim) != lg_build_current_commit.stdout) or
-        (not lg_build_artifact.stat.exists)
-      }}
-
-- name: Build artifact for {{ lg_package.name }}
-  when:
-    - lg_build_needed
-    - not ansible_check_mode
-  block:
-    - name: Run cargo build for {{ lg_package.name }}
-      ansible.builtin.command:
-        cmd: "cargo zigbuild --target {{ lg_build_target }} -p {{ lg_package.cargo_package }} -r --message-format=json"
-        chdir: "{{ lg_build_workspace }}"
-      register: lg_build_command
-      changed_when: true
-
-    - name: Resolve built artifact path for {{ lg_package.name }}
-      ansible.builtin.set_fact:
-        lg_built_artifact_path: >-
-          {{
-            (
-              lg_build_command.stdout_lines
-              | select('search', '"reason":"compiler-artifact"')
-              | map('from_json')
-              | selectattr('target.name', 'equalto', lg_package.name)
-              | selectattr('executable', 'defined')
-              | map(attribute='executable')
-              | reject('equalto', none)
-              | list
-              | first
-            ) | default('', true)
-          }}
-
-    - name: Assert built artifact path is available for {{ lg_package.name }}
-      ansible.builtin.assert:
-        that:
-          - lg_built_artifact_path | length > 0
-        fail_msg: "Could not determine built artifact path for {{ lg_package.name }} from cargo output."
-
-    - name: Publish artifact for {{ lg_package.name }}
-      ansible.builtin.copy:
-        src: "{{ lg_built_artifact_path }}"
-        dest: "{{ lg_artifacts_root }}/{{ lg_package.name }}/{{ lg_package.name }}"
-        mode: "0755"
-
-    - name: Save current commit hash for {{ lg_package.name }}
-      ansible.builtin.copy:
-        content: "{{ lg_build_current_commit.stdout }}"
-        dest: "{{ lg_artifacts_root }}/{{ lg_package.name }}/last_build_commit"
-        mode: "0644"
-
-- name: Report pending artifact build in check mode for {{ lg_package.name }}
-  ansible.builtin.debug:
-    msg: "Would build {{ lg_package.name }} artifact into {{ lg_artifacts_root }}/{{ lg_package.name }}"
-  when:
-    - lg_build_needed
-    - ansible_check_mode
+- name: Build cached artifact for {{ lg_package.name }}
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/build_cached_artifact.yaml"
+  vars:
+    build_cache_artifact_name: "{{ lg_package.name }} artifact"
+    build_cache_artifact_path: "{{ lg_artifacts_root }}/{{ lg_package.name }}/{{ lg_package.name }}"
+    build_cache_stamp_path: "{{ lg_artifacts_root }}/{{ lg_package.name }}/last_build_commit"
+    build_cache_signature: "{{ lg_build_current_commit.stdout }}"
+    build_cache_steps_file: "{{ role_path }}/tasks/build_package_steps.yaml"
+    build_cache_pending_message: "Would build {{ lg_package.name }} artifact into {{ lg_artifacts_root }}/{{ lg_package.name }}"

@@ -1,0 +1,36 @@
+---
+- name: Run cargo build for {{ lg_package.name }}
+  ansible.builtin.command:
+    cmd: "cargo zigbuild --target {{ lg_build_target }} -p {{ lg_package.cargo_package }} -r --message-format=json"
+    chdir: "{{ lg_build_workspace }}"
+  register: lg_build_command
+  changed_when: true
+
+- name: Resolve built artifact path for {{ lg_package.name }}
+  ansible.builtin.set_fact:
+    lg_built_artifact_path: >-
+      {{
+        (
+          lg_build_command.stdout_lines
+          | select('search', '"reason":"compiler-artifact"')
+          | map('from_json')
+          | selectattr('target.name', 'equalto', lg_package.name)
+          | selectattr('executable', 'defined')
+          | map(attribute='executable')
+          | reject('equalto', none)
+          | list
+          | first
+        ) | default('', true)
+      }}
+
+- name: Assert built artifact path is available for {{ lg_package.name }}
+  ansible.builtin.assert:
+    that:
+      - lg_built_artifact_path | length > 0
+    fail_msg: "Could not determine built artifact path for {{ lg_package.name }} from cargo output."
+
+- name: Publish artifact for {{ lg_package.name }}
+  ansible.builtin.copy:
+    src: "{{ lg_built_artifact_path }}"
+    dest: "{{ lg_artifacts_root }}/{{ lg_package.name }}/{{ lg_package.name }}"
+    mode: "0755"

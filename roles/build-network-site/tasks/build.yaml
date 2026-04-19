@@ -1,0 +1,23 @@
+---
+- name: Run frontend build script
+  ansible.builtin.command:
+    argv:
+      - "{{ network_site_build_workspace }}/build.sh"
+      - --backend-url
+      - "{{ network_site_backend_url }}"
+      - --autopeer-url
+      - "{{ network_site_autopeer_url }}"
+      - --autopeer-site-url
+      - "{{ network_site_autopeer_site_url }}"
+      - --username
+      - "{{ network_site_build_username }}"
+      - --output
+      - "{{ network_site_dist_dir }}"
+  environment:
+    NO_COLOR: "true"
+  changed_when: true
+
+- name: Compress network site assets # noqa: command-instead-of-module
+  ansible.builtin.command:
+    cmd: tar czf {{ network_site_tarball_path }} -C {{ network_site_dist_dir }} .
+  changed_when: true

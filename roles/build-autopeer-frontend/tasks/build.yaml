@@ -1,0 +1,20 @@
+---
+- name: Run autopeer frontend trunk build
+  ansible.builtin.command:
+    argv:
+      - trunk
+      - build
+      - --release
+      - --dist
+      - "{{ autopeer_frontend_dist_dir }}"
+  args:
+    chdir: "{{ autopeer_frontend_build_workspace }}"
+  environment:
+    TRUNK_SKIP_VERSION_CHECK: "true"
+    NO_COLOR: "true"
+  changed_when: true
+
+- name: Compress autopeer frontend assets # noqa: command-instead-of-module
+  ansible.builtin.command:
+    cmd: tar czf {{ autopeer_frontend_tarball_path }} -C {{ autopeer_frontend_dist_dir }} .
+  changed_when: true

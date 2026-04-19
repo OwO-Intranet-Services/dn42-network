@@ -6,65 +6,12 @@
   register: autopeer_frontend_current_commit
   changed_when: false
 
-- name: Check autopeer frontend build stamp
-  ansible.builtin.stat:
-    path: "{{ autopeer_frontend_commit_stamp }}"
-  register: autopeer_frontend_commit_stamp_stat
-
-- name: Check current autopeer frontend tarball
-  ansible.builtin.stat:
-    path: "{{ autopeer_frontend_tarball_path }}"
-  register: autopeer_frontend_tarball
-
-- name: Read last built commit hash for autopeer frontend
-  ansible.builtin.slurp:
-    src: "{{ autopeer_frontend_commit_stamp }}"
-  register: autopeer_frontend_last_commit
-  when: autopeer_frontend_commit_stamp_stat.stat.exists
-
-- name: Decide whether autopeer frontend build is needed
-  ansible.builtin.set_fact:
-    autopeer_frontend_build_needed: >-
-      {{
-        (not autopeer_frontend_commit_stamp_stat.stat.exists) or
-        ((autopeer_frontend_last_commit.content | default('') | b64decode | trim) != autopeer_frontend_current_commit.stdout) or
-        (not autopeer_frontend_tarball.stat.exists)
-      }}
-
-- name: Build autopeer frontend
-  when:
-    - autopeer_frontend_build_needed
-    - not ansible_check_mode
-  block:
-    - name: Run autopeer frontend trunk build
-      ansible.builtin.command:
-        argv:
-          - trunk
-          - build
-          - --release
-          - --dist
-          - "{{ autopeer_frontend_dist_dir }}"
-      args:
-        chdir: "{{ autopeer_frontend_build_workspace }}"
-      environment:
-        TRUNK_SKIP_VERSION_CHECK: "true"
-        NO_COLOR: "true"
-      changed_when: true
-
-    - name: Compress autopeer frontend assets # noqa: command-instead-of-module
-      ansible.builtin.command:
-        cmd: tar czf {{ autopeer_frontend_tarball_path }} -C {{ autopeer_frontend_dist_dir }} .
-      changed_when: true
-
-    - name: Save current commit hash for autopeer frontend
-      ansible.builtin.copy:
-        content: "{{ autopeer_frontend_current_commit.stdout }}"
-        dest: "{{ autopeer_frontend_commit_stamp }}"
-        mode: "0644"
-
-- name: Report pending autopeer frontend build in check mode
-  ansible.builtin.debug:
-    msg: "Would build autopeer frontend artifact into {{ autopeer_frontend_artifacts_root }}"
-  when:
-    - autopeer_frontend_build_needed
-    - ansible_check_mode
+- name: Build autopeer frontend artifact with cache
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/build_cached_artifact.yaml"
+  vars:
+    build_cache_artifact_name: autopeer frontend artifact
+    build_cache_artifact_path: "{{ autopeer_frontend_tarball_path }}"
+    build_cache_stamp_path: "{{ autopeer_frontend_commit_stamp }}"
+    build_cache_signature: "{{ autopeer_frontend_current_commit.stdout }}"
+    build_cache_steps_file: "{{ role_path }}/tasks/build.yaml"
+    build_cache_pending_message: "Would build autopeer frontend artifact into {{ autopeer_frontend_artifacts_root }}"

@@ -6,16 +6,6 @@
   register: network_site_current_commit
   changed_when: false
 
-- name: Check network site build stamp
-  ansible.builtin.stat:
-    path: "{{ network_site_commit_stamp }}"
-  register: network_site_commit_stamp_stat
-
-- name: Check current network site tarball
-  ansible.builtin.stat:
-    path: "{{ network_site_tarball_path }}"
-  register: network_site_tarball
-
 - name: Build network site input signature
   ansible.builtin.set_fact:
     network_site_build_signature: >-
@@ -27,58 +17,12 @@
         'username': network_site_build_username,
       } | to_json }}
 
-- name: Read last network site build signature
-  ansible.builtin.slurp:
-    src: "{{ network_site_commit_stamp }}"
-  register: network_site_last_commit
-  when: network_site_commit_stamp_stat.stat.exists
-
-- name: Decide whether network site build is needed
-  ansible.builtin.set_fact:
-    network_site_build_needed: >-
-      {{
-        (not network_site_commit_stamp_stat.stat.exists) or
-        ((network_site_last_commit.content | default('') | b64decode | trim) != network_site_build_signature) or
-        (not network_site_tarball.stat.exists)
-      }}
-
-- name: Build network site frontend
-  when:
-    - network_site_build_needed
-    - not ansible_check_mode
-  block:
-    - name: Run frontend build script
-      ansible.builtin.command:
-        argv:
-          - "{{ network_site_build_workspace }}/build.sh"
-          - --backend-url
-          - "{{ network_site_backend_url }}"
-          - --autopeer-url
-          - "{{ network_site_autopeer_url }}"
-          - --autopeer-site-url
-          - "{{ network_site_autopeer_site_url }}"
-          - --username
-          - "{{ network_site_build_username }}"
-          - --output
-          - "{{ network_site_dist_dir }}"
-      environment:
-        NO_COLOR: "true"
-      changed_when: true
-
-    - name: Compress network site assets # noqa: command-instead-of-module
-      ansible.builtin.command:
-        cmd: tar czf {{ network_site_tarball_path }} -C {{ network_site_dist_dir }} .
-      changed_when: true
-
-    - name: Save network site build signature
-      ansible.builtin.copy:
-        content: "{{ network_site_build_signature }}"
-        dest: "{{ network_site_commit_stamp }}"
-        mode: "0644"
-
-- name: Report pending network site build in check mode
-  ansible.builtin.debug:
-    msg: "Would build network site artifact into {{ network_site_artifacts_root }}"
-  when:
-    - network_site_build_needed
-    - ansible_check_mode
+- name: Build network site artifact with cache
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/build_cached_artifact.yaml"
+  vars:
+    build_cache_artifact_name: network site artifact
+    build_cache_artifact_path: "{{ network_site_tarball_path }}"
+    build_cache_stamp_path: "{{ network_site_commit_stamp }}"
+    build_cache_signature: "{{ network_site_build_signature }}"
+    build_cache_steps_file: "{{ role_path }}/tasks/build.yaml"
+    build_cache_pending_message: "Would build network site artifact into {{ network_site_artifacts_root }}"

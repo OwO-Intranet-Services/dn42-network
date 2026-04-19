@@ -1,0 +1,46 @@
+---
+- name: Check build stamp for {{ build_cache_artifact_name }}
+  ansible.builtin.stat:
+    path: "{{ build_cache_stamp_path }}"
+  register: build_cache_stamp
+
+- name: Check current artifact for {{ build_cache_artifact_name }}
+  ansible.builtin.stat:
+    path: "{{ build_cache_artifact_path }}"
+  register: build_cache_artifact
+
+- name: Read last build signature for {{ build_cache_artifact_name }}
+  ansible.builtin.slurp:
+    src: "{{ build_cache_stamp_path }}"
+  register: build_cache_last_signature
+  when: build_cache_stamp.stat.exists
+
+- name: Decide whether rebuild is needed for {{ build_cache_artifact_name }}
+  ansible.builtin.set_fact:
+    build_cache_needed: >-
+      {{
+        (not build_cache_stamp.stat.exists) or
+        ((build_cache_last_signature.content | default('') | b64decode | trim) != build_cache_signature) or
+        (not build_cache_artifact.stat.exists)
+      }}
+
+- name: Build {{ build_cache_artifact_name }}
+  when:
+    - build_cache_needed
+    - not ansible_check_mode
+  block:
+    - name: Run build steps for {{ build_cache_artifact_name }}
+      ansible.builtin.include_tasks: "{{ build_cache_steps_file }}"
+
+    - name: Save build signature for {{ build_cache_artifact_name }}
+      ansible.builtin.copy:
+        content: "{{ build_cache_signature }}"
+        dest: "{{ build_cache_stamp_path }}"
+        mode: "0644"
+
+- name: Report pending build in check mode for {{ build_cache_artifact_name }}
+  ansible.builtin.debug:
+    msg: "{{ build_cache_pending_message }}"
+  when:
+    - build_cache_needed
+    - ansible_check_mode
