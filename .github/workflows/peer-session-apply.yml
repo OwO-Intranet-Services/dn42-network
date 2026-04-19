@@ -138,15 +138,27 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Verify runner Python
+        run: |
+          python3 --version
 
       - name: Install preflight dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install ansible-core
+          if ! python3 -m venv .ci-venv; then
+            if command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then
+              PYTHON_VENV_PKG="python$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')-venv"
+              sudo apt-get update
+              sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "$PYTHON_VENV_PKG"
+              python3 -m venv .ci-venv
+            else
+              echo "Failed to create a virtualenv and sudo is unavailable to install the matching -venv package."
+              exit 1
+            fi
+          fi
+          echo "$PWD/.ci-venv/bin" >> "$GITHUB_PATH"
+          . .ci-venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install ansible-core
 
       - name: Configure SSH
         env:
