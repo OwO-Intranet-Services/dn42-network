@@ -159,15 +159,17 @@
   register: peer_update_wireguard_orphan_cleanup
   changed_when: false
 
-- name: Restart targeted WireGuard services when configuration changes
-  ansible.builtin.systemd:
-    name: "wg-quick@{{ item.peer.interface_name }}"
-    state: restarted
-  loop: "{{ peer_update_wireguard_templates.results | default([]) }}"
-  loop_control:
-    label: "{{ item.peer.interface_name }}"
-  when: item.changed
-  timeout: 10
+- name: Queue targeted WireGuard restarts when configuration changes
+  ansible.builtin.set_fact:
+    peer_update_wireguard_restart_interfaces: >-
+      {{
+        peer_update_wireguard_templates.results | default([])
+        | selectattr('changed')
+        | map(attribute='peer.interface_name')
+        | list
+      }}
+  changed_when: peer_update_wireguard_restart_interfaces | length > 0
+  notify: Restart targeted WireGuard services
 
 - name: Ensure targeted WireGuard services are enabled and started
   ansible.builtin.systemd:

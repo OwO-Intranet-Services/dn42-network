@@ -37,6 +37,7 @@
       - --output
       - "{{ caddy_repo_key_path }}"
       - "{{ caddy_repo_key_asc_path }}"
+  changed_when: true
   when:
     - caddy_repo_key_copy is changed
       or not caddy_repo_key_stat.stat.exists

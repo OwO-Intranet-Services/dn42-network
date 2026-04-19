@@ -10,11 +10,11 @@ enable_list:
 
 skip_list:
   - ignore-errors
+  - role-name
   - yaml[line-length]
   - command-instead-of-shell
 
 warn_list:
   - experimental
-  - role-name
 
 use_default_rules: true

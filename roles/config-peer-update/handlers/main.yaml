@@ -1,0 +1,10 @@
+---
+- name: Restart targeted WireGuard services
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ item }}"
+    state: restarted
+  loop: "{{ peer_update_wireguard_restart_interfaces | default([]) }}"
+  loop_control:
+    label: "{{ item }}"
+  when: peer_update_wireguard_restart_interfaces | default([]) | length > 0
+  timeout: 10
