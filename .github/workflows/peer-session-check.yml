@@ -3,12 +3,12 @@ name: peer-session-check
 on:
   pull_request:
     paths:
-      - host_vars/*/dn42_peers.yaml
+    - host_vars/*/dn42_peers.yaml
   push:
     branches:
-      - main
+    - main
     paths:
-      - host_vars/*/dn42_peers.yaml
+    - host_vars/*/dn42_peers.yaml
 
 permissions:
   contents: read
@@ -19,62 +19,62 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Check out repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
 
-      - name: Install CI dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install ansible-core
-          ansible-galaxy collection install -r collections/requirements.yml
+    - name: Install CI dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install ansible-core
+        ansible-galaxy collection install -r collections/requirements.yml
 
-      - name: Resolve diff refs
-        id: refs
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
-            echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
-            echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-          fi
+    - name: Resolve diff refs
+      id: refs
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        fi
 
-      - name: Validate vault secret
-        env:
-          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-        run: |
-          test -n "$ANSIBLE_VAULT_PASSWORD" || {
-            echo "ANSIBLE_VAULT_PASSWORD secret is required for Ansible syntax checks."
-            exit 1
-          }
+    - name: Validate vault secret
+      env:
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+      run: |
+        test -n "$ANSIBLE_VAULT_PASSWORD" || {
+          echo "ANSIBLE_VAULT_PASSWORD secret is required for Ansible syntax checks."
+          exit 1
+        }
 
-      - name: Write vault password file
-        env:
-          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-        run: |
-          mkdir -p .secrets
-          printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
-          chmod 600 .secrets/vault_pass.txt
+    - name: Write vault password file
+      env:
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+      run: |
+        mkdir -p .secrets
+        printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
+        chmod 600 .secrets/vault_pass.txt
 
-      - name: Detect peer session changes
-        run: |
-          python3 tools/peer_session_diff.py \
-            --base-ref "${{ steps.refs.outputs.base }}" \
-            --head-ref "${{ steps.refs.outputs.head }}" \
-            --json-output peer-session-report.json
+    - name: Detect peer session changes
+      run: |
+        python3 tools/peer_session_diff.py \
+          --base-ref "${{ steps.refs.outputs.base }}" \
+          --head-ref "${{ steps.refs.outputs.head }}" \
+          --json-output peer-session-report.json
 
-      - name: Check explicit peer config form
-        run: python3 tools/normalize_peer_configs.py --check
+    - name: Check explicit peer config form
+      run: python3 tools/normalize_peer_configs.py --check
 
-      - name: Run Ansible syntax checks
-        run: |
-          ansible-playbook setup-peer-update.yaml --syntax-check
-          ansible-playbook setup-wg.yaml --syntax-check
-          ansible-playbook setup-bird.yaml --syntax-check
+    - name: Run Ansible syntax checks
+      run: |
+        ansible-playbook setup-peer-update.yaml --syntax-check
+        ansible-playbook setup-wg.yaml --syntax-check
+        ansible-playbook setup-bird.yaml --syntax-check
