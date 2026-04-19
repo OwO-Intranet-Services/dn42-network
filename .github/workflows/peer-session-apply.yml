@@ -203,6 +203,13 @@ jobs:
 
           import yaml
 
+          class AnsibleSafeLoader(yaml.SafeLoader):
+              pass
+
+          AnsibleSafeLoader.add_constructor(
+              "!vault", lambda loader, node: loader.construct_scalar(node)
+          )
+
           host = os.environ["DEPLOY_HOST"]
           targets = set(json.loads(os.environ["DEPLOY_TARGETS"]))
           peers_file = Path("host_vars") / host / "dn42_peers.yaml"
@@ -210,7 +217,7 @@ jobs:
               print(f"::error title=Preflight failed::{peers_file} not found.")
               sys.exit(1)
 
-          data = yaml.safe_load(peers_file.read_text()) or {}
+          data = yaml.load(peers_file.read_text(), Loader=AnsibleSafeLoader) or {}
           peer_list = data.get("peers") or []
 
           endpoints: list[tuple[str, str]] = []
