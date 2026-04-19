@@ -292,25 +292,50 @@ def _require_ipv6(value: Any, *, field: str, peer_label: str) -> ipaddress.IPv6A
     return address
 
 
-def _require_optional_link_local_ipv6(value: Any, *, field: str, peer_label: str) -> None:
+def _require_optional_link_local_ipv6(value: Any, *, field: str, peer_label: str) -> ipaddress.IPv6Address | None:
     if value is None:
-        return
+        return None
     address = _require_ipv6(value, field=field, peer_label=peer_label)
     if not address.is_link_local:
         raise ValueError(f"{peer_label} has invalid {field}: expected link-local IPv6 address")
+    return address
 
 
-def _validate_wg_settings(wg: dict[str, Any], *, asn: int, removed: bool) -> None:
+def _validate_wg_settings(
+    wg: dict[str, Any],
+    *,
+    asn: int,
+    removed: bool,
+    ipv4: bool,
+    ipv6: bool,
+    mp_bgp: bool,
+) -> None:
     peer_label = _peer_label(asn)
+    peer4 = wg.get("peer4")
+    peer6 = wg.get("peer6")
+    own6 = wg.get("own6")
 
     if not removed:
         _require_port(wg.get("port", default_peer_port(asn)), field="wg.port", peer_label=peer_label)
         _require_endpoint(wg.get("endpoint"), peer_label=peer_label)
         _require_wg_public_key(wg.get("wg_pubkey"), peer_label=peer_label)
-        _require_ipv6(wg.get("peer6"), field="wg.peer6", peer_label=peer_label)
+        if mp_bgp and peer6 is None:
+            raise ValueError(f"{peer_label} requires wg.peer6 when bgp.mp_bgp is enabled")
+        if ipv6 and peer6 is None:
+            raise ValueError(f"{peer_label} requires wg.peer6 for bgp.ipv6")
+        if ipv4 and not mp_bgp and peer4 is None:
+            raise ValueError(f"{peer_label} requires wg.peer4 for bgp.ipv4 when bgp.mp_bgp is disabled")
 
-    _require_optional_ipv4(wg.get("peer4"), field="wg.peer4", peer_label=peer_label)
-    _require_optional_link_local_ipv6(wg.get("own6"), field="wg.own6", peer_label=peer_label)
+    _require_optional_ipv4(peer4, field="wg.peer4", peer_label=peer_label)
+    peer6_address = None
+    if peer6 is not None:
+        peer6_address = _require_ipv6(peer6, field="wg.peer6", peer_label=peer_label)
+    own6_address = _require_optional_link_local_ipv6(own6, field="wg.own6", peer_label=peer_label)
+    if own6_address is not None:
+        if peer6_address is None:
+            raise ValueError(f"{peer_label} requires wg.peer6 when wg.own6 is set")
+        if not peer6_address.is_link_local:
+            raise ValueError(f"{peer_label} can only set wg.own6 when wg.peer6 is link-local")
     _require_optional_port(wg.get("keepalive"), field="wg.keepalive", peer_label=peer_label)
 
     mtu = wg.get("mtu")
@@ -320,16 +345,16 @@ def _validate_wg_settings(wg: dict[str, Any], *, asn: int, removed: bool) -> Non
             raise ValueError(f"{peer_label} has invalid wg.mtu: expected integer in range 576-65535")
 
 
-def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> None:
+def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> tuple[bool, bool, bool, bool]:
     peer_label = _peer_label(asn)
     ipv4 = _require_bool(bgp.get("ipv4", True), field="bgp.ipv4", peer_label=peer_label)
     ipv6 = _require_bool(bgp.get("ipv6", True), field="bgp.ipv6", peer_label=peer_label)
-    _require_bool(
+    extended_next_hop = _require_bool(
         bgp.get("extended_next_hop", True),
         field="bgp.extended_next_hop",
         peer_label=peer_label,
     )
-    _require_bool(bgp.get("mp_bgp", True), field="bgp.mp_bgp", peer_label=peer_label)
+    mp_bgp = _require_bool(bgp.get("mp_bgp", True), field="bgp.mp_bgp", peer_label=peer_label)
     _normalize_peering_strategy(
         bgp.get("peering_strategy", DEFAULT_PEERING_STRATEGY),
         field="bgp.peering_strategy",
@@ -337,6 +362,9 @@ def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> None:
     )
     if not ipv4 and not ipv6:
         raise ValueError(f"{peer_label} must enable at least one address family")
+    if extended_next_hop and not mp_bgp:
+        raise ValueError(f"{peer_label} cannot enable bgp.extended_next_hop without bgp.mp_bgp")
+    return ipv4, ipv6, extended_next_hop, mp_bgp
 
 
 def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
@@ -357,8 +385,8 @@ def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(f"active peer AS{asn} is missing wg mapping")
     raw_wg = wg if isinstance(wg, dict) else {}
 
-    _validate_wg_settings(raw_wg, asn=asn, removed=removed)
-    _validate_bgp_settings(bgp, asn=asn)
+    ipv4, ipv6, _extended_next_hop, mp_bgp = _validate_bgp_settings(bgp, asn=asn)
+    _validate_wg_settings(raw_wg, asn=asn, removed=removed, ipv4=ipv4, ipv6=ipv6, mp_bgp=mp_bgp)
 
     normalized_peer: dict[str, Any] = {}
 
