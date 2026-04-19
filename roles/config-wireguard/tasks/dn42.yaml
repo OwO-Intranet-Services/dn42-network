@@ -64,6 +64,12 @@
         else wg_dn42_peers_configure | default([])
       }}
 
+- name: Validate DN42 WireGuard endpoint resolution
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/validate_wireguard_endpoint_resolution.yaml"
+  vars:
+    wireguard_endpoint_validation_peers: "{{ wg_dn42_peers_configure }}"
+  when: wg_dn42_peers_configure | default([]) | length > 0
+
 - name: Render per-peer WireGuard configurations for DN42 peers
   ansible.builtin.template:
     src: dn42_tunnel.conf.j2

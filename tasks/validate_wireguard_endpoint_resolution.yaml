@@ -1,0 +1,28 @@
+---
+- name: Validate WireGuard endpoint resolution
+  ansible.builtin.command:
+    argv:
+      - "{{ ansible_facts.python.executable | default('python3') }}"
+      - -c
+      - |
+        import socket
+        import sys
+
+        host = sys.argv[1]
+        try:
+            socket.getaddrinfo(host, None)
+        except OSError as exc:
+            raise SystemExit(f"failed to resolve {host}: {exc}")
+      - "{{ wireguard_endpoint_host }}"
+  vars:
+    wireguard_endpoint_host: >-
+      {{
+        peer.endpoint[1:].split(']:', 1)[0]
+        if peer.endpoint.startswith('[')
+        else peer.endpoint.rsplit(':', 1)[0]
+      }}
+  loop: "{{ wireguard_endpoint_validation_peers }}"
+  loop_control:
+    loop_var: peer
+    label: "{{ peer.name }} -> {{ wireguard_endpoint_host }}"
+  changed_when: false

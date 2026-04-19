@@ -96,6 +96,12 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Validate targeted WireGuard endpoint resolution
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/validate_wireguard_endpoint_resolution.yaml"
+  vars:
+    wireguard_endpoint_validation_peers: "{{ peer_update_wireguard_configure }}"
+  when: peer_update_wireguard_configure | length > 0
+
 - name: Ensure WireGuard and BIRD peer directories exist
   ansible.builtin.file:
     path: "{{ item.path }}"
