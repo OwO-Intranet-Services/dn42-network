@@ -158,7 +158,7 @@ jobs:
           echo "$PWD/.ci-venv/bin" >> "$GITHUB_PATH"
           . .ci-venv/bin/activate
           python -m pip install --upgrade pip
-          python -m pip install ansible-core
+          python -m pip install ansible-core PyYAML
 
       - name: Configure SSH
         env:
@@ -175,24 +175,97 @@ jobs:
           cp .github/ssh_known_hosts ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Probe deploy host
+      - name: Write vault password file
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          test -n "$ANSIBLE_VAULT_PASSWORD" || {
+            echo "::error::ANSIBLE_VAULT_PASSWORD secret is required for preflight."
+            exit 1
+          }
+          mkdir -p .secrets
+          chmod 700 .secrets
+          printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
+          chmod 600 .secrets/vault_pass.txt
+
+      - name: Probe peer endpoints from deploy host
         env:
           DEPLOY_HOST: ${{ matrix.deploy.host }}
+          DEPLOY_TARGETS: ${{ toJson(matrix.deploy.targets) }}
         run: |
-          echo "::group::Ansible ping ${DEPLOY_HOST}"
-          if ! ansible -i inventory.yaml "${DEPLOY_HOST}" -m ansible.builtin.ping -o; then
-            echo "::error title=Preflight failed::${DEPLOY_HOST} is unreachable. Refusing to apply; would have crashed WireGuard."
-            exit 1
-          fi
-          echo "::endgroup::"
+          python3 <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          from pathlib import Path
 
-          echo "::group::WireGuard status ${DEPLOY_HOST}"
-          if ! ansible -i inventory.yaml "${DEPLOY_HOST}" \
-            -m ansible.builtin.command -a "wg show interfaces" -b -o; then
-            echo "::error title=Preflight failed::${DEPLOY_HOST} WireGuard control plane is not responding."
-            exit 1
-          fi
-          echo "::endgroup::"
+          import yaml
+
+          host = os.environ["DEPLOY_HOST"]
+          targets = set(json.loads(os.environ["DEPLOY_TARGETS"]))
+          peers_file = Path("host_vars") / host / "dn42_peers.yaml"
+          if not peers_file.is_file():
+              print(f"::error title=Preflight failed::{peers_file} not found.")
+              sys.exit(1)
+
+          data = yaml.safe_load(peers_file.read_text()) or {}
+          peer_list = data.get("peers") or []
+
+          endpoints: list[tuple[str, str]] = []
+          seen_targets: set[str] = set()
+          for entry in peer_list:
+              bgp = entry.get("bgp") or {}
+              asn = bgp.get("asn")
+              if asn is None:
+                  continue
+              target = f"dn42_{str(asn)[-4:]}"
+              if target not in targets:
+                  continue
+              seen_targets.add(target)
+              wg = entry.get("wg") or {}
+              endpoint = wg.get("endpoint")
+              if not endpoint:
+                  continue
+              host_part = endpoint.rsplit(":", 1)[0].strip("[]")
+              endpoints.append((target, host_part))
+
+          missing = targets - seen_targets
+          if missing:
+              print(f"::notice::Targets not in peers file (likely removals): {sorted(missing)}")
+
+          if not endpoints:
+              print("No active peer endpoints to verify; skipping reachability check.")
+              sys.exit(0)
+
+          failures: list[tuple[str, str, str]] = []
+          for target, host_part in endpoints:
+              print(f"::group::{target} endpoint {host_part}")
+              cmd = (
+                  f"getent hosts {host_part!r} >/dev/null "
+                  f"&& ping -c 2 -W 3 {host_part!r} >/dev/null"
+              )
+              rc = subprocess.run(
+                  [
+                      "ansible", "-i", "inventory.yaml", host,
+                      "-m", "ansible.builtin.shell", "-a", cmd, "-o",
+                  ],
+                  check=False,
+              ).returncode
+              print("::endgroup::")
+              if rc != 0:
+                  failures.append((target, host_part, host))
+
+          if failures:
+              for target, host_part, deploy_host in failures:
+                  print(
+                      f"::error title=Preflight failed::Peer {target} endpoint "
+                      f"{host_part} is not reachable from {deploy_host}; "
+                      "refusing to apply."
+                  )
+              sys.exit(1)
+          PY
 
   apply:
     needs: [detect, preflight]
