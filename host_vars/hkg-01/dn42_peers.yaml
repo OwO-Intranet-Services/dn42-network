@@ -57,10 +57,9 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-  - comment: 'iedon'
-    wg:
+  - wg:
       port: 22189
-      endpoint: 'hk-hkg.dn42.iedon.net:47122'
+      endpoint: 'v6.hk-hkg.dn42.iedon.net:34169'
       wg_pubkey: 'OlUDuWkUI9pKNsNo7Vjf/GKKVSBslh9kmqjbeYA4+34='
       psk: null
       peer4: null
@@ -74,7 +73,10 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
-    removed: true
+    autopeer:
+      managed: true
+      effective_mnt: 'IEDON-MNT'
+      auth_provider: 'host_impersonation'
   - comment: 'potat0'
     wg:
       port: 21816
