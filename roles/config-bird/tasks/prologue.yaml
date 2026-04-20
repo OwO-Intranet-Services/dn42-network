@@ -9,6 +9,7 @@
   loop:
     - { name: "net.ipv4.conf.default.rp_filter", value: "0" }
     - { name: "net.ipv4.conf.all.rp_filter", value: "0" }
+    - { name: "net.ipv4.conf.*.rp_filter", value: "0" }
     - { name: "net.ipv4.ip_forward", value: "1" }
     - { name: "net.ipv6.conf.all.forwarding", value: "1" }
   loop_control:
