@@ -2,9 +2,7 @@
 - name: Install system bootstrap packages
   ansible.builtin.include_tasks:
     file: install.yaml
-  when: target is undefined
 
 - name: Configure system bootstrap state
   ansible.builtin.include_tasks:
     file: configure.yaml
-  when: target is undefined

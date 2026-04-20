@@ -4,13 +4,9 @@
     peer_update_targets_resolved: >-
       {{
         (
-          [target]
-          if target is defined and (target | string | trim | length > 0)
-          else (
-            [peer_update_targets]
-            if peer_update_targets is defined and peer_update_targets is string
-            else (peer_update_targets | default([]))
-          )
+          [peer_update_targets]
+          if peer_update_targets is defined and peer_update_targets is string
+          else (peer_update_targets | default([]))
         )
         | reject('equalto', '')
         | unique
@@ -21,23 +17,22 @@
   ansible.builtin.assert:
     that:
       - peer_update_targets_resolved | length > 0
-    fail_msg: "Set peer_update_targets (list) or target (single peer name) for config-peer-update."
+    fail_msg: "Set peer_update_targets for config-peer-update."
 
 - name: Initialize targeted peer lists
   ansible.builtin.set_fact:
-    peer_update_processed_peers: []
     peer_update_wireguard_peers: []
     dn42_peer_latency_map: {}
     dn42_peer_latency_summary: []
 
-- name: Standardize targeted DN42 peers
-  ansible.builtin.set_fact:
-    peer_update_processed_peers: "{{ peer_update_processed_peers + [item | combine({'name': peer_name, 'removed': item.removed | default(false)})] }}"
+- name: Normalize targeted DN42 peers
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/normalize_dn42_peers.yaml"
   vars:
-    peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
-  loop: "{{ hostvars[inventory_hostname].peers | default([]) }}"
-  loop_control:
-    label: "{{ item.bgp.asn }}"
+    dn42_inventory_peers: "{{ hostvars[inventory_hostname].peers | default([]) }}"
+
+- name: Alias normalized DN42 peers for peer update workflow
+  ansible.builtin.set_fact:
+    peer_update_processed_peers: "{{ dn42_processed_peers }}"
 
 - name: Validate requested peer targets
   ansible.builtin.assert:

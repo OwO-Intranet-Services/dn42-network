@@ -1,0 +1,3 @@
+---
+- name: Import canonical node removal playbook
+  import_playbook: playbooks/remove-node.yaml

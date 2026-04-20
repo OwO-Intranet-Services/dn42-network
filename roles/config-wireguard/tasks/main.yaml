@@ -1,17 +1,7 @@
 ---
-- name: Run cleanup when removing node
-  ansible.builtin.include_tasks:
-    file: cleanup.yaml
-  when: remove_node | default(false)
-
-- name: End play if removing node
-  ansible.builtin.meta: end_host
-  when: remove_node | default(false)
-
 - name: Install WireGuard packages
   ansible.builtin.include_tasks:
     file: install.yaml
-  when: not (remove | default(false))
 
 - name: Configure WireGuard peers
   ansible.builtin.include_tasks:

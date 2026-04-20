@@ -1,0 +1,49 @@
+---
+- name: Remove node-managed services
+  hosts: nodes
+  become: true
+  gather_facts: true
+  tags:
+    - remove-node
+  tasks:
+    - name: Remove Looking Glass server configuration
+      ansible.builtin.include_role:
+        name: config-lg-server
+        tasks_from: cleanup.yaml
+      tags:
+        - remove-node
+        - lg
+        - lg-server
+
+    - name: Remove Looking Glass proxy configuration
+      ansible.builtin.include_role:
+        name: config-lg-proxy
+        tasks_from: cleanup.yaml
+      tags:
+        - remove-node
+        - lg
+        - lg-proxy
+
+    - name: Remove DNS configuration
+      ansible.builtin.include_role:
+        name: config-dns
+        tasks_from: cleanup.yaml
+      tags:
+        - remove-node
+        - dns
+
+    - name: Remove BIRD configuration
+      ansible.builtin.include_role:
+        name: config-bird
+        tasks_from: cleanup.yaml
+      tags:
+        - remove-node
+        - bird
+
+    - name: Remove WireGuard configuration
+      ansible.builtin.include_role:
+        name: config-wireguard
+        tasks_from: cleanup.yaml
+      tags:
+        - remove-node
+        - wireguard

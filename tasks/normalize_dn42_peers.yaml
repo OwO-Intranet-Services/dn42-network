@@ -1,0 +1,13 @@
+---
+- name: Initialize normalized DN42 peer inventory
+  ansible.builtin.set_fact:
+    dn42_processed_peers: []
+
+- name: Normalize DN42 peer inventory
+  ansible.builtin.set_fact:
+    dn42_processed_peers: "{{ dn42_processed_peers + [item | combine({'name': dn42_peer_name, 'removed': item.removed | default(false)})] }}"
+  vars:
+    dn42_peer_name: "{{ dn42_prefix }}{{ (item.bgp.asn | string)[-4:] }}"
+  loop: "{{ dn42_inventory_peers | default([]) }}"
+  loop_control:
+    label: "{{ item.bgp.asn }}"
