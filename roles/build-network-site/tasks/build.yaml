@@ -5,8 +5,6 @@
       - "{{ network_site_build_workspace }}/build.sh"
       - --backend-url
       - "{{ network_site_backend_url }}"
-      - --autopeer-url
-      - "{{ network_site_autopeer_url }}"
       - --autopeer-site-url
       - "{{ network_site_autopeer_site_url }}"
       - --username
