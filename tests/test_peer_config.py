@@ -200,6 +200,55 @@ class PeerConfigTests(unittest.TestCase):
         normalized = normalize_peer_file_data(data)
         self.assertEqual(normalized["peers"][0]["wg"]["peer6"], "fd55:dead:beef::3")
 
+    def test_normalize_peer_file_allows_dual_family_mp_bgp_over_ipv4_transport_with_peer6(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: 172.20.193.67
+                      peer6: fd55:dead:beef::3
+                    bgp:
+                      asn: 4242420298
+                      ipv4: true
+                      ipv6: true
+                      extended_next_hop: false
+                      mp_bgp: true
+                      mp_bgp_transport: ipv4
+                """
+            )
+        )
+
+        normalized = normalize_peer_file_data(data)
+        self.assertEqual(normalized["peers"][0]["bgp"]["mp_bgp_transport"], "ipv4")
+
+    def test_normalize_peer_file_allows_ipv6_over_ipv4_transport_without_peer6(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: 172.20.193.67
+                      peer6: null
+                    bgp:
+                      asn: 4242420298
+                      ipv4: false
+                      ipv6: true
+                      extended_next_hop: false
+                      mp_bgp: true
+                      mp_bgp_transport: ipv4
+                """
+            )
+        )
+
+        normalized = normalize_peer_file_data(data)
+        self.assertEqual(normalized["peers"][0]["bgp"]["mp_bgp_transport"], "ipv4")
+        self.assertIsNone(normalized["peers"][0]["wg"]["peer6"])
+
     def test_normalize_peer_file_rejects_unspecified_peer4(self) -> None:
         data = load_peer_yaml_text(
             textwrap.dedent(
@@ -219,7 +268,7 @@ class PeerConfigTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r"invalid wg\.peer4"):
             normalize_peer_file_data(data)
 
-    def test_normalize_peer_file_rejects_mp_bgp_without_peer6(self) -> None:
+    def test_normalize_peer_file_rejects_ipv6_transport_mp_bgp_without_peer6(self) -> None:
         data = load_peer_yaml_text(
             textwrap.dedent(
                 """\
@@ -233,12 +282,14 @@ class PeerConfigTests(unittest.TestCase):
                       asn: 4242420298
                       ipv4: true
                       ipv6: false
+                      extended_next_hop: false
                       mp_bgp: true
+                      mp_bgp_transport: ipv6
                 """
             )
         )
 
-        with self.assertRaisesRegex(ValueError, r"requires wg\.peer6 when bgp\.mp_bgp is enabled"):
+        with self.assertRaisesRegex(ValueError, r"requires wg\.peer6 for bgp\.mp_bgp_transport=ipv6"):
             normalize_peer_file_data(data)
 
     def test_normalize_peer_file_rejects_ipv6_without_peer6(self) -> None:
@@ -284,7 +335,91 @@ class PeerConfigTests(unittest.TestCase):
             )
         )
 
-        with self.assertRaisesRegex(ValueError, r"cannot enable bgp\.extended_next_hop without bgp\.mp_bgp"):
+        with self.assertRaisesRegex(
+            ValueError,
+            r"cannot enable bgp\.extended_next_hop without bgp\.mp_bgp",
+        ):
+            normalize_peer_file_data(data)
+
+    def test_normalize_peer_file_rejects_extended_next_hop_over_ipv4_transport(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: 172.20.193.67
+                      peer6: fd55:dead:beef::3
+                    bgp:
+                      asn: 4242420298
+                      ipv4: true
+                      ipv6: true
+                      extended_next_hop: true
+                      mp_bgp: true
+                      mp_bgp_transport: ipv4
+                """
+            )
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"can only enable bgp\.extended_next_hop with bgp\.mp_bgp_transport=ipv6",
+        ):
+            normalize_peer_file_data(data)
+
+    def test_normalize_peer_file_rejects_extended_next_hop_without_ipv4_family(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: null
+                      peer6: fd55:dead:beef::3
+                    bgp:
+                      asn: 4242420298
+                      ipv4: false
+                      ipv6: true
+                      extended_next_hop: true
+                      mp_bgp: true
+                      mp_bgp_transport: ipv6
+                """
+            )
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"can only enable bgp\.extended_next_hop when bgp\.ipv4 is enabled",
+        ):
+            normalize_peer_file_data(data)
+
+    def test_normalize_peer_file_rejects_ipv4_over_ipv6_transport_without_peer4_or_extnh(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: null
+                      peer6: fd55:dead:beef::3
+                    bgp:
+                      asn: 4242420298
+                      ipv4: true
+                      ipv6: false
+                      extended_next_hop: false
+                      mp_bgp: true
+                      mp_bgp_transport: ipv6
+                """
+            )
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"requires bgp\.extended_next_hop for bgp\.ipv4 over bgp\.mp_bgp_transport=ipv6 when wg\.peer4 is absent",
+        ):
             normalize_peer_file_data(data)
 
     def test_normalize_peer_file_rejects_non_link_local_own6(self) -> None:
@@ -349,6 +484,52 @@ class PeerConfigTests(unittest.TestCase):
         )
 
         with self.assertRaisesRegex(ValueError, r"at least one address family"):
+            normalize_peer_file_data(data)
+
+    def test_normalize_peer_file_rejects_peer6_collision_with_explicit_own6(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: 172.20.193.67
+                      peer6: fe80::1023:2
+                      own6: fe80::1023:2
+                    bgp:
+                      asn: 4242420298
+                      ipv4: true
+                      ipv6: false
+                      mp_bgp: true
+                """
+            )
+        )
+
+        with self.assertRaisesRegex(ValueError, r"requires wg\.peer6 to differ from our link-local IPv6"):
+            normalize_peer_file_data(data)
+
+    def test_normalize_peer_file_rejects_peer6_collision_with_default_link_local(self) -> None:
+        data = load_peer_yaml_text(
+            textwrap.dedent(
+                """\
+                peers:
+                  - wg:
+                      endpoint: peer.example.net:21023
+                      wg_pubkey: "GSYaBd8a2MkVBlp8iUOOKOPB4x4EVQWMsdJbTeSejEw="
+                      peer4: 172.20.193.67
+                      peer6: fe80::1023:2
+                      own6: null
+                    bgp:
+                      asn: 4242420298
+                      ipv4: true
+                      ipv6: false
+                      mp_bgp: true
+                """
+            )
+        )
+
+        with self.assertRaisesRegex(ValueError, r"requires wg\.peer6 to differ from our link-local IPv6"):
             normalize_peer_file_data(data)
 
     def test_normalize_peer_file_rejects_unknown_peering_strategy(self) -> None:

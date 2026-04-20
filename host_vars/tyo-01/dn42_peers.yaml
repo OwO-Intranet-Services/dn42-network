@@ -16,6 +16,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'tech9'
     wg:
       port: 21588
@@ -33,6 +34,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'iyoroy'
     wg:
       port: 22024
@@ -50,6 +52,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'iedon'
     wg:
       port: 22189
@@ -67,6 +70,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'lare'
     wg:
       port: 23035
@@ -84,6 +88,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
     removed: true
   - comment: 'cowgl'
     wg:
@@ -102,6 +107,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'Stevie'
     wg:
       port: 20337
@@ -119,6 +125,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'qiuxin'
     wg:
       port: 21771
@@ -136,6 +143,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'mhr'
     wg:
       port: 22279
@@ -153,6 +161,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'sun'
     wg:
       port: 23088
@@ -170,6 +179,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'highdef.network'
     wg:
       port: 21080
@@ -187,6 +197,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'Nisbett'
     wg:
       port: 20398
@@ -204,6 +215,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'HExpNetwork'
     wg:
       port: 20298
@@ -228,6 +240,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'yuyuko'
     wg:
       port: 21117
@@ -245,6 +258,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'Minty'
     wg:
       port: 22172
@@ -262,6 +276,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'RoutedBits'
     wg:
       port: 20207
@@ -279,6 +294,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'moraxyc'
     wg:
       port: 23011
@@ -296,6 +312,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'launchpadx'
     wg:
       port: 23702
@@ -313,6 +330,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'MoonWX'
     wg:
       port: 20985
@@ -330,6 +348,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'cloudc'
     wg:
       port: 23777
@@ -347,6 +366,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'BingxinBaka'
     wg:
       port: 23374
@@ -364,6 +384,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'imlonghao'
     wg:
       port: 21888
@@ -381,3 +402,4 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'

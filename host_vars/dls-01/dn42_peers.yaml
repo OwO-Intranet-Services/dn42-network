@@ -16,6 +16,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - comment: 'Session Hikari'
     wg:
       port: 22466
@@ -33,6 +34,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
   - wg:
       port: 20454
       endpoint: 'dn42a.nedifinita.com:52381'
@@ -49,6 +51,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
     autopeer:
       managed: true
       effective_mnt: 'NEDIFINITA-MNT'
@@ -70,6 +73,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+      mp_bgp_transport: 'ipv6'
     autopeer:
       managed: true
       effective_mnt: 'ROUTEDBITS-MNT'

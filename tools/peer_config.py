@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ipaddress
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -12,9 +13,56 @@ PEER_KEY_ORDER = ("comment", "wg", "bgp", "removed")
 WG_KEY_ORDER = ("port", "endpoint", "wg_pubkey", "psk", "peer4", "peer6", "own6", "keepalive", "mtu")
 DEFAULT_PEERING_STRATEGY = "full_table"
 PEERING_STRATEGIES = (DEFAULT_PEERING_STRATEGY, "transit", "peer", "downstream")
-BGP_KEY_ORDER = ("asn", "ipv4", "ipv6", "extended_next_hop", "mp_bgp", "peering_strategy")
+VALID_MP_BGP_TRANSPORTS = ("ipv4", "ipv6")
+BGP_KEY_ORDER = (
+    "asn",
+    "ipv4",
+    "ipv6",
+    "extended_next_hop",
+    "mp_bgp",
+    "mp_bgp_transport",
+    "peering_strategy",
+)
 BASE64_LIKE_RE = re.compile(r"^[A-Za-z0-9+/]+={0,2}$")
 HOSTNAME_LABEL_RE = re.compile(r"^[A-Za-z0-9-]{1,63}$")
+DEFAULT_INVENTORY = Path(__file__).resolve().parents[1] / "inventory.yaml"
+
+
+@lru_cache(maxsize=1)
+def _shared_default_link_local_ipv6() -> ipaddress.IPv6Address | None:
+    try:
+        with DEFAULT_INVENTORY.open(encoding="utf-8") as handle:
+            inventory = yaml.safe_load(handle)
+    except (OSError, yaml.YAMLError):
+        return None
+
+    hosts = (
+        ((inventory or {}).get("all") or {})
+        .get("children", {})
+        .get("nodes", {})
+        .get("hosts", {})
+    )
+    if not isinstance(hosts, dict):
+        return None
+
+    values: set[ipaddress.IPv6Address] = set()
+    for host_data in hosts.values():
+        if not isinstance(host_data, dict):
+            continue
+        raw_value = host_data.get("link_local_ipv6")
+        if raw_value in (None, ""):
+            continue
+        try:
+            address = ipaddress.IPv6Address(str(raw_value))
+        except ValueError:
+            return None
+        if not address.is_link_local:
+            return None
+        values.add(address)
+
+    if len(values) != 1:
+        return None
+    return next(iter(values))
 
 
 class TaggedScalar(str):
@@ -194,6 +242,38 @@ def _normalize_peering_strategy(value: Any, *, field: str, peer_label: str) -> s
     return strategy
 
 
+def _normalize_mp_bgp_transport(value: Any, *, field: str, peer_label: str) -> str | None:
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError(
+            f"{peer_label} has invalid {field}: expected one of {', '.join(VALID_MP_BGP_TRANSPORTS)}"
+        )
+    transport = value.strip()
+    if transport not in VALID_MP_BGP_TRANSPORTS:
+        raise ValueError(
+            f"{peer_label} has invalid {field}: expected one of {', '.join(VALID_MP_BGP_TRANSPORTS)}"
+        )
+    return transport
+
+
+def _resolve_mp_bgp_transport(
+    bgp: dict[str, Any],
+    wg: dict[str, Any],
+    *,
+    field: str,
+    peer_label: str,
+) -> str | None:
+    configured = _normalize_mp_bgp_transport(bgp.get(field), field=field, peer_label=peer_label)
+    if configured is not None:
+        return configured
+    if wg.get("peer6") is not None:
+        return "ipv6"
+    if wg.get("peer4") is not None:
+        return "ipv4"
+    return None
+
+
 def _require_port(value: Any, *, field: str, peer_label: str) -> int:
     port = _coerce_int(value)
     if port is None or not 1 <= port <= 65535:
@@ -309,6 +389,8 @@ def _validate_wg_settings(
     ipv4: bool,
     ipv6: bool,
     mp_bgp: bool,
+    mp_bgp_transport: str,
+    extended_next_hop: bool,
 ) -> None:
     peer_label = _peer_label(asn)
     peer4 = wg.get("peer4")
@@ -319,10 +401,16 @@ def _validate_wg_settings(
         _require_port(wg.get("port", default_peer_port(asn)), field="wg.port", peer_label=peer_label)
         _require_endpoint(wg.get("endpoint"), peer_label=peer_label)
         _require_wg_public_key(wg.get("wg_pubkey"), peer_label=peer_label)
-        if mp_bgp and peer6 is None:
-            raise ValueError(f"{peer_label} requires wg.peer6 when bgp.mp_bgp is enabled")
-        if ipv6 and peer6 is None:
+        if mp_bgp and mp_bgp_transport == "ipv6" and peer6 is None:
+            raise ValueError(f"{peer_label} requires wg.peer6 for bgp.mp_bgp_transport=ipv6")
+        if mp_bgp and mp_bgp_transport == "ipv4" and peer4 is None:
+            raise ValueError(f"{peer_label} requires wg.peer4 for bgp.mp_bgp_transport=ipv4")
+        if ipv6 and ((not mp_bgp) or mp_bgp_transport == "ipv6") and peer6 is None:
             raise ValueError(f"{peer_label} requires wg.peer6 for bgp.ipv6")
+        if mp_bgp and ipv4 and mp_bgp_transport == "ipv6" and peer4 is None and not extended_next_hop:
+            raise ValueError(
+                f"{peer_label} requires bgp.extended_next_hop for bgp.ipv4 over bgp.mp_bgp_transport=ipv6 when wg.peer4 is absent"
+            )
         if ipv4 and not mp_bgp and peer4 is None:
             raise ValueError(f"{peer_label} requires wg.peer4 for bgp.ipv4 when bgp.mp_bgp is disabled")
 
@@ -336,6 +424,14 @@ def _validate_wg_settings(
             raise ValueError(f"{peer_label} requires wg.peer6 when wg.own6 is set")
         if not peer6_address.is_link_local:
             raise ValueError(f"{peer_label} can only set wg.own6 when wg.peer6 is link-local")
+    effective_own6_address = own6_address or _shared_default_link_local_ipv6()
+    if (
+        peer6_address is not None
+        and peer6_address.is_link_local
+        and effective_own6_address is not None
+        and peer6_address == effective_own6_address
+    ):
+        raise ValueError(f"{peer_label} requires wg.peer6 to differ from our link-local IPv6")
     _require_optional_port(wg.get("keepalive"), field="wg.keepalive", peer_label=peer_label)
 
     mtu = wg.get("mtu")
@@ -345,7 +441,9 @@ def _validate_wg_settings(
             raise ValueError(f"{peer_label} has invalid wg.mtu: expected integer in range 576-65535")
 
 
-def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> tuple[bool, bool, bool, bool]:
+def _validate_bgp_settings(
+    bgp: dict[str, Any], wg: dict[str, Any], *, asn: int, removed: bool
+) -> tuple[bool, bool, bool, bool, str | None]:
     peer_label = _peer_label(asn)
     ipv4 = _require_bool(bgp.get("ipv4", True), field="bgp.ipv4", peer_label=peer_label)
     ipv6 = _require_bool(bgp.get("ipv6", True), field="bgp.ipv6", peer_label=peer_label)
@@ -355,6 +453,12 @@ def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> tuple[bool, bool
         peer_label=peer_label,
     )
     mp_bgp = _require_bool(bgp.get("mp_bgp", True), field="bgp.mp_bgp", peer_label=peer_label)
+    mp_bgp_transport = _resolve_mp_bgp_transport(
+        bgp,
+        wg,
+        field="mp_bgp_transport",
+        peer_label=peer_label,
+    )
     _normalize_peering_strategy(
         bgp.get("peering_strategy", DEFAULT_PEERING_STRATEGY),
         field="bgp.peering_strategy",
@@ -362,9 +466,19 @@ def _validate_bgp_settings(bgp: dict[str, Any], *, asn: int) -> tuple[bool, bool
     )
     if not ipv4 and not ipv6:
         raise ValueError(f"{peer_label} must enable at least one address family")
+    if mp_bgp and not removed and mp_bgp_transport is None:
+        raise ValueError(
+            f"{peer_label} has invalid bgp.mp_bgp_transport: requires wg.peer4 or wg.peer6 to infer MP-BGP transport"
+        )
     if extended_next_hop and not mp_bgp:
         raise ValueError(f"{peer_label} cannot enable bgp.extended_next_hop without bgp.mp_bgp")
-    return ipv4, ipv6, extended_next_hop, mp_bgp
+    if extended_next_hop and mp_bgp_transport not in (None, "ipv6"):
+        raise ValueError(
+            f"{peer_label} can only enable bgp.extended_next_hop with bgp.mp_bgp_transport=ipv6"
+        )
+    if extended_next_hop and not ipv4:
+        raise ValueError(f"{peer_label} can only enable bgp.extended_next_hop when bgp.ipv4 is enabled")
+    return ipv4, ipv6, extended_next_hop, mp_bgp, mp_bgp_transport
 
 
 def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
@@ -385,8 +499,22 @@ def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(f"active peer AS{asn} is missing wg mapping")
     raw_wg = wg if isinstance(wg, dict) else {}
 
-    ipv4, ipv6, _extended_next_hop, mp_bgp = _validate_bgp_settings(bgp, asn=asn)
-    _validate_wg_settings(raw_wg, asn=asn, removed=removed, ipv4=ipv4, ipv6=ipv6, mp_bgp=mp_bgp)
+    ipv4, ipv6, extended_next_hop, mp_bgp, mp_bgp_transport = _validate_bgp_settings(
+        bgp,
+        raw_wg,
+        asn=asn,
+        removed=removed,
+    )
+    _validate_wg_settings(
+        raw_wg,
+        asn=asn,
+        removed=removed,
+        ipv4=ipv4,
+        ipv6=ipv6,
+        mp_bgp=mp_bgp,
+        mp_bgp_transport=mp_bgp_transport or "ipv6",
+        extended_next_hop=extended_next_hop,
+    )
 
     normalized_peer: dict[str, Any] = {}
 
@@ -424,6 +552,13 @@ def normalize_peer_entry(peer: dict[str, Any]) -> dict[str, Any]:
         "extended_next_hop": _normalize_known_value(bgp, "extended_next_hop", True),
         "mp_bgp": _normalize_known_value(bgp, "mp_bgp", True),
     }
+    normalized_mp_bgp_transport = _normalize_mp_bgp_transport(
+        _normalize_generic(bgp.get("mp_bgp_transport")),
+        field="bgp.mp_bgp_transport",
+        peer_label=_peer_label(asn),
+    )
+    if normalized_mp_bgp_transport is not None:
+        normalized_bgp["mp_bgp_transport"] = normalized_mp_bgp_transport
     peering_strategy = _normalize_peering_strategy(
         _normalize_generic(bgp.get("peering_strategy")),
         field="bgp.peering_strategy",
