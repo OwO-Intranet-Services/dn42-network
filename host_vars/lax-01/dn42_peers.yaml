@@ -537,3 +537,30 @@ peers:
       managed: true
       effective_mnt: 'COMPLEXE-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 22426
+      endpoint: '6.us.sisy.cc:21023'
+      wg_pubkey: 'ABB1rrObfQgP8mVdMa4DsRMRaqpTM3J3mqLI69zjOBQ='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        30636133336265306164646231626433313665373565383166366666633366353965653862666461
+        3835613261623635373735386230356665333165613937380a336465643834323637643031383432
+        34383431353731373531626533623365633965396565363365653537363034303164356265393131
+        3338373438636135310a373535383166306530373631626135356265366638646433303137633433
+        37656366306235623366623530386432353034356437353338363633343334636361633661623337
+        3264613937373362623162393563653662613665316330323433
+      peer4: null
+      peer6: 'fe80::1023:2'
+      own6: 'fe80::2426:2'
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242422426
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'SISY-MNT'
+      auth_provider: 'kioubit'
