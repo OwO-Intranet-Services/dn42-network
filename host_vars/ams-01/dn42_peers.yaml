@@ -482,3 +482,23 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+  - wg:
+      port: 22539
+      endpoint: '[2003:a:1318:5802::123]:51823'
+      wg_pubkey: 'z7oRH9dWmGlIsh033ANjfRHRMuoE0f4iSf6ydJFQxFw='
+      psk: null
+      peer4: '172.21.66.193'
+      peer6: 'fe80::4242:4225:39'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422539
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'CHOFSTEDE-MNT'
+      auth_provider: 'kioubit'
