@@ -8,6 +8,7 @@ from pathlib import Path
 
 import yaml
 
+
 class AnsibleSafeLoader(yaml.SafeLoader):
     pass
 
@@ -21,6 +22,13 @@ peers_file = Path("host_vars") / host / "dn42_peers.yaml"
 if not peers_file.is_file():
     print(f"::error title=Preflight failed::{peers_file} not found.")
     sys.exit(1)
+
+inv = yaml.safe_load(Path("inventory.yaml").read_text())
+host_vars = (
+    inv.get("all", {}).get("children", {}).get("nodes", {}).get("hosts", {}).get(host)
+    or {}
+)
+ip_support = host_vars.get("ip_support", "dual")
 
 data = yaml.load(peers_file.read_text(), Loader=AnsibleSafeLoader) or {}
 peer_list = data.get("peers") or []
@@ -77,42 +85,41 @@ if not endpoints:
     print("No active peer endpoints to verify; skipping reachability check.")
     sys.exit(0)
 
-failures: list[tuple[str, str, str, str]] = []
+required_families: set[int] = set()
+if ip_support in ("dual", "ipv4"):
+    required_families.add(socket.AF_INET)
+if ip_support in ("dual", "ipv6"):
+    required_families.add(socket.AF_INET6)
+
+failures: list[tuple[str, str, str]] = []
 for target, host_part in endpoints:
-    print(f"::group::{target} endpoint {host_part}")
-    cmd = (
-        f"ping -4 -c 2 -W 3 {host_part!r} "
-        f"|| ping -6 -c 2 -W 3 {host_part!r}"
-    )
-    result = subprocess.run(
-        [
-            "ansible", "-i", "inventory.yaml", host,
-            "-m", "ansible.builtin.shell", "-a", cmd,
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if result.stdout:
-        sys.stdout.write(result.stdout)
-    if result.stderr:
-        sys.stderr.write(result.stderr)
-    print("::endgroup::")
-    if result.returncode != 0:
-        combined = (result.stdout or "") + (result.stderr or "")
-        failures.append((target, host_part, host, combined))
+    try:
+        results = socket.getaddrinfo(host_part, None, socket.AF_UNSPEC, socket.SOCK_DGRAM)
+    except OSError as e:
+        failures.append((target, host_part, f"DNS resolution failed: {e}"))
+        continue
+
+    resolved_families = {r[0] for r in results}
+    matched = resolved_families & required_families
+    if matched:
+        af_names = ", ".join(
+            "IPv4" if f == socket.AF_INET else "IPv6" for f in sorted(matched)
+        )
+        print(f"{target}: {host_part} resolves with {af_names} (node ip_support={ip_support}) ✓")
+    else:
+        resolved_names = ", ".join(
+            "IPv4" if f == socket.AF_INET else "IPv6" for f in sorted(resolved_families)
+        )
+        failures.append((
+            target,
+            host_part,
+            f"resolves to {resolved_names} but node requires {ip_support}",
+        ))
 
 if failures:
-    for target, host_part, deploy_host, output in failures:
-        tail = "\n".join(output.strip().splitlines()[-15:]) or "(no output from ansible)"
-        encoded = (
-            tail.replace("%", "%25")
-            .replace("\r", "%0D")
-            .replace("\n", "%0A")
-        )
+    for target, host_part, reason in failures:
         print(
             f"::error title=Preflight failed::Peer {target} endpoint "
-            f"{host_part} is not reachable from {deploy_host}; "
-            f"refusing to apply.%0A%0A{encoded}"
+            f"{host_part}: {reason}"
         )
     sys.exit(1)

@@ -91,11 +91,6 @@ jobs:
     - name: Install preflight dependencies
       run: .github/scripts/setup-ci-venv.sh ansible-core PyYAML
 
-    - name: Configure SSH
-      env:
-        ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
-      run: .github/scripts/configure-ssh.sh
-
     - name: Write vault password file
       env:
         ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
