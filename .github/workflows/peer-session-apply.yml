@@ -234,6 +234,9 @@ jobs:
             endpoint = wg.get("endpoint")
             if not endpoint:
                 continue
+            if str(endpoint).lstrip().startswith("$ANSIBLE_VAULT;"):
+                print(f"::notice::{target} endpoint is vault-encrypted; skipping reachability check")
+                continue
             host_part = endpoint.rsplit(":", 1)[0].strip("[]")
             endpoints.append((target, host_part))
 

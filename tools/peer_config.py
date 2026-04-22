@@ -288,6 +288,8 @@ def _require_optional_port(value: Any, *, field: str, peer_label: str) -> None:
 
 
 def _require_endpoint(value: Any, *, peer_label: str) -> str:
+    if isinstance(value, TaggedScalar) and value.yaml_tag == "!vault":
+        return value
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{peer_label} has invalid wg.endpoint: expected host:port string")
 
