@@ -502,3 +502,30 @@ peers:
       managed: true
       effective_mnt: 'CHOFSTEDE-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22357
+      endpoint: 'de01.dn42.defelo.de:21023'
+      wg_pubkey: 'voCiTw4eyEPn8c+6DntXzkSWgutHks0SrV/hp6EF/wE='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        33656337663464653563663435333861656234323030366134626137633662633830613032636333
+        3937623336356466323464323330616162656365396333340a313430313532333466613962643037
+        62343661323965383132346637653334613339353235393335323030396632663534363634343633
+        3933356665326261660a326637656135653031653531666463643338393932663636613533333636
+        61326437323935656638306630613537383763663434326236323865306463386238326464373332
+        3332353335663933376331393661363131366466616263613264
+      peer4: null
+      peer6: 'fe80::2357'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422357
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'DEFELO-MNT'
+      auth_provider: 'registry_ssh'
