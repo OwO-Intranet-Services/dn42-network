@@ -235,7 +235,25 @@ jobs:
             if not endpoint:
                 continue
             if str(endpoint).lstrip().startswith("$ANSIBLE_VAULT;"):
-                print(f"::notice::{target} endpoint is vault-encrypted; skipping reachability check")
+                vault_pass_file = Path(".secrets/vault_pass.txt")
+                if not vault_pass_file.is_file():
+                    print(f"::notice::{target} endpoint is vault-encrypted; no vault password available, skipping")
+                    continue
+                try:
+                    decrypted = subprocess.run(
+                        ["ansible-vault", "decrypt", "--vault-password-file", str(vault_pass_file), "--output", "-"],
+                        input=str(endpoint),
+                        capture_output=True, text=True, check=True,
+                    ).stdout.strip()
+                    if not decrypted:
+                        print(f"::notice::{target} vault-encrypted endpoint decrypted to empty; skipping")
+                        continue
+                    host_part = decrypted.rsplit(":", 1)[0].strip("[]")
+                    print(f"::add-mask::{host_part}")
+                    print(f"::add-mask::{decrypted}")
+                    endpoints.append((target, host_part))
+                except subprocess.CalledProcessError:
+                    print(f"::warning::{target} endpoint vault decryption failed; skipping reachability check")
                 continue
             host_part = endpoint.rsplit(":", 1)[0].strip("[]")
             endpoints.append((target, host_part))
