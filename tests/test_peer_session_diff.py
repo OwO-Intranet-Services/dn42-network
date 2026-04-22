@@ -148,7 +148,7 @@ class PeerSessionDiffTests(unittest.TestCase):
         )
         self.assertEqual(report["errors"], [])
 
-    def test_hard_deleted_peer_entry_is_rejected(self) -> None:
+    def test_hard_deleted_peer_entry_is_treated_as_removal(self) -> None:
         root = self.create_repo()
         self.write_peer_file(
             root,
@@ -179,11 +179,14 @@ class PeerSessionDiffTests(unittest.TestCase):
 
         report = build_report(root, root / "inventory.yaml", base_ref, head_ref)
 
-        self.assertFalse(report["has_changes"])
-        self.assertEqual(report["deploy_hosts"], [])
-        self.assertEqual(report["deploy_matrix"], [])
-        self.assertEqual(len(report["hard_delete_errors"]), 1)
-        self.assertIn("removed: true", report["hard_delete_errors"][0])
+        self.assertTrue(report["has_changes"])
+        self.assertEqual(report["deploy_hosts"], ["lax-01"])
+        self.assertEqual(
+            [entry["asn"] for entry in report["host_changes"]["lax-01"]["removed"]],
+            [4242420001],
+        )
+        self.assertEqual(report["hard_delete_errors"], [])
+        self.assertEqual(report["errors"], [])
 
     def test_inactive_host_changes_are_ignored(self) -> None:
         root = self.create_repo()

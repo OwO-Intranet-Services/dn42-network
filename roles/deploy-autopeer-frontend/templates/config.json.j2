@@ -3,13 +3,6 @@
     "autopeer_api_url": frontend_url,
     "autopeer_site_url": frontend_url,
     "looking_glass_url": lg_looking_glass_site_url,
-    "oidc_methods": [
-      {
-        "kind": "oidc",
-        "label": "iEdon",
-        "description": "Authenticate with iEdon.",
-        "provider": "iedon"
-      }
-    ]
+    "oidc_methods": lg_autopeer_oidc_methods
 } -%}
 {{ config | to_nice_json }}

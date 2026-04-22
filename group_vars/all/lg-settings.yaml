@@ -19,4 +19,9 @@ lg_autopeer_backend_url: "https://autopeer.owo.li"
 lg_autopeer_backend_host: "autopeer.owo.li"
 lg_autopeer_site_url: "https://{{ lg_autopeer_domain }}"
 lg_looking_glass_site_url: "https://network.iris.dn42"
+lg_autopeer_oidc_methods:
+  - kind: oidc
+    label: { key: iEdon }
+    description: { key: "Authenticate with iEdon." }
+    provider: iedon
 lg_server_poll_idle_timeout: 180

@@ -216,9 +216,7 @@ def compare_peer_sets(
             continue
 
         if after is None:
-            errors.append(
-                f"Hard delete detected in {path}: ASN {asn} disappeared. Keep the peer entry and mark it with removed: true instead."
-            )
+            changes["removed"].append({"asn": asn, "before": before, "after": None})
             continue
 
         if peer_is_removed(before) and peer_is_removed(after):
