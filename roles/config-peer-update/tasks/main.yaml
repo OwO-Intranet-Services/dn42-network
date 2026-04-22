@@ -100,6 +100,7 @@
   loop: "{{ peer_update_wireguard_configure }}"
   loop_control:
     label: "{{ item.name }}"
+  no_log: true
 
 - name: Validate targeted WireGuard endpoint resolution
   ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/validate_wireguard_endpoint_resolution.yaml"
@@ -164,6 +165,7 @@
     label: "{{ item.interface_name }}"
   register: peer_update_wireguard_orphan_cleanup
   changed_when: false
+  no_log: true
 
 - name: Queue targeted WireGuard restarts when configuration changes
   ansible.builtin.set_fact:
@@ -186,6 +188,7 @@
   loop: "{{ peer_update_wireguard_configure }}"
   loop_control:
     label: "{{ item.interface_name }}"
+  no_log: true
 
 - name: Ensure removed WireGuard services are stopped and disabled
   ansible.builtin.systemd:
