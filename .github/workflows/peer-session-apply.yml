@@ -196,6 +196,7 @@ jobs:
         import json
         import os
         import re
+        import socket
         import subprocess
         import sys
         from pathlib import Path
@@ -251,6 +252,11 @@ jobs:
                     host_part = decrypted.rsplit(":", 1)[0].strip("[]")
                     print(f"::add-mask::{host_part}")
                     print(f"::add-mask::{decrypted}")
+                    try:
+                        for info in socket.getaddrinfo(host_part, None):
+                            print(f"::add-mask::{info[4][0]}")
+                    except OSError:
+                        pass
                     endpoints.append((target, host_part))
                 except subprocess.CalledProcessError:
                     print(f"::warning::{target} endpoint vault decryption failed; skipping reachability check")
