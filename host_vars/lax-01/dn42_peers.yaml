@@ -510,3 +510,30 @@ peers:
       managed: true
       effective_mnt: 'HUJK-MNT'
       auth_provider: 'host_impersonation'
+  - wg:
+      port: 20214
+      endpoint: 'fantasea.origincode.me:31023'
+      wg_pubkey: '1Q2u5SDcXtePzQ0e68aGe6i8uqCUlXcth2n2VdkoY2g='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        66313837643632366430363161373532323338326138666330363435313236373630626235343865
+        6665633832343931633530666165306565343737626232340a346335663837393232326434303237
+        65656336653938346337363765636233363662353630643331366466393932363463306662376438
+        3733376562663338320a633365396430323437336533363363316430656161313035643132643735
+        34316430616533633539313766613137323236366463326431383438323962666634656333613665
+        6261626561666434323836626566383531623638303763386465
+      peer4: null
+      peer6: 'fe80::214'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420214
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+    autopeer:
+      managed: true
+      effective_mnt: 'COMPLEXE-MNT'
+      auth_provider: 'iedon'
