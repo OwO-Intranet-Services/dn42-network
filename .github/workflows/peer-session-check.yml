@@ -46,22 +46,10 @@ jobs:
           echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Validate vault secret
-      env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-      run: |
-        test -n "$ANSIBLE_VAULT_PASSWORD" || {
-          echo "ANSIBLE_VAULT_PASSWORD secret is required for Ansible syntax checks."
-          exit 1
-        }
-
     - name: Write vault password file
       env:
         ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-      run: |
-        mkdir -p .secrets
-        printf '%s' "$ANSIBLE_VAULT_PASSWORD" > .secrets/vault_pass.txt
-        chmod 600 .secrets/vault_pass.txt
+      run: .github/scripts/write-vault-pass.sh
 
     - name: Detect peer session changes
       run: |
