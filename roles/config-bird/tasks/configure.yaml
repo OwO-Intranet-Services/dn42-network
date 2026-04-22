@@ -98,6 +98,7 @@
   loop: "{{ bird_dn42_peers_configure }}"
   loop_control:
     label: "{{ item.name }}"
+  no_log: true
 
 - name: Remove DN42 peer configurations
   ansible.builtin.file:
@@ -106,6 +107,27 @@
   loop: "{{ bird_dn42_peers_remove }}"
   loop_control:
     label: "{{ item.name }}"
+
+- name: Discover existing DN42 BIRD peer configurations
+  ansible.builtin.find:
+    paths: /etc/bird/peers
+    patterns: "{{ dn42_prefix }}*.conf"
+    file_type: file
+  register: bird_dn42_existing_configs
+
+- name: Remove stale DN42 BIRD peer configurations
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{
+      bird_dn42_existing_configs.files
+      | map(attribute='path')
+      | reject('in', bird_dn42_peers_configure | map(attribute='name') | map('regex_replace', '^(.*)$', '/etc/bird/peers/\1.conf') | list)
+      | list
+    }}
+  loop_control:
+    label: "{{ item | basename }}"
 
 - name: Reload BIRD configurations
   ansible.builtin.command: birdc configure

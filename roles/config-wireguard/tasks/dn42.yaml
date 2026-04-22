@@ -28,6 +28,7 @@
   loop: "{{ dn42_processed_peers }}"
   loop_control:
     label: "{{ item.name }}"
+  no_log: true
 
 - name: Split DN42 peers by desired action
   ansible.builtin.set_fact:
@@ -62,6 +63,7 @@
     loop_var: peer
     label: "{{ peer.name }}"
   register: dn42_peer_templates
+  no_log: true
 
 - name: Set fact for rendered WireGuard peers
   ansible.builtin.set_fact:
@@ -77,3 +79,27 @@
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"
+
+- name: Discover existing DN42 WireGuard configurations
+  ansible.builtin.find:
+    paths: /etc/wireguard
+    patterns: "{{ dn42_prefix }}*.conf"
+    file_type: file
+  register: wg_dn42_existing_configs
+
+- name: Include stale DN42 WireGuard peers in removal list
+  ansible.builtin.set_fact:
+    wg_removed_peers: >-
+      {{ wg_removed_peers + [{'peer': {'name': item, 'interface_name': item}}] }}
+  loop: >-
+    {{
+      wg_dn42_existing_configs.files
+      | map(attribute='path')
+      | map('basename')
+      | map('regex_replace', '\.conf$', '')
+      | reject('in', wg_dn42_peers_configure | map(attribute='name') | list)
+      | reject('in', wg_dn42_peers_remove | map(attribute='name') | list)
+      | list
+    }}
+  loop_control:
+    label: "{{ item }}"

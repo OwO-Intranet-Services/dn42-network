@@ -34,21 +34,22 @@
   ansible.builtin.set_fact:
     peer_update_processed_peers: "{{ dn42_processed_peers }}"
 
-- name: Validate requested peer targets
-  ansible.builtin.assert:
-    that:
-      - peer_update_missing_targets | length == 0
-    fail_msg: "Unknown peer update targets for {{ inventory_hostname }}: {{ peer_update_missing_targets | join(', ') }}"
-  vars:
-    peer_update_known_targets: "{{ peer_update_processed_peers | map(attribute='name') | list }}"
-    peer_update_missing_targets: "{{ peer_update_targets_resolved | difference(peer_update_known_targets) | list }}"
+- name: Determine found and deleted peer targets
+  ansible.builtin.set_fact:
+    peer_update_known_names: "{{ peer_update_processed_peers | map(attribute='name') | list }}"
 
-- name: Select targeted DN42 peers
+- name: Select targeted DN42 peers present in the peer file
   ansible.builtin.set_fact:
     peer_update_selected_peers: >-
       {{
         peer_update_processed_peers
         | selectattr('name', 'in', peer_update_targets_resolved)
+        | list
+      }}
+    peer_update_deleted_targets: >-
+      {{
+        peer_update_targets_resolved
+        | reject('in', peer_update_known_names)
         | list
       }}
 
@@ -73,6 +74,15 @@
   loop: "{{ peer_update_selected_peers }}"
   loop_control:
     label: "{{ item.name }}"
+  no_log: true
+
+- name: Add deleted peer targets as removal-only descriptors
+  ansible.builtin.set_fact:
+    peer_update_wireguard_peers: "{{ peer_update_wireguard_peers + [{'name': item, 'interface_name': item, 'removed': true}] }}"
+    peer_update_selected_peers: "{{ peer_update_selected_peers + [{'name': item, 'removed': true}] }}"
+  loop: "{{ peer_update_deleted_targets }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Split targeted peers by desired action
   ansible.builtin.set_fact:
@@ -135,6 +145,7 @@
     loop_var: peer
     label: "{{ peer.name }}"
   register: peer_update_wireguard_templates
+  no_log: true
 
 - name: Remove lingering targeted WireGuard interfaces for inactive services
   ansible.builtin.shell: |
@@ -213,6 +224,7 @@
   loop_control:
     label: "{{ item.name }}"
   register: peer_update_bird_templates
+  no_log: true
 
 - name: Remove targeted BIRD peer configurations
   ansible.builtin.file:

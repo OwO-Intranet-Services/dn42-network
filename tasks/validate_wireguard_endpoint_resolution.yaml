@@ -26,3 +26,4 @@
     loop_var: peer
     label: "{{ peer.name }} -> {{ wireguard_endpoint_host }}"
   changed_when: false
+  no_log: true
