@@ -29,6 +29,11 @@ jobs:
       with:
         python-version: "3.12"
 
+    - name: Write vault password file
+      env:
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+      run: .github/scripts/write-vault-pass.sh
+
     - name: Install CI dependencies
       run: |
         python3 -m pip install --upgrade pip

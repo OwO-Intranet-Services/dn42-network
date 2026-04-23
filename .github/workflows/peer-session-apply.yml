@@ -87,13 +87,13 @@ jobs:
       run: |
         python3 --version
 
-    - name: Install preflight dependencies
-      run: .github/scripts/setup-ci-venv.sh ansible-core PyYAML
-
     - name: Write vault password file
       env:
         ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: .github/scripts/write-vault-pass.sh
+
+    - name: Install preflight dependencies
+      run: .github/scripts/setup-ci-venv.sh ansible-core PyYAML
 
     - name: Probe peer endpoints from deploy host
       env:
@@ -127,6 +127,11 @@ jobs:
       run: |
         python3 --version
 
+    - name: Write vault password file
+      env:
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+      run: .github/scripts/write-vault-pass.sh
+
     - name: Install deployment dependencies
       run: .github/scripts/setup-ci-venv.sh ansible-core --galaxy collections/requirements.yml
 
@@ -134,11 +139,6 @@ jobs:
       env:
         ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
       run: .github/scripts/configure-ssh.sh
-
-    - name: Write vault password file
-      env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-      run: .github/scripts/write-vault-pass.sh
 
     - name: Apply targeted DN42 peer update
       env:
