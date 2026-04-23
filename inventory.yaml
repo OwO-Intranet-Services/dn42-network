@@ -37,6 +37,7 @@ all:
           wg_pubkey: "pv0bwaUm/ppI7Yaoi7w0qrXX5EW7Qo2njTSNG19AHgM="
           region: ASIA_E
           country: JP
+          peering_comment: "Flaky connectivity due to upstream issues"
           autopeer: false
 
         dls-01:
@@ -45,9 +46,8 @@ all:
           ownip6: fd42:4242:1023:68::1
           ownip6block: fd42:4242:1023:68::/64
           link_local_ipv6: fe80::1023:2
-          ip_support: ipv4
+          ip_support: dual
           wg_pubkey: "NWNxHIL6Fdwk8AkflKAlpdpeo8l3fYyMZH+JcTug6iQ="
-          peering_comment: "IPv4 only"
           region: NORTH_AMERICA_W
           country: US
 
@@ -99,3 +99,9 @@ all:
     flapalerted:
       hosts:
         ams-01:
+
+    traceroute_loop:
+      vars:
+        traceroute_loop_prefix: "fd42:4242:1023:42::/64"
+      hosts:
+        lax-01:

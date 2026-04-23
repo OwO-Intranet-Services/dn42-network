@@ -1,0 +1,5 @@
+---
+- hosts: traceroute_loop
+  become: true
+  roles:
+    - config-traceroute-loop

@@ -1,0 +1,77 @@
+#!/bin/bash
+# Traceroute loop: ring of {{ traceroute_loop_num_hops }} network namespaces
+# in {{ traceroute_loop_subnet }}::/64 that loops forever
+set -e
+
+NUM_HOPS={{ traceroute_loop_num_hops }}
+PREFIX="{{ traceroute_loop_subnet }}"
+
+stop() {
+    ip -6 route del ${PREFIX}::/64 dev lp-host 2>/dev/null || true
+    ip link del lp-host 2>/dev/null || true
+    for i in $(seq 0 $((NUM_HOPS - 1))); do
+        ip netns del loop${i} 2>/dev/null || true
+    done
+}
+
+start() {
+    # Clean slate
+    stop
+
+    # Create namespaces with loop IPs on loopback
+    for i in $(seq 0 $((NUM_HOPS - 1))); do
+        ip netns add loop${i}
+        ip netns exec loop${i} ip link set lo up
+        ip netns exec loop${i} sysctl -qw net.ipv6.conf.all.forwarding=1
+        ip netns exec loop${i} sysctl -qw net.ipv6.conf.default.accept_dad=0
+        ip netns exec loop${i} ip -6 addr add ${PREFIX}::${i}/128 dev lo
+    done
+
+    # Create veth ring: ns[i] --lp{i}f--> ns[(i+1)%N]
+    for i in $(seq 0 $((NUM_HOPS - 1))); do
+        next=$(( (i + 1) % NUM_HOPS ))
+        ip link add lp${i}f type veth peer name lp${i}b
+        ip link set lp${i}f netns loop${i}
+        ip link set lp${i}b netns loop${next}
+
+        ip netns exec loop${i} sysctl -qw net.ipv6.conf.lp${i}f.accept_dad=0
+        ip netns exec loop${next} sysctl -qw net.ipv6.conf.lp${i}b.accept_dad=0
+
+        ip netns exec loop${i} ip link set lp${i}f up
+        ip netns exec loop${next} ip link set lp${i}b up
+
+        ip netns exec loop${i} ip -6 addr add fe80::1:${i}/64 dev lp${i}f nodad
+        ip netns exec loop${next} ip -6 addr add fe80::2:${i}/64 dev lp${i}b nodad
+    done
+
+    # Forward route: loop traffic cycles through the ring
+    for i in $(seq 0 $((NUM_HOPS - 1))); do
+        ip netns exec loop${i} ip -6 route add ${PREFIX}::/64 via fe80::2:${i} dev lp${i}f
+    done
+
+    # Host entry veth into ns[0]
+    ip link add lp-host type veth peer name lp-entry
+    ip link set lp-entry netns loop0
+    sysctl -qw net.ipv6.conf.lp-host.accept_dad=0
+    ip netns exec loop0 sysctl -qw net.ipv6.conf.lp-entry.accept_dad=0
+    ip link set lp-host up
+    ip netns exec loop0 ip link set lp-entry up
+    ip -6 addr add fe80::aa:0/64 dev lp-host nodad
+    ip netns exec loop0 ip -6 addr add fe80::aa:1/64 dev lp-entry nodad
+
+    # Default routes: ICMP replies go backward through ring to host
+    ip netns exec loop0 ip -6 route add default via fe80::aa:0 dev lp-entry
+    for i in $(seq 1 $((NUM_HOPS - 1))); do
+        prev=$((i - 1))
+        ip netns exec loop${i} ip -6 route add default via fe80::1:${prev} dev lp${prev}b
+    done
+
+    # Host route into the loop
+    ip -6 route add ${PREFIX}::/64 via fe80::aa:1 dev lp-host
+}
+
+case "${1:-start}" in
+    start) start ;;
+    stop)  stop ;;
+    *)     echo "Usage: $0 {start|stop}"; exit 1 ;;
+esac

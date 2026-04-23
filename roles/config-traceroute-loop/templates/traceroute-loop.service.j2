@@ -1,0 +1,12 @@
+[Unit]
+Description=Traceroute loop ({{ traceroute_loop_subnet }}::/64)
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/traceroute-loop.sh start
+ExecStop=/usr/local/bin/traceroute-loop.sh stop
+
+[Install]
+WantedBy=multi-user.target

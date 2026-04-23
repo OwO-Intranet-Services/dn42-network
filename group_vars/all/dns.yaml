@@ -109,7 +109,8 @@ dns_master_zones:
     soa:
       <<: *soa_defaults
 
-dns_extra_domains: []
+dns_extra_domains:
+  - owo.dn42
 
 dns_forward_zones_list:
   - dn42

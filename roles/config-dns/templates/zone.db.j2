@@ -24,6 +24,15 @@ $ORIGIN {{ zone.origin }}
 {%   endfor %}
 {% endif %}
 
+{% if zone.name == 'owo.dn42' %}
+
+; Traceroute loop (fd42:4242:1023:42::/64)
+loop  IN  AAAA  fd42:4242:1023:42::43
+{% for i in range(43) %}
+{{ i }}.loop  IN  AAAA  fd42:4242:1023:42::{{ i }}
+{% endfor %}
+{% endif %}
+
 {% if zone.name == domain_name %}
 
 ; ACME dns-01 challenges
@@ -129,4 +138,10 @@ lg-proxy.{{ host }}.node  IN  CNAME  {{ hostvars[host].ansible_host }}.
 {%       endif %}
 {%     endfor %}
 {%   endif %}
+
+; Traceroute loop PTR
+{% for i in range(43) %}
+{{ (('fd42:4242:1023:42::' ~ i) | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}  IN  PTR  {{ i }}.loop.owo.dn42.
+{% endfor %}
+{{ (('fd42:4242:1023:42::43') | ansible.utils.ipaddr('revdns')) | replace('.' + zone.origin, '') }}  IN  PTR  loop.owo.dn42.
 {% endif %}

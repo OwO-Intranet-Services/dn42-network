@@ -1,0 +1,5 @@
+---
+- name: Restart traceroute loop
+  ansible.builtin.service:
+    name: traceroute-loop
+    state: restarted

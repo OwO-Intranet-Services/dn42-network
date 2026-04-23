@@ -38,7 +38,7 @@
           'notify': true,
           'allow_transfer': _transfer_defaults,
           'allow_query': ['any'],
-          'soa': _soa_defaults
+          'soa': _soa_defaults | combine({'serial': dns_auto_serial})
         }) -%}
       {%- endfor -%}
       {{ res }}

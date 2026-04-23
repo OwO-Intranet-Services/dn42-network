@@ -1,0 +1,29 @@
+---
+- name: Deploy traceroute loop setup script
+  ansible.builtin.template:
+    src: traceroute-loop.sh.j2
+    dest: /usr/local/bin/traceroute-loop.sh
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart traceroute loop
+
+- name: Deploy traceroute loop systemd service
+  ansible.builtin.template:
+    src: traceroute-loop.service.j2
+    dest: /etc/systemd/system/traceroute-loop.service
+    owner: root
+    group: root
+    mode: "0644"
+  register: traceroute_loop_unit
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: traceroute_loop_unit.changed
+
+- name: Enable and start traceroute loop service
+  ansible.builtin.service:
+    name: traceroute-loop
+    state: started
+    enabled: true

@@ -33,3 +33,11 @@ protocol static {
     ipv6 { import all; export none; };
 }
 {% endfor %}
+
+{% if traceroute_loop_prefix is defined %}
+protocol static {
+    route {{ traceroute_loop_prefix }} reject;
+
+    ipv6 { import all; export none; };
+}
+{% endif %}
