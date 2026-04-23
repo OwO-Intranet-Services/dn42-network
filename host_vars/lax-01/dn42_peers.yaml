@@ -564,3 +564,24 @@ peers:
       managed: true
       effective_mnt: 'SISY-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23373
+      endpoint: '47.116.163.141:21023'
+      wg_pubkey: 'YHdIseLTFbqwUG7U5BMxyYcstUn4ydmkR9ASEGwu9gg='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2333'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423373
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ROSMONTIC-MNT'
+      auth_provider: 'kioubit'
