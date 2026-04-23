@@ -85,7 +85,7 @@ all:
     anycast:
       hosts:
         lax-01:
-        tyo-01:
+        hkg-01:
         ams-01:
 
     lg_server:
