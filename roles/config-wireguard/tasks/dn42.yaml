@@ -51,6 +51,16 @@
     wireguard_endpoint_validation_peers: "{{ wg_dn42_peers_configure }}"
   when: wg_dn42_peers_configure | default([]) | length > 0
 
+- name: Remove peers with unresolvable endpoints from configure list
+  ansible.builtin.set_fact:
+    wg_dn42_peers_configure: >-
+      {{
+        wg_dn42_peers_configure
+        | rejectattr('name', 'in', wireguard_endpoint_failed_peers)
+        | list
+      }}
+  when: wireguard_endpoint_failed_peers | default([]) | length > 0
+
 - name: Render per-peer WireGuard configurations for DN42 peers
   ansible.builtin.template:
     src: dn42_tunnel.conf.j2

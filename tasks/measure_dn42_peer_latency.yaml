@@ -16,7 +16,6 @@
     label: "{{ item.name }}"
   changed_when: false
   failed_when: false
-  no_log: true
 
 - name: Collect DN42 latency results
   ansible.builtin.async_status:

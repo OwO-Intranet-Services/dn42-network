@@ -26,4 +26,24 @@
     loop_var: peer
     label: "{{ peer.name }}"
   changed_when: false
-  no_log: true
+  failed_when: false
+  register: wireguard_endpoint_validation_results
+
+- name: Identify peers with unresolvable endpoints
+  ansible.builtin.set_fact:
+    wireguard_endpoint_failed_peers: >-
+      {{
+        wireguard_endpoint_validation_results.results
+        | default([])
+        | selectattr('rc', 'defined')
+        | selectattr('rc', 'ne', 0)
+        | map(attribute='peer')
+        | map(attribute='name')
+        | list
+      }}
+
+- name: Warn about peers with unresolvable endpoints
+  ansible.builtin.debug:
+    msg: "Skipping peer {{ item }} — endpoint failed to resolve"
+  loop: "{{ wireguard_endpoint_failed_peers }}"
+  when: wireguard_endpoint_failed_peers | length > 0

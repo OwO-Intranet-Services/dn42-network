@@ -108,6 +108,14 @@
     wireguard_endpoint_validation_peers: "{{ peer_update_wireguard_configure }}"
   when: peer_update_wireguard_configure | length > 0
 
+- name: Remove targeted peers with unresolvable endpoints
+  ansible.builtin.set_fact:
+    peer_update_wireguard_configure: >-
+      {{ peer_update_wireguard_configure | rejectattr('name', 'in', wireguard_endpoint_failed_peers) | list }}
+    peer_update_bird_configure: >-
+      {{ peer_update_bird_configure | rejectattr('name', 'in', wireguard_endpoint_failed_peers) | list }}
+  when: wireguard_endpoint_failed_peers | default([]) | length > 0
+
 - name: Ensure WireGuard and BIRD peer directories exist
   ansible.builtin.file:
     path: "{{ item.path }}"
@@ -165,7 +173,6 @@
     label: "{{ item.interface_name }}"
   register: peer_update_wireguard_orphan_cleanup
   changed_when: false
-  no_log: true
 
 - name: Queue targeted WireGuard restarts when configuration changes
   ansible.builtin.set_fact:
@@ -188,7 +195,6 @@
   loop: "{{ peer_update_wireguard_configure }}"
   loop_control:
     label: "{{ item.interface_name }}"
-  no_log: true
 
 - name: Ensure removed WireGuard services are stopped and disabled
   ansible.builtin.systemd:
@@ -227,7 +233,6 @@
   loop_control:
     label: "{{ item.name }}"
   register: peer_update_bird_templates
-  no_log: true
 
 - name: Remove targeted BIRD peer configurations
   ansible.builtin.file:
