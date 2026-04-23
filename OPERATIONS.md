@@ -8,7 +8,7 @@ Run commands from the repo root so `ansible.cfg` and `inventory.yaml` are picked
 - `ansible-playbook setup-wg.yaml`
 - `ansible-playbook setup-bird.yaml`
 - `ansible-playbook setup-dns.yaml`
-- `ansible-playbook setup-peer-update.yaml --limit <host> -e 'peer_update_targets=["dn42_4242"]'`
+- `ansible-playbook setup-peer-update.yaml --limit <host> -e peer_update_targets=dn42_4242`
 - `ansible-playbook setup-remove-node.yaml --limit <host>`
 - `ansible-playbook setup-lg-proxy.yaml`
 - `ansible-playbook setup-lg-server.yaml`
