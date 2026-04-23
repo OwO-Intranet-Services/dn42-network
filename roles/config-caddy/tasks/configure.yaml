@@ -11,6 +11,7 @@
     - lg-api.svc.moe.pem
   when: "'lg-api.svc.moe' in lg_server_domains | default([]) and inventory_hostname in groups.get('lg_server', [])"
   notify: Reload caddy
+  no_log: true
 
 - name: Deploy shared DN42 certificates for anycast sites
   ansible.builtin.copy:
@@ -33,6 +34,7 @@
   loop: "{{ caddy_shared_dn42_site_credentials }}"
   when: inventory_hostname in groups.get(anycast_group, [])
   notify: Reload caddy
+  no_log: true
 
 - name: Build websites list
   ansible.builtin.set_fact:

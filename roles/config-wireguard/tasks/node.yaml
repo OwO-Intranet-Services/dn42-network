@@ -50,6 +50,7 @@
     - item.skipped is not defined or not item.skipped
     - item.stdout is defined
     - inventory_hostname == item.item.0 or inventory_hostname == item.item.1
+  no_log: true
 
 - name: Build WireGuard peer descriptors
   ansible.builtin.set_fact:
@@ -77,6 +78,7 @@
       (ip_support | default('dual') == 'dual') or
       (peer_hostvars.ip_support | default('dual') == 'dual') or
       (ip_support | default('dual') == peer_hostvars.ip_support | default('dual'))
+  no_log: true
 
 - name: Determine desired inter-node WireGuard interface names
   ansible.builtin.set_fact:
@@ -101,6 +103,7 @@
     loop_var: peer
     label: "{{ peer.name }}"
   register: node_peer_templates
+  no_log: true
 
 - name: Set fact for rendered WireGuard peers
   ansible.builtin.set_fact:

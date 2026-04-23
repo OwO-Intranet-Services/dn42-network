@@ -22,6 +22,7 @@
     owner: root
     group: nogroup
     mode: "0644"
+  no_log: true
 
 - name: Copy lg proxy binary
   ansible.builtin.copy:

@@ -101,6 +101,10 @@ jobs:
         DEPLOY_TARGETS: ${{ toJson(matrix.deploy.targets) }}
       run: python3 .github/scripts/probe-peer-endpoints.py
 
+    - name: Clean up vault password
+      if: always()
+      run: rm -f .secrets/vault_pass.txt
+
   apply:
     needs: [ detect, preflight ]
     if: needs.detect.outputs.has_changes == 'true'
@@ -143,3 +147,9 @@ jobs:
       run: |
         python3 -c 'import json,os; print(json.dumps({"peer_update_targets":json.loads(os.environ["DEPLOY_TARGETS_JSON"])}))' > .peer-update-vars.json
         ansible-playbook setup-peer-update.yaml --limit "$DEPLOY_HOST" -e @.peer-update-vars.json
+
+    - name: Clean up secrets
+      if: always()
+      run: |
+        rm -f .secrets/vault_pass.txt
+        rm -f ~/.ssh/id_ed25519

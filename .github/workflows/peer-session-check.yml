@@ -46,11 +46,6 @@ jobs:
           echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Write vault password file
-      env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-      run: .github/scripts/write-vault-pass.sh
-
     - name: Detect peer session changes
       run: |
         python3 tools/peer_session_diff.py \

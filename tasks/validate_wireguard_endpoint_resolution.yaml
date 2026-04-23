@@ -24,6 +24,6 @@
   loop: "{{ wireguard_endpoint_validation_peers }}"
   loop_control:
     loop_var: peer
-    label: "{{ peer.name }} -> {{ wireguard_endpoint_host }}"
+    label: "{{ peer.name }}"
   changed_when: false
   no_log: true

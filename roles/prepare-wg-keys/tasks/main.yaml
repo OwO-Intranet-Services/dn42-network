@@ -126,6 +126,7 @@
   ansible.builtin.slurp:
     src: "{{ repository_root_dir }}/.secrets/wireguard_keys/{{ inventory_hostname }}/privatekey"
   register: local_wg_private_key_content
+  no_log: true
 
 - name: Read local WireGuard public key
   delegate_to: localhost
@@ -138,6 +139,7 @@
   ansible.builtin.set_fact:
     wireguard_private_key: "{{ local_wg_private_key_content.content | b64decode | trim }}"
     wireguard_public_key: "{{ local_wg_public_key_content.content | b64decode | trim }}"
+  no_log: true
 
 - name: Print WireGuard public key
   ansible.builtin.debug:

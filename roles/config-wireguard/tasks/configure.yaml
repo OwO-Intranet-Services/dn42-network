@@ -39,6 +39,7 @@
     label: "{{ item.peer.interface_name }}"
   register: wg_orphan_cleanup
   changed_when: false
+  no_log: true
 
 - name: Restart WireGuard services when configuration changes
   ansible.builtin.systemd:
@@ -51,6 +52,7 @@
     - item.changed
     - true
   timeout: 10
+  no_log: true
 
 - name: Ensure wg-quick services are enabled and started
   ansible.builtin.systemd:
@@ -61,6 +63,7 @@
   loop: "{{ wg_rendered_peers }}"
   loop_control:
     label: "{{ item.peer.interface_name }}"
+  no_log: true
 
 - name: Ensure wg-quick services are stopped and disabled
   ansible.builtin.systemd:
