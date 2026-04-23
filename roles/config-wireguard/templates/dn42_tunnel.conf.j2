@@ -23,7 +23,9 @@ PostUp = sysctl -w net.ipv4.conf.%i.rp_filter=0
 
 [Peer]
 PublicKey = {{ peer.wg_pubkey }}
+{% if peer.endpoint %}
 Endpoint = {{ peer.endpoint }}
+{% endif %}
 {% if peer.psk %}
 PresharedKey = {{ peer.psk }}
 {% endif %}

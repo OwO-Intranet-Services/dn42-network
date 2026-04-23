@@ -21,7 +21,7 @@
         if peer.endpoint.startswith('[')
         else peer.endpoint.rsplit(':', 1)[0]
       }}
-  loop: "{{ wireguard_endpoint_validation_peers }}"
+  loop: "{{ wireguard_endpoint_validation_peers | selectattr('endpoint') | list }}"
   loop_control:
     loop_var: peer
     label: "{{ peer.name }}"

@@ -16,7 +16,7 @@
       name: "{{ item.name }}"
       interface_name: "{{ item.name }}"
       port: "{{ item.wg.port | default((item.bgp.asn | string)[-5:]) }}"
-      endpoint: "{{ item.wg.endpoint | mandatory }}"
+      endpoint: "{{ item.wg.endpoint | default(none) }}"
       wg_pubkey: "{{ item.wg.wg_pubkey | mandatory }}"
       peer4: "{{ item.wg.peer4 | default(none) }}"
       peer6: "{{ item.wg.peer6 | default(none) }}"
