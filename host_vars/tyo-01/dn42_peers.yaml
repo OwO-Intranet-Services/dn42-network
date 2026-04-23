@@ -93,7 +93,7 @@ peers:
   - comment: 'cowgl'
     wg:
       port: 23999
-      endpoint: 'tyo.node.cowgl.xyz:31023'
+      endpoint: 'tyo.node.cowgl.tech:31023'
       wg_pubkey: 'mMGGxtEqsagrx1Raw57C2H3Stl6ch/cUuF7y08eVgBE='
       psk: null
       peer4: null

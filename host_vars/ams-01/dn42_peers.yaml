@@ -427,7 +427,7 @@ peers:
   - comment: 'cowgl'
     wg:
       port: 23999
-      endpoint: 'v6.brn.node.cowgl.xyz:31023'
+      endpoint: 'v6.brn.node.cowgl.tech:31023'
       wg_pubkey: 'sHPUV74X+hqUK5wFj3m5kCga0rlPCxImUBwZ/oLiEn4='
       psk: null
       peer4: null

@@ -2,7 +2,7 @@ peers:
   - comment: 'cowgl'
     wg:
       port: 23999
-      endpoint: 'lax.node.cowgl.xyz:31023'
+      endpoint: 'lax.node.cowgl.tech:31023'
       wg_pubkey: 'jhOukGNAKHI8Ivn8uI1TS25n5ho/rVlKFfenGmwCVlg='
       psk: null
       peer4: null
