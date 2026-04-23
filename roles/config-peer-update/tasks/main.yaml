@@ -257,3 +257,28 @@
   changed_when: "'Reconfigured' in peer_update_bird_reconfigure_result.stdout"
   failed_when: peer_update_bird_reconfigure_result.rc != 0
   when: peer_update_bird_reload_required
+
+- name: Wait for BGP sessions to attempt connection
+  ansible.builtin.pause:
+    seconds: 10
+  when: peer_update_bird_reload_required and peer_update_bird_configure | length > 0
+
+- name: Check targeted BGP session states
+  ansible.builtin.command: birdc show protocols {{ item.name }}
+  loop: "{{ peer_update_bird_configure }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: peer_update_bgp_states
+  changed_when: false
+  when: peer_update_bird_reload_required
+
+- name: Bounce BGP sessions stuck in Idle
+  ansible.builtin.shell: birdc disable {{ item.item.name }} && sleep 1 && birdc enable {{ item.item.name }}
+  loop: "{{ peer_update_bgp_states.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when:
+    - peer_update_bird_reload_required
+    - item.stdout is defined
+    - "'Idle' in item.stdout"
+  changed_when: true
