@@ -75,13 +75,6 @@ for entry in peer_list:
             print(f"::warning::{target} endpoint vault decryption failed; skipping reachability check")
         continue
     host_part = endpoint.rsplit(":", 1)[0].strip("[]")
-    print(f"::add-mask::{host_part}")
-    print(f"::add-mask::{endpoint}")
-    try:
-        for info in socket.getaddrinfo(host_part, None):
-            print(f"::add-mask::{info[4][0]}")
-    except OSError:
-        pass
     endpoints.append((target, host_part))
 
 missing = targets - seen_targets

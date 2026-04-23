@@ -98,7 +98,6 @@
   loop: "{{ bird_dn42_peers_configure }}"
   loop_control:
     label: "{{ item.name }}"
-  no_log: true
 
 - name: Remove DN42 peer configurations
   ansible.builtin.file:

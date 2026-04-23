@@ -13,36 +13,11 @@
   notify: Reload caddy
   no_log: true
 
-- name: Deploy shared DN42 certificates for anycast sites
-  ansible.builtin.copy:
-    src: "{{ repository_root_dir }}/.secrets/{{ item.cert_filename }}"
-    dest: "/etc/caddy/ssl/{{ item.cert_filename }}"
-    owner: caddy
-    group: caddy
-    mode: "0600"
-  loop: "{{ caddy_shared_dn42_site_credentials }}"
-  when: inventory_hostname in groups.get(anycast_group, [])
-  notify: Reload caddy
-
-- name: Deploy shared DN42 private keys for anycast sites
-  ansible.builtin.copy:
-    src: "{{ repository_root_dir }}/.secrets/{{ item.key_filename }}"
-    dest: "/etc/caddy/ssl/{{ item.key_filename }}"
-    owner: caddy
-    group: caddy
-    mode: "0600"
-  loop: "{{ caddy_shared_dn42_site_credentials }}"
-  when: inventory_hostname in groups.get(anycast_group, [])
-  notify: Reload caddy
-  no_log: true
-
 - name: Build websites list
   ansible.builtin.set_fact:
     all_websites: >-
       {%- set res = websites | default([]) -%}
       {%- set lg_proxy_domain = lg_proxy_domain_fmt | format(inventory_hostname) -%}
-      {%- set network_site_tls = (caddy_shared_dn42_site_credentials | selectattr('domain', 'equalto', 'network.iris.dn42') | list | first | default({}, true)) -%}
-      {%- set anycast_site_tls = (caddy_shared_dn42_site_credentials | selectattr('domain', 'equalto', 'anycast.iris.dn42') | list | first | default({}, true)) -%}
       {%- set _ = res.append({
         'name': 'lg-proxy-' + inventory_hostname,
         'server_name': lg_proxy_domain,
@@ -85,24 +60,15 @@
         }) -%}
       {%- endif -%}
       {%- if inventory_hostname in groups.get(anycast_group, []) -%}
-        {%- set network_site = {
+        {%- set _ = res.append({
           'name': 'network-iris-dn42',
           'server_name': 'network.iris.dn42',
           'type': 'network-site',
+          'dn42_cert': true,
           'root': network_site_root,
           'listen_ipv4': '172.21.111.111',
           'listen_ipv6': 'fd42:4242:1023::1111:1'
-        } -%}
-        {%- if network_site_tls -%}
-          {%- set _ = network_site.update({
-            'dn42_cert': false,
-            'ssl_cert': '/etc/caddy/ssl/' ~ network_site_tls.cert_filename,
-            'ssl_key': '/etc/caddy/ssl/' ~ network_site_tls.key_filename
-          }) -%}
-        {%- else -%}
-          {%- set _ = network_site.update({'dn42_cert': true}) -%}
-        {%- endif -%}
-        {%- set _ = res.append(network_site) -%}
+        }) -%}
       {%- endif -%}
       {%- if flapalerted_enabled | default(false) and flapalerted_domain is defined -%}
         {%- set _ = res.append({
@@ -114,23 +80,14 @@
         }) -%}
       {%- endif -%}
       {%- if inventory_hostname in groups.get(anycast_group, []) -%}
-        {%- set anycast_site = {
+        {%- set _ = res.append({
           'name': 'anycast',
           'server_name': 'anycast.iris.dn42',
           'type': 'anycast-site',
+          'dn42_cert': true,
           'listen_ipv4': '172.21.111.111',
           'listen_ipv6': 'fd42:4242:1023::1111:1'
-        } -%}
-        {%- if anycast_site_tls -%}
-          {%- set _ = anycast_site.update({
-            'dn42_cert': false,
-            'ssl_cert': '/etc/caddy/ssl/' ~ anycast_site_tls.cert_filename,
-            'ssl_key': '/etc/caddy/ssl/' ~ anycast_site_tls.key_filename
-          }) -%}
-        {%- else -%}
-          {%- set _ = anycast_site.update({'dn42_cert': true}) -%}
-        {%- endif -%}
-        {%- set _ = res.append(anycast_site) -%}
+        }) -%}
       {%- endif -%}
       {{ res }}
 

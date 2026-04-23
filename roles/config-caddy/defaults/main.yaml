@@ -10,13 +10,3 @@ caddy_repo_filename: caddy-stable
 
 dn42_acme_directory: https://acme.burble.dn42/v1/dn42/acme/directory
 network_site_root: /var/www/html/network.iris.dn42
-
-# Anycast hostnames must share a certificate across every announcing node.
-# Per-node ACME issuance races against the anycast path and breaks validation.
-caddy_shared_dn42_site_credentials:
-  - domain: network.iris.dn42
-    cert_filename: network.iris.dn42.crt
-    key_filename: network.iris.dn42.key
-  - domain: anycast.iris.dn42
-    cert_filename: anycast.iris.dn42.crt
-    key_filename: anycast.iris.dn42.key
