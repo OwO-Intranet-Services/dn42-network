@@ -37,8 +37,7 @@ all:
           wg_pubkey: "pv0bwaUm/ppI7Yaoi7w0qrXX5EW7Qo2njTSNG19AHgM="
           region: ASIA_E
           country: JP
-          peering_comment: "Flaky connectivity due to upstream issues"
-          autopeer: false
+          autopeer: true
 
         dls-01:
           ansible_host: dls-01.node.svc.moe
@@ -86,6 +85,7 @@ all:
       hosts:
         lax-01:
         hkg-01:
+        tyo-01:
         ams-01:
 
     lg_server:
