@@ -42,7 +42,7 @@ peers:
       endpoint: 'dn42b.nedifinita.com:56131'
       wg_pubkey: 'q9+7MHvWmWO18uZ0RfNNLNAgUWhqs+zA1zBoWv9r23U='
       psk: null
-      peer4: null
+      peer4: '172.20.0.53'
       peer6: 'fe80::454:2'
       own6: null
       keepalive: null
@@ -57,7 +57,7 @@ peers:
     autopeer:
       managed: true
       effective_mnt: 'NEDIFINITA-MNT'
-      auth_provider: 'migration'
+      auth_provider: 'iedon'
   - comment: 'daylily'
     wg:
       port: 21919
