@@ -15,7 +15,7 @@ PostUp = sysctl -w net.ipv4.conf.%i.rp_filter=0
 
 [Peer]
 PublicKey = {{ peer.public_key }}
-{% if peer.nat4 is defined and not peer.nat4 %}
+{% if not peer.nat4 | default(false) %}
 Endpoint = {{ peer.endpoint_host }}:{{ 30000 + order }}
 {% endif %}
 PresharedKey = {{ peer.preshared_key }}
