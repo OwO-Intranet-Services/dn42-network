@@ -35,10 +35,7 @@ jobs:
       run: .github/scripts/write-vault-pass.sh
 
     - name: Install CI dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install ansible-core
-        ansible-galaxy collection install -r collections/requirements.yml
+      run: .github/scripts/setup-ci-venv.sh ansible-core --galaxy collections/requirements.yml
 
     - name: Resolve diff refs
       id: refs
