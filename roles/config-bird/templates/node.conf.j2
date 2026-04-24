@@ -6,6 +6,8 @@
 define OWNAS = {{ asn }};
 define OWNIP = {{ ownip }};
 define OWNIPv6 = {{ ownip6 }};
+{% set ip_parts = ownip.split('.') %}
+define ROUTER_ID = {{ ip_parts[0]|int * 16777216 + ip_parts[1]|int * 65536 + ip_parts[2]|int * 256 + ip_parts[3]|int }};
 define OWNNET = {{ ownnet4 }};
 define OWNNETv6 = {{ ownnet6 }};
 define OWNNODENET = {{ ownip }}/32;
