@@ -72,6 +72,7 @@ all:
           peering_comment: "IPv6 only"
           region: EUROPE
           country: NL
+
     dn42:
       hosts:
         lax-01:
@@ -79,6 +80,11 @@ all:
         tyo-01:
         dls-01:
         lax-02:
+        ams-01:
+
+    route_reflector:
+      hosts:
+        lax-01:
         ams-01:
 
     anycast:

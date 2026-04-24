@@ -18,6 +18,10 @@
       {{
         node_hosts
         | reject('equalto', inventory_hostname)
+        | select('in',
+            (groups.get('route_reflector', [])
+             if inventory_hostname not in groups.get('route_reflector', [])
+             else node_hosts))
         | list
       }}
     bird_dn42_peers_configure: >-
