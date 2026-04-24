@@ -85,7 +85,7 @@ all:
     route_reflector:
       hosts:
         lax-01:
-        ams-01:
+        tyo-01:
 
     anycast:
       hosts:

@@ -37,31 +37,41 @@
         | list
       }}
 
+- name: Build expected per-node BIRD config filenames
+  ansible.builtin.set_fact:
+    _bird_node_expected_files: >-
+      {%- set rr = groups.get('route_reflector', []) -%}
+      {%- set result = [] -%}
+      {%- for peer in bird_node_peers_configure -%}
+        {%- set prefix = node_rr_prefix if peer in rr else node_prefix -%}
+        {%- set _ = result.append(prefix ~ (peer | replace('-', '_')) ~ '.conf') -%}
+      {%- endfor -%}
+      {{ result }}
+
 - name: Discover existing per-node BIRD configurations
   ansible.builtin.find:
     paths: /etc/bird/nodes
-    patterns: "{{ node_prefix }}*.conf"
+    patterns:
+      - "{{ node_prefix }}*.conf"
+      - "{{ node_rr_prefix }}*.conf"
     file_type: file
   register: bird_node_existing_configs
 
 - name: Determine stale per-node BIRD configurations
   ansible.builtin.set_fact:
-    bird_node_peers_remove: >-
+    _bird_node_stale_files: >-
       {{
         bird_node_existing_configs.files
         | map(attribute='path')
         | map('basename')
-        | map('regex_replace', '\\.conf$', '')
-        | map('regex_replace', '^' ~ node_prefix, '')
-        | map('regex_replace', '_', '-')
-        | reject('in', bird_node_peers_configure)
+        | reject('in', _bird_node_expected_files)
         | list
       }}
 
 - name: Render per-node BIRD configurations
   ansible.builtin.template:
     src: node_peer.conf.j2
-    dest: "/etc/bird/nodes/{{ node_prefix }}{{ peer | replace('-', '_') }}.conf"
+    dest: "/etc/bird/nodes/{{ (node_rr_prefix if peer in groups.get('route_reflector', []) else node_prefix) ~ (peer | replace('-', '_')) }}.conf"
     owner: bird
     group: bird
     mode: "0644"
@@ -70,14 +80,13 @@
     loop_var: peer
     label: "{{ peer }}"
 
-- name: Remove per-node BIRD configurations
+- name: Remove stale per-node BIRD configurations
   ansible.builtin.file:
-    path: "/etc/bird/nodes/{{ node_prefix }}{{ peer | replace('-', '_') }}.conf"
+    path: "/etc/bird/nodes/{{ item }}"
     state: absent
-  loop: "{{ bird_node_peers_remove }}"
+  loop: "{{ _bird_node_stale_files }}"
   loop_control:
-    loop_var: peer
-    label: "{{ peer }}"
+    label: "{{ item }}"
 
 - name: Set empty DN42 peer latency map
   ansible.builtin.set_fact:

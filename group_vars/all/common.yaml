@@ -26,6 +26,7 @@ dn42_group: dn42
 anycast_group: anycast
 
 node_prefix: node_
+node_rr_prefix: node_rr_
 dn42_prefix: dn42_
 
 # by the time logging in at least one key should already work

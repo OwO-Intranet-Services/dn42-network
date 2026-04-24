@@ -19,15 +19,22 @@
     enabled: false
   ignore_errors: true
 
+- name: Discover per-node BIRD configurations
+  ansible.builtin.find:
+    paths: /etc/bird/nodes
+    patterns:
+      - "{{ node_prefix }}*.conf"
+      - "{{ node_rr_prefix }}*.conf"
+    file_type: file
+  register: _bird_node_cleanup_configs
+
 - name: Remove per-node BIRD configurations
   ansible.builtin.file:
-    path: "/etc/bird/nodes/{{ node_prefix }}{{ peer | replace('-', '_') }}.conf"
+    path: "{{ item }}"
     state: absent
-  loop: "{{ node_hosts }}"
+  loop: "{{ _bird_node_cleanup_configs.files | map(attribute='path') | list }}"
   loop_control:
-    loop_var: peer
-    label: "{{ peer }}"
-  when: peer != inventory_hostname
+    label: "{{ item | basename }}"
 
 - name: Remove DN42 peer BIRD configurations
   ansible.builtin.file:
