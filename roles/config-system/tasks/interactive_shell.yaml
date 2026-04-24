@@ -15,7 +15,7 @@
     repo: "{{ system_omz_repo }}"
     dest: "{{ system_shell_omz_dir }}"
     version: "{{ system_omz_version }}"
-    update: true
+    update: false
   become: true
   become_user: "{{ system_shell_account }}"
   environment:
@@ -38,7 +38,7 @@
     repo: "{{ system_powerlevel10k_repo }}"
     dest: "{{ system_shell_custom_dir }}/themes/powerlevel10k"
     version: "{{ system_powerlevel10k_version }}"
-    update: true
+    update: false
   become: true
   become_user: "{{ system_shell_account }}"
   environment:
@@ -49,7 +49,7 @@
     repo: "{{ item.repo }}"
     dest: "{{ system_shell_custom_dir }}/plugins/{{ item.name }}"
     version: "{{ item.version }}"
-    update: true
+    update: false
   loop: "{{ system_omz_plugin_repositories }}"
   loop_control:
     label: "{{ item.name }}"
@@ -78,3 +78,19 @@
     owner: "{{ system_shell_account }}"
     group: "{{ system_shell_account }}"
     mode: "0644"
+
+- name: Ensure gitstatus cache directory exists
+  ansible.builtin.file:
+    path: "{{ system_shell_account_home }}/.cache/gitstatus"
+    state: directory
+    owner: "{{ system_shell_account }}"
+    group: "{{ system_shell_account }}"
+    mode: "0755"
+
+- name: Deploy gitstatusd binary for the login account
+  ansible.builtin.copy:
+    src: "zsh/gitstatus/gitstatusd-linux-x86_64"
+    dest: "{{ system_shell_account_home }}/.cache/gitstatus/gitstatusd-linux-x86_64"
+    owner: "{{ system_shell_account }}"
+    group: "{{ system_shell_account }}"
+    mode: "0755"
