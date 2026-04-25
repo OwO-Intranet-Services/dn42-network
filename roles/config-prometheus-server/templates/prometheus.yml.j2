@@ -39,3 +39,17 @@ scrape_configs:
         labels:
           instance: {{ host }}
 {% endfor %}
+
+  - job_name: flapalerted
+    scheme: https
+    metrics_path: /metrics/flapalerted
+    basic_auth:
+      username: {{ prometheus_basic_auth_user }}
+      password: {{ prometheus_basic_auth_password }}
+    static_configs:
+{% for host in groups['flapalerted'] %}
+      - targets:
+          - {{ hostvars[host].ansible_host }}
+        labels:
+          instance: {{ host }}
+{% endfor %}

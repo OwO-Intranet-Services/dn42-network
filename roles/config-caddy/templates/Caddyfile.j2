@@ -180,6 +180,15 @@
         reverse_proxy http://127.0.0.1:9100
     }
     {% endif %}
+    {% if flapalerted_enabled | default(false) %}
+    handle /metrics/flapalerted {
+        basicauth {
+            {{ prometheus_basic_auth_user }} {{ prometheus_basic_auth_hash }}
+        }
+        rewrite * /flaps/metrics/prometheus
+        reverse_proxy http://{{ flapalerted_http_upstream | default('127.0.0.1:8699') }}
+    }
+    {% endif %}
     {% elif site.type == 'static-site' %}
     root * {{ site.root | default('/var/www/html/' + site.server_name) }}
     file_server
