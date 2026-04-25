@@ -151,7 +151,7 @@ def parse_peer_file(text: str, source: str) -> dict[int, dict[str, Any]]:
 
     peers = data.get("peers")
     if peers is None:
-        raise PeerSessionDiffError(f"{source}: missing top-level 'peers' list")
+        peers = []
     if not isinstance(peers, list):
         raise PeerSessionDiffError(f"{source}: 'peers' must be a list")
 
