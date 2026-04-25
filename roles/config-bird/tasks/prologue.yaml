@@ -23,7 +23,7 @@
   register: rp_filter_wildcard
 
 - name: Apply rp_filter wildcard
-  ansible.builtin.command: sysctl -w 'net.ipv4.conf.*.rp_filter=0'
+  ansible.builtin.shell: for f in /proc/sys/net/ipv4/conf/*/rp_filter; do echo 0 > "$f"; done
   when: rp_filter_wildcard.changed
   changed_when: true
 
