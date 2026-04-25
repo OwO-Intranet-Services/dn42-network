@@ -9,11 +9,23 @@
   loop:
     - { name: "net.ipv4.conf.default.rp_filter", value: "0" }
     - { name: "net.ipv4.conf.all.rp_filter", value: "0" }
-    - { name: "net.ipv4.conf.*.rp_filter", value: "0" }
     - { name: "net.ipv4.ip_forward", value: "1" }
     - { name: "net.ipv6.conf.all.forwarding", value: "1" }
   loop_control:
     label: "{{ item.name }}"
+
+- name: Disable rp_filter for all interfaces via wildcard
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.d/60-dn42.conf
+    regexp: '^net\.ipv4\.conf\.\*\.rp_filter'
+    line: "net.ipv4.conf.*.rp_filter = 0"
+    create: true
+  register: rp_filter_wildcard
+
+- name: Apply rp_filter wildcard
+  ansible.builtin.command: sysctl -w 'net.ipv4.conf.*.rp_filter=0'
+  when: rp_filter_wildcard.changed
+  changed_when: true
 
 - name: Setup DN42 workspace
   ansible.builtin.file:
