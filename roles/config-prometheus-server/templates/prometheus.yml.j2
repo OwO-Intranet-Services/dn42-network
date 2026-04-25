@@ -3,6 +3,15 @@ global:
   scrape_interval: {{ prometheus_scrape_interval }}
 
 scrape_configs:
+  - job_name: node-local
+    scheme: http
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 127.0.0.1:9100
+        labels:
+          instance: fra-01
+
   - job_name: node
     scheme: https
     metrics_path: /metrics

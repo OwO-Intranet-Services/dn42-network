@@ -24,6 +24,17 @@
       tags:
         - prometheus-bird-exporter
 
+- name: Configure Prometheus monitoring server node exporter
+  hosts: monitoring_server
+  become: true
+  gather_facts: true
+  tags:
+    - prometheus-exporter
+  roles:
+    - role: config-prometheus-exporter
+      tags:
+        - prometheus-exporter
+
 - name: Configure Prometheus server
   hosts: monitoring_server
   become: false
