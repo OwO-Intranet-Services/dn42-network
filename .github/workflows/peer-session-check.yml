@@ -60,6 +60,6 @@ jobs:
 
     - name: Run Ansible syntax checks
       run: |
-        ansible-playbook setup-peer-update.yaml --syntax-check
-        ansible-playbook setup-wg.yaml --syntax-check
-        ansible-playbook setup-bird.yaml --syntax-check
+        ansible-playbook playbooks/peer-update.yaml --syntax-check
+        ansible-playbook playbooks/wireguard.yaml --syntax-check
+        ansible-playbook playbooks/bird.yaml --syntax-check

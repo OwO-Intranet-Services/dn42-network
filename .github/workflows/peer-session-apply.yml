@@ -146,7 +146,7 @@ jobs:
         DEPLOY_TARGETS_JSON: ${{ toJson(matrix.deploy.targets) }}
       run: |
         python3 -c 'import json,os; print(json.dumps({"peer_update_targets":json.loads(os.environ["DEPLOY_TARGETS_JSON"])}))' > .peer-update-vars.json
-        ansible-playbook setup-peer-update.yaml --limit "$DEPLOY_HOST" -e @.peer-update-vars.json
+        ansible-playbook playbooks/peer-update.yaml --limit "$DEPLOY_HOST" -e @.peer-update-vars.json
 
     - name: Clean up secrets
       if: always()

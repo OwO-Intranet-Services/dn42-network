@@ -1,3 +1,0 @@
----
-- name: Import canonical BIRD playbook
-  import_playbook: playbooks/bird.yaml
