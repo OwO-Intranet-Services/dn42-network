@@ -601,7 +601,7 @@ peers:
       peer6: 'fe80::8976:3fe1'
       own6: null
       keepalive: null
-      mtu: null
+      mtu: 1280
     bgp:
       asn: 4242421053
       ipv4: false
