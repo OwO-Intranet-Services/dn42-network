@@ -1,0 +1,5 @@
+---
+- name: Restart wireguard-metrics timer
+  ansible.builtin.systemd:
+    name: prometheus-wireguard-metrics.timer
+    state: restarted

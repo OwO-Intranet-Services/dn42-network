@@ -16,3 +16,17 @@ scrape_configs:
         labels:
           instance: {{ host }}
 {% endfor %}
+
+  - job_name: bird
+    scheme: https
+    metrics_path: /metrics/bird
+    basic_auth:
+      username: {{ prometheus_basic_auth_user }}
+      password: {{ prometheus_basic_auth_password }}
+    static_configs:
+{% for host in groups[dn42_group] %}
+      - targets:
+          - {{ hostvars[host].ansible_host }}
+        labels:
+          instance: {{ host }}
+{% endfor %}

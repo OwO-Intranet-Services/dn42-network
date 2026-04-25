@@ -1,0 +1,34 @@
+---
+- name: Add prometheus user to bird group
+  ansible.builtin.user:
+    name: prometheus
+    groups: bird
+    append: true
+  notify: Restart prometheus-bird-exporter
+
+- name: Create systemd override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/prometheus-bird-exporter.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure bird exporter systemd override
+  ansible.builtin.template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/prometheus-bird-exporter.service.d/override.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart prometheus-bird-exporter
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Ensure prometheus-bird-exporter is running and enabled
+  ansible.builtin.service:
+    name: prometheus-bird-exporter
+    state: started
+    enabled: true

@@ -1,0 +1,5 @@
+---
+- name: Restart prometheus-bird-exporter
+  ansible.builtin.service:
+    name: prometheus-bird-exporter
+    state: restarted

@@ -1,0 +1,6 @@
+---
+- name: Install prometheus-bird-exporter
+  ansible.builtin.apt:
+    name: "{{ prometheus_bird_exporter_packages }}"
+    state: present
+    update_cache: true

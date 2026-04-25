@@ -1,4 +1,12 @@
 ---
+- name: Create textfile collector directory
+  ansible.builtin.file:
+    path: "{{ prometheus_textfile_directory }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: "0755"
+
 - name: Create systemd override directory
   ansible.builtin.file:
     path: /etc/systemd/system/prometheus-node-exporter.service.d

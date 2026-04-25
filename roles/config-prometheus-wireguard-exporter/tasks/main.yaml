@@ -1,0 +1,4 @@
+---
+- name: Configure wireguard metrics collector
+  ansible.builtin.include_tasks:
+    file: configure.yaml

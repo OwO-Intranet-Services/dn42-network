@@ -1,0 +1,8 @@
+---
+- name: Install prometheus bird exporter
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Configure prometheus bird exporter
+  ansible.builtin.include_tasks:
+    file: configure.yaml

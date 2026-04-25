@@ -1,0 +1,6 @@
+---
+prometheus_bird_exporter_packages:
+  - prometheus-bird-exporter
+
+prometheus_bird_exporter_listen: "127.0.0.1:9324"
+prometheus_bird_exporter_socket: /run/bird/bird.ctl

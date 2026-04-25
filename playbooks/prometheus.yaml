@@ -9,6 +9,20 @@
     - role: config-prometheus-exporter
       tags:
         - prometheus-exporter
+    - role: config-prometheus-wireguard-exporter
+      tags:
+        - prometheus-wireguard-exporter
+
+- name: Configure Prometheus BIRD exporter
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - prometheus-bird-exporter
+  roles:
+    - role: config-prometheus-bird-exporter
+      tags:
+        - prometheus-bird-exporter
 
 - name: Configure Prometheus server
   hosts: monitoring_server

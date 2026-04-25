@@ -166,6 +166,13 @@
         respond 200
     }
     {% if site.metrics | default(false) %}
+    handle /metrics/bird {
+        basicauth {
+            {{ prometheus_basic_auth_user }} {{ prometheus_basic_auth_hash }}
+        }
+        rewrite * /metrics
+        reverse_proxy http://127.0.0.1:9324
+    }
     handle /metrics* {
         basicauth {
             {{ prometheus_basic_auth_user }} {{ prometheus_basic_auth_hash }}

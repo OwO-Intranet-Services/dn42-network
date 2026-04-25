@@ -3,3 +3,4 @@ prometheus_node_exporter_packages:
   - prometheus-node-exporter
 
 prometheus_node_exporter_listen: "127.0.0.1:9100"
+prometheus_textfile_directory: /var/lib/prometheus/node-exporter
