@@ -54,6 +54,30 @@
     state: present
     update_cache: true
 
+- name: Check installed Caddy modules
+  ansible.builtin.command:
+    argv:
+      - caddy
+      - list-modules
+  register: caddy_modules_check
+  changed_when: false
+  failed_when: false
+
+- name: Build Caddy download URL with DNS plugins
+  ansible.builtin.set_fact:
+    caddy_download_url: >-
+      https://caddyserver.com/api/download?os=linux&arch={{ ansible_architecture | regex_replace('x86_64', 'amd64') | regex_replace('aarch64', 'arm64') }}{% for plugin in caddy_dns_plugins %}&p={{ plugin | urlencode }}{% endfor %}
+  when: "'rfc2136' not in (caddy_modules_check.stdout | default(''))"
+
+- name: Download custom Caddy binary with DNS plugins
+  ansible.builtin.get_url:
+    url: "{{ caddy_download_url }}"
+    dest: /usr/bin/caddy
+    mode: "0755"
+    force: true
+  notify: Restart caddy
+  when: "'rfc2136' not in (caddy_modules_check.stdout | default(''))"
+
 - name: Check automation user
   ansible.builtin.getent:
     database: passwd

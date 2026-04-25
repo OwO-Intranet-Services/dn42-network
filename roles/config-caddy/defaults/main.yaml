@@ -10,3 +10,11 @@ caddy_repo_filename: caddy-stable
 
 dn42_acme_directory: https://acme.burble.dn42/v1/dn42/acme/directory
 network_site_root: /var/www/html/network.iris.dn42
+
+caddy_dns_plugins:
+  - github.com/caddy-dns/rfc2136
+
+caddy_dns01_rfc2136_server: "{{ hostvars[dns_zone_primary].ownip }}:53"
+caddy_dns01_tsig_key_name: "{{ dns_tsig_key_name }}"
+caddy_dns01_tsig_key_algo: "{{ dns_tsig_key_algo }}"
+caddy_dns01_tsig_key_value: "{{ dns_tsig_key_secret | regex_search('secret \"([^\"]+)\"', '\\1') | first }}"

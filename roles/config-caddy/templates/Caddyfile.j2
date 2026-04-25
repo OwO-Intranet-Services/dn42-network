@@ -4,6 +4,18 @@
     }
 }
 
+(dn42_tls_dns01) {
+    tls {
+        ca {{ dn42_acme_directory }}
+        dns rfc2136 {
+            server {{ caddy_dns01_rfc2136_server }}
+            key_name {{ caddy_dns01_tsig_key_name }}
+            key_alg {{ caddy_dns01_tsig_key_algo }}
+            key {{ caddy_dns01_tsig_key_value }}
+        }
+    }
+}
+
 {% for site in all_websites %}
 # {{ site.name }}
 {% if site.server_name is string %}
@@ -11,7 +23,9 @@
 {% else %}
 {{ site.server_name | join(', ') }} {
 {% endif %}
-    {% if site.dn42_cert | default(false) %}
+    {% if site.dn42_cert_dns01 | default(false) %}
+    import dn42_tls_dns01
+    {% elif site.dn42_cert | default(false) %}
     import dn42_tls
     {% elif site.ssl_cert is defined %}
     tls {{ site.ssl_cert }} {{ site.ssl_key }}

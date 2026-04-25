@@ -12,6 +12,13 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
 
+- name: Ensure hostname resolves in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^\d+\.\d+\.\d+\.\d+\s+{{ inventory_hostname }}\b'
+    line: "127.0.1.1 {{ inventory_hostname }}"
+    state: present
+
 - name: Configure interactive shell for the login account
   ansible.builtin.include_tasks:
     file: interactive_shell.yaml

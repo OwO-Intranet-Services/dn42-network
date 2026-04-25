@@ -5,20 +5,55 @@
     dns_anycast_ips_v6: "{{ dns_anycast_records | selectattr('ipv6', 'defined') | map(attribute='ipv6') | list }}"
     dns_auto_serial: "{{ ansible_facts['date_time']['epoch'] }}"
 
+- name: Build list of other anycast node IPs for zone transfer
+  ansible.builtin.set_fact:
+    dns_other_anycast_ips: >-
+      {%- set ips = [] -%}
+      {%- for host in groups.get(anycast_group, []) -%}
+        {%- if host != inventory_hostname and hostvars[host].ownip is defined -%}
+          {%- set _ = ips.append(hostvars[host].ownip) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ ips }}
+
 - name: Normalize master zones with defaults
   ansible.builtin.set_fact:
     normalized_master_zones: >-
+      {%- set is_primary = (dns_zone_primary | default('')) == inventory_hostname -%}
       {%- set res = [] -%}
       {%- for zone in dns_master_zones -%}
         {%- set zone_soa = zone.soa | default({}) -%}
         {%- set updated_soa = zone_soa | combine({'serial': zone_soa.serial | default(dns_auto_serial)}) -%}
         {%- set safe_filename = zone.file | default('db.' + zone.name) | regex_replace('/', '_') -%}
-        {%- set _ = res.append(zone | combine({
-          'type': 'master',
-          'file': safe_filename,
-          'origin': zone.origin | default(zone.name + '.'),
-          'soa': updated_soa
-        })) -%}
+        {%- if dns_zone_primary is defined and zone.name == domain_name -%}
+          {%- if is_primary -%}
+            {%- set _ = res.append(zone | combine({
+              'type': 'master',
+              'file': safe_filename,
+              'zone_dir': '/var/lib/bind',
+              'origin': zone.origin | default(zone.name + '.'),
+              'soa': updated_soa,
+              'allow_transfer': dns_other_anycast_ips,
+              'also_notify': dns_other_anycast_ips,
+              'allow_update': ['key "' + dns_tsig_key_name + '"']
+            })) -%}
+          {%- else -%}
+            {%- set _ = res.append({
+              'name': zone.name,
+              'type': 'slave',
+              'file': safe_filename,
+              'masters': [hostvars[dns_zone_primary].ownip],
+              'allow_query': zone.allow_query | default([])
+            }) -%}
+          {%- endif -%}
+        {%- else -%}
+          {%- set _ = res.append(zone | combine({
+            'type': 'master',
+            'file': safe_filename,
+            'origin': zone.origin | default(zone.name + '.'),
+            'soa': updated_soa
+          })) -%}
+        {%- endif -%}
       {%- endfor -%}
       {{ res }}
 
@@ -56,8 +91,8 @@
     dns_named_options_rendered: >-
       {{ dns_named_options | combine(
           {
-            'listen_on_v4': (dns_named_options.listen_on_v4 | default([])) + dns_anycast_ips_v4,
-            'listen_on_v6': (dns_named_options.listen_on_v6 | default([])) + dns_anycast_ips_v6,
+            'listen_on_v4': (dns_named_options.listen_on_v4 | default([])) + dns_anycast_ips_v4 + ([ownip] if ownip is defined else []),
+            'listen_on_v6': (dns_named_options.listen_on_v6 | default([])) + dns_anycast_ips_v6 + ([ownip6] if ownip6 is defined else []),
             'extra_statements': (dns_named_options.extra_statements | default([])) + [dns_validate_except_block]
           },
           recursive=True
@@ -100,10 +135,18 @@
     group: "{{ dns_service.group }}"
     mode: "0644"
 
+- name: Ensure /var/lib/bind ownership
+  ansible.builtin.file:
+    path: /var/lib/bind
+    state: directory
+    owner: "{{ dns_service.user }}"
+    group: "{{ dns_service.group }}"
+    mode: "0755"
+
 - name: Render DNS zone files
   ansible.builtin.template:
     src: zone.db.j2
-    dest: "{{ dns_service.zone_dir }}/{{ zone.file }}"
+    dest: "{{ zone.zone_dir | default(dns_service.zone_dir) }}/{{ zone.file }}"
     owner: "{{ dns_service.user }}"
     group: "{{ dns_service.group }}"
     mode: "0644"

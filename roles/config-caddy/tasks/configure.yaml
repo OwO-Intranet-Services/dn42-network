@@ -63,7 +63,7 @@
           'name': 'network-iris-dn42',
           'server_name': 'network.iris.dn42',
           'type': 'network-site',
-          'dn42_cert': true,
+          'dn42_cert_dns01': true,
           'root': network_site_root,
           'listen_ipv4': '172.21.111.111',
           'listen_ipv6': 'fd42:4242:1023::1111:1'
@@ -83,7 +83,7 @@
           'name': 'anycast',
           'server_name': 'anycast.iris.dn42',
           'type': 'anycast-site',
-          'dn42_cert': true,
+          'dn42_cert_dns01': true,
           'listen_ipv4': '172.21.111.111',
           'listen_ipv6': 'fd42:4242:1023::1111:1'
         }) -%}

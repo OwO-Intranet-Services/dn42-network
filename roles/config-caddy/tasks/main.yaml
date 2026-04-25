@@ -3,6 +3,9 @@
   ansible.builtin.include_tasks:
     file: install.yaml
 
+- name: Restart Caddy if binary was replaced
+  ansible.builtin.meta: flush_handlers
+
 - name: Configure websites and Caddy
   ansible.builtin.include_tasks:
     file: configure.yaml
