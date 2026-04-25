@@ -143,6 +143,15 @@
     group: "{{ dns_service.group }}"
     mode: "0755"
 
+- name: Remove stale journal for dynamic zones
+  ansible.builtin.file:
+    path: "{{ item.zone_dir | default(dns_service.zone_dir) }}/{{ item.file }}.jnl"
+    state: absent
+  loop: "{{ dns_zones | selectattr('type', 'equalto', 'master') | selectattr('allow_update', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Restart bind9
+
 - name: Render DNS zone files
   ansible.builtin.template:
     src: zone.db.j2
