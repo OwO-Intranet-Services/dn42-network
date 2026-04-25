@@ -1,18 +1,4 @@
 ---
-- name: Deploy clearnet SSL certificates
-  ansible.builtin.copy:
-    src: "{{ repository_root_dir }}/.secrets/{{ item }}"
-    dest: "/etc/caddy/ssl/{{ item }}"
-    owner: caddy
-    group: caddy
-    mode: "0600"
-  loop:
-    - lg-api.svc.moe.crt
-    - lg-api.svc.moe.pem
-  when: "'lg-api.svc.moe' in lg_server_domains | default([]) and inventory_hostname in groups.get('lg_server', [])"
-  notify: Reload caddy
-  no_log: true
-
 - name: Build websites list
   ansible.builtin.set_fact:
     all_websites: >-
