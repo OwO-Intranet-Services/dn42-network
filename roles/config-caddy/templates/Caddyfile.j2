@@ -147,6 +147,18 @@
             </html>
         ` 200
     }
+    {% elif site.type == 'node-health' %}
+    handle /health {
+        respond 200
+    }
+    {% if site.metrics | default(false) %}
+    handle /metrics* {
+        basicauth {
+            {{ prometheus_basic_auth_user }} {{ prometheus_basic_auth_hash }}
+        }
+        reverse_proxy http://127.0.0.1:9100
+    }
+    {% endif %}
     {% elif site.type == 'static-site' %}
     root * {{ site.root | default('/var/www/html/' + site.server_name) }}
     file_server

@@ -1,0 +1,4 @@
+---
+- name: Configure Prometheus server
+  ansible.builtin.include_tasks:
+    file: configure.yaml

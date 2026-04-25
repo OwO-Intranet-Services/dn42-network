@@ -1,0 +1,8 @@
+---
+- name: Install prometheus node exporter
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Configure prometheus node exporter
+  ansible.builtin.include_tasks:
+    file: configure.yaml

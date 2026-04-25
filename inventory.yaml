@@ -126,3 +126,8 @@ all:
         traceroute_loop_prefix: "fd42:4242:1023:42::/64"
       hosts:
         lax-01:
+
+    monitoring_server:
+      hosts:
+        fra-01:
+          ansible_host: fra-01.node.svc.moe

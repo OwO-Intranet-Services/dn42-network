@@ -1,0 +1,22 @@
+---
+- name: Configure Prometheus node exporters
+  hosts: nodes
+  become: true
+  gather_facts: true
+  tags:
+    - prometheus-exporter
+  roles:
+    - role: config-prometheus-exporter
+      tags:
+        - prometheus-exporter
+
+- name: Configure Prometheus server
+  hosts: monitoring_server
+  become: false
+  gather_facts: true
+  tags:
+    - prometheus-server
+  roles:
+    - role: config-prometheus-server
+      tags:
+        - prometheus-server

@@ -22,3 +22,6 @@
 
 - name: Import websites playbook
   import_playbook: websites.yaml
+
+- name: Import Prometheus playbook
+  import_playbook: prometheus.yaml

@@ -3,6 +3,19 @@
   ansible.builtin.set_fact:
     all_websites: >-
       {%- set res = websites | default([]) -%}
+      {%- set _ = res.append({
+        'name': 'health-' + inventory_hostname + '-svc-moe',
+        'server_name': inventory_hostname + '.node.svc.moe',
+        'type': 'node-health',
+        'dn42_cert': false,
+        'metrics': true
+      }) -%}
+      {%- set _ = res.append({
+        'name': 'health-' + inventory_hostname + '-iris-dn42',
+        'server_name': inventory_hostname + '.node.iris.dn42',
+        'type': 'node-health',
+        'dn42_cert': true
+      }) -%}
       {%- set lg_proxy_domain = lg_proxy_domain_fmt | format(inventory_hostname) -%}
       {%- set _ = res.append({
         'name': 'lg-proxy-' + inventory_hostname,

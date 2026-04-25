@@ -1,0 +1,3 @@
+---
+prometheus_config_dir: /home/iris/containers/prometheus
+prometheus_scrape_interval: 30s

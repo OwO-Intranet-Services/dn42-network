@@ -1,0 +1,3 @@
+---
+- name: Import Prometheus playbook
+  import_playbook: playbooks/prometheus.yaml
