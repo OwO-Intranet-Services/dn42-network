@@ -9,6 +9,8 @@ caddy_repo: deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg]
 caddy_repo_filename: caddy-stable
 
 dn42_acme_directory: https://acme.burble.dn42/v1/dn42/acme/directory
+dn42_acme_host: acme.burble.dn42
+dn42_acme_ipv6: fd42:4242:2601:ac83::1
 network_site_root: /var/www/html/network.iris.dn42
 
 caddy_dns_plugins:
