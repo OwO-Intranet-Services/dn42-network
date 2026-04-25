@@ -47,3 +47,23 @@
     owner: "{{ automation_user }}"
     group: "{{ automation_user }}"
     mode: "0755"
+
+- name: Deploy pinned SSH host ed25519 private key
+  ansible.builtin.copy:
+    content: "{{ ssh_host_ed25519_private_key }}\n"
+    dest: /etc/ssh/ssh_host_ed25519_key
+    owner: root
+    group: root
+    mode: "0600"
+  when: ssh_host_ed25519_private_key is defined
+  notify: restart sshd
+
+- name: Deploy pinned SSH host ed25519 public key
+  ansible.builtin.copy:
+    content: "{{ ssh_host_ed25519_public_key }}\n"
+    dest: /etc/ssh/ssh_host_ed25519_key.pub
+    owner: root
+    group: root
+    mode: "0644"
+  when: ssh_host_ed25519_public_key is defined
+  notify: restart sshd
