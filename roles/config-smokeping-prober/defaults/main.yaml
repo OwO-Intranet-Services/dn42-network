@@ -1,0 +1,7 @@
+---
+smokeping_prober_binary_path: /usr/local/bin/smokeping_prober
+smokeping_prober_config_dir: /etc/smokeping-prober
+smokeping_prober_config_file: "{{ smokeping_prober_config_dir }}/config.yml"
+smokeping_prober_listen: "127.0.0.1:9374"
+smokeping_prober_ping_interval: 1s
+smokeping_prober_service_name: smokeping-prober

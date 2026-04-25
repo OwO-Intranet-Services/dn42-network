@@ -40,6 +40,20 @@ scrape_configs:
           instance: {{ host }}
 {% endfor %}
 
+  - job_name: smokeping
+    scheme: https
+    metrics_path: /metrics/smokeping
+    basic_auth:
+      username: {{ prometheus_basic_auth_user }}
+      password: {{ prometheus_basic_auth_password }}
+    static_configs:
+{% for host in groups[dn42_group] %}
+      - targets:
+          - {{ hostvars[host].ansible_host }}
+        labels:
+          instance: {{ host }}
+{% endfor %}
+
   - job_name: flapalerted
     scheme: https
     metrics_path: /metrics/flapalerted

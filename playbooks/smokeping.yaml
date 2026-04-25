@@ -1,0 +1,11 @@
+---
+- name: Configure smokeping-prober
+  hosts: dn42
+  become: true
+  gather_facts: true
+  tags:
+    - smokeping
+  roles:
+    - role: config-smokeping-prober
+      tags:
+        - smokeping

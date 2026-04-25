@@ -1,0 +1,6 @@
+---
+- name: Install smokeping-prober
+  ansible.builtin.include_tasks: install.yaml
+
+- name: Configure smokeping-prober
+  ansible.builtin.include_tasks: configure.yaml

@@ -1,0 +1,15 @@
+---
+- name: Install smokeping-prober binary
+  ansible.builtin.copy:
+    src: smokeping_prober
+    dest: "{{ smokeping_prober_binary_path }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Restart smokeping-prober
+
+- name: Set CAP_NET_RAW on smokeping-prober binary
+  community.general.capabilities:
+    path: "{{ smokeping_prober_binary_path }}"
+    capability: cap_net_raw=eip
+    state: present

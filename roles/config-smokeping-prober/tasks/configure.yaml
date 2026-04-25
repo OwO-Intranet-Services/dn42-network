@@ -1,0 +1,36 @@
+---
+- name: Create smokeping-prober config directory
+  ansible.builtin.file:
+    path: "{{ smokeping_prober_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy smokeping-prober config
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ smokeping_prober_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart smokeping-prober
+
+- name: Deploy smokeping-prober systemd unit
+  ansible.builtin.template:
+    src: smokeping-prober.service.j2
+    dest: /etc/systemd/system/{{ smokeping_prober_service_name }}.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart smokeping-prober
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Ensure smokeping-prober is enabled and running
+  ansible.builtin.service:
+    name: "{{ smokeping_prober_service_name }}"
+    enabled: true
+    state: started

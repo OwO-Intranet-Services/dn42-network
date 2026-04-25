@@ -1,0 +1,5 @@
+---
+- name: Restart smokeping-prober
+  ansible.builtin.service:
+    name: "{{ smokeping_prober_service_name }}"
+    state: restarted
