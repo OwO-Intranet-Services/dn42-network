@@ -403,3 +403,30 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+  - wg:
+      port: 20842
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        32623764646565353963393433326466326531323363343434306439643734326233353136376630
+        3036616363376135643832636438646566633261656264360a393762616535393236316539373731
+        38363839333065663432626665386435646633663538363139396139633965346632356531653664
+        6664666332323534310a346265333965373330353433633635386334393039663766306639376161
+        63313836636338326433656536663362356261323164366266633766343538373831
+      wg_pubkey: 'ywWuEIEOiV6uSkllmhZ64BqXLkCyGJFhUKTfMyg+Y0A='
+      psk: null
+      peer4: '172.20.159.128'
+      peer6: 'fe80::842'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420842
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'HEADSCARF175-MNT'
+      auth_provider: 'registry_email'
