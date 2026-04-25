@@ -110,11 +110,22 @@ def build_deploy_matrix(
     return deploy_matrix
 
 
+def resolve_base_ref(repo_root: Path, base_ref: str, head_ref: str) -> str:
+    probe = run_git(repo_root, "cat-file", "-t", base_ref)
+    if probe.returncode == 0:
+        return base_ref
+    fallback = run_git(repo_root, "rev-parse", f"{head_ref}~1")
+    if fallback.returncode == 0:
+        return fallback.stdout.strip()
+    return EMPTY_TREE_SHA
+
+
 def list_changed_peer_paths(repo_root: Path, base_ref: str, head_ref: str) -> list[Path]:
-    completed = run_git(repo_root, "diff", "--name-only", base_ref, head_ref)
+    effective_base = resolve_base_ref(repo_root, base_ref, head_ref)
+    completed = run_git(repo_root, "diff", "--name-only", effective_base, head_ref)
     if completed.returncode != 0:
         stderr = completed.stderr.strip() or completed.stdout.strip()
-        raise PeerSessionDiffError(f"Unable to diff refs {base_ref}..{head_ref}: {stderr}")
+        raise PeerSessionDiffError(f"Unable to diff refs {effective_base}..{head_ref}: {stderr}")
 
     paths: list[Path] = []
     for line in completed.stdout.splitlines():

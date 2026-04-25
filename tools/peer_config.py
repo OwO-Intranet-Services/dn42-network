@@ -607,6 +607,8 @@ def normalize_peer_file_data(data: Any) -> dict[str, Any]:
         raise ValueError("peer file must contain a mapping at the top level")
 
     peers = data.get("peers")
+    if peers is None:
+        peers = []
     if not isinstance(peers, list):
         raise ValueError("peer file must contain a top-level peers list")
 
