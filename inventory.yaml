@@ -73,6 +73,18 @@ all:
           region: EUROPE
           country: NL
 
+        par-01:
+          ansible_host: par-01.node.svc.moe
+          ownip: 172.21.111.71
+          ownip6: fd42:4242:1023:71::1
+          ownip6block: fd42:4242:1023:71::/64
+          link_local_ipv6: fe80::1023:2
+          ip_support: ipv6
+          wg_pubkey: "uGwU/VJT/lAZpQm2Pi97q2UabmRqZVmkhkqnf0GJnio="
+          region: EUROPE
+          country: FR
+          autopeer: false
+
     dn42:
       hosts:
         lax-01:
@@ -81,11 +93,14 @@ all:
         dls-01:
         lax-02:
         ams-01:
+        par-01:
+        
 
     route_reflector:
       hosts:
         lax-01:
         tyo-01:
+        par-01:
 
     anycast:
       hosts:
