@@ -529,3 +529,23 @@ peers:
       managed: true
       effective_mnt: 'DEFELO-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 20801
+      endpoint: '[2a06:a002:a101::183]:20955'
+      wg_pubkey: 'AXFHbABGFGdLtZM0+qhWw87f9n1aBnd2wc+5ko/33Tk='
+      psk: null
+      peer4: '172.21.111.71'
+      peer6: 'fe80::ac1'
+      own6: 'fe80::ac2'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420801
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'DISPAISY-MNT'
+      auth_provider: 'kioubit'
