@@ -613,3 +613,31 @@ peers:
       managed: true
       effective_mnt: 'EOF-MNT'
       auth_provider: 'registry_ssh'
+  - comment: 'Ernesto''s Peering'
+    wg:
+      port: 23971
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        36626666313737363966306365326465646361636166376230393335313632313066643933633364
+        3039373738616632383237653563346539386261393966660a356338393538313863303065303135
+        37613462363438313065626535303332633736653337333462383333323831366630363562306464
+        3761643233346138660a643137333535653236366636336434353238333065396166356566353538
+        34636332643937373966396338383236393739396239643762653866383362373661
+      wg_pubkey: 'uvWv3T0XWkn2DkEbzc46DqtDjOCkB4u+mpli2w/J4l0='
+      psk: null
+      peer4: null
+      peer6: 'fe80::dead'
+      own6: 'fe80::face'
+      keepalive: 25
+      mtu: 1380
+    bgp:
+      asn: 4242423971
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ERNESTO-MNT'
+      auth_provider: 'registry_email'
