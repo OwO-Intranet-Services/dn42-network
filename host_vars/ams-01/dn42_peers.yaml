@@ -549,3 +549,31 @@ peers:
       managed: true
       effective_mnt: 'DISPAISY-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23432
+      endpoint: 'ams1.dn42.s6v.net:42007'
+      wg_pubkey: 'VYLy4i2Na9scSP52y4O7nPomXMJl6xhKyOLMtrLiESY='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        36636134663233373031383235343330643434323038643339386635666132306135383966613431
+        3932663234613165363936326164633864623132623332390a356361346662616466663265363966
+        39303365633963623363656166356462613038376536356238656361383866306162363061363461
+        6538363764323231310a633833396436646264333734386632363065393936333032656139313565
+        31316365613130326238386661353064353564363665313461363730636663623235633538386334
+        6663343964343561623365353139623866376466393839326263
+      peer4: null
+      peer6: 'fe80::3432'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423432
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'S6V-MNT'
+      auth_provider: 'kioubit'
