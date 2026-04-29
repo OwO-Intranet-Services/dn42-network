@@ -94,9 +94,8 @@
 - name: Validate targeted WireGuard peer inputs
   ansible.builtin.assert:
     that:
-      - item.endpoint is not none
       - item.wg_pubkey is not none
-    fail_msg: "Peer {{ item.name }} is missing required WireGuard endpoint or public key data."
+    fail_msg: "Peer {{ item.name }} is missing required WireGuard public key data."
   loop: "{{ peer_update_wireguard_configure }}"
   loop_control:
     label: "{{ item.name }}"
