@@ -577,3 +577,24 @@ peers:
       managed: true
       effective_mnt: 'S6V-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23297
+      endpoint: null
+      wg_pubkey: 'FVmSrspwFzjcxuyYS9HPZcgTUBR6kAVuPDcjdACzq3M='
+      psk: null
+      peer4: '172.22.152.13'
+      peer6: 'fda9:aacc:1cc0:9997::1'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423297
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'DMITRYIT-MNT'
+      auth_provider: 'registry_email'
