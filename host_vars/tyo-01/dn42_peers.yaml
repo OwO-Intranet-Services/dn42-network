@@ -450,3 +450,24 @@ peers:
       managed: true
       effective_mnt: 'NGWORKS-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 22762
+      endpoint: 'thighhighs.top:21023'
+      wg_pubkey: '8hvGU6b0n16HIt63yarLIe6cEU/0+TdJXzej51jjxVo='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2762'
+      own6: null
+      keepalive: 61
+      mtu: null
+    bgp:
+      asn: 4242422762
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'THIGHHIGHS-MNT'
+      auth_provider: 'registry_email'
