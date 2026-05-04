@@ -430,3 +430,23 @@ peers:
       managed: true
       effective_mnt: 'HEADSCARF175-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 20028
+      endpoint: null
+      wg_pubkey: 'FzUn0AkkCObJ+Kdn8YqkGopUZb1D9k0fwewnXCNB8Eg='
+      psk: null
+      peer4: '172.20.202.62'
+      peer6: 'fdc1:e451:2020:9500::1'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420028
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'NGWORKS-MNT'
+      auth_provider: 'registry_email'
