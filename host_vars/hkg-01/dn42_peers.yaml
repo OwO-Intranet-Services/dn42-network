@@ -592,3 +592,24 @@ peers:
       managed: true
       effective_mnt: 'SESS-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 22213
+      endpoint: 'cn1.115411.xyz:52022'
+      wg_pubkey: 'Yjtn/QiknbveBgJIibn4jE3Zj54Tu6sOod0dwCvQZQo='
+      psk: null
+      peer4: null
+      peer6: 'fdf1:8356:996d:7e8f:90a1:b2c3:d4e5:f607'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422213
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'AFNOOI-MNT'
+      auth_provider: 'iedon'
