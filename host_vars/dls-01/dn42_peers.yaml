@@ -97,3 +97,24 @@ peers:
       managed: true
       effective_mnt: 'ROUTEDBITS-MNT'
       auth_provider: 'host_impersonation'
+  - wg:
+      port: 23220
+      endpoint: '216.66.87.102:5300'
+      wg_pubkey: 'hE84hZGDp9Js1H932AIUkd42nmv2/6h88yFJpz9NyFg='
+      psk: null
+      peer4: '172.21.64.64'
+      peer6: 'fdaa:8ad2:fc55::'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423220
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'MGH-MNT'
+      auth_provider: 'registry_email'
