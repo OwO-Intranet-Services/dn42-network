@@ -642,3 +642,30 @@ peers:
       managed: true
       effective_mnt: 'ERNESTO-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 22555
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        64323066353463336134623865623964343233386664376461666465613632633331326461393537
+        3932356666303563326132366566386434626162326163390a383933303738643130646231333236
+        34373461363261353665636364656133363462383530316634613530336264336231356130373266
+        3264313761356362650a366464353230313932636632373966333064653962633266303131653339
+        32303836383839376537383232356363343963306464373564623233353332396461
+      wg_pubkey: 'L2aZFoGaYT37pgRUi6/bJoBnA99MLue7VWwYkrDFVyg='
+      psk: null
+      peer4: '172.20.20.196'
+      peer6: null
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422555
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: true
+      mp_bgp_transport: 'ipv4'
+    autopeer:
+      managed: true
+      effective_mnt: '000DEV-MNT'
+      auth_provider: 'registry_email'
