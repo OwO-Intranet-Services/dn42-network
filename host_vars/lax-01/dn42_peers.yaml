@@ -669,3 +669,32 @@ peers:
       managed: true
       effective_mnt: '000DEV-MNT'
       auth_provider: 'registry_email'
+  - comment: 'MGH-DN42'
+    wg:
+      port: 23220
+      endpoint: 'nip-ghost.selfhost.co:23220'
+      wg_pubkey: 'PqStVkQlkoPRpMy5M1mo+hvpmX+DkGU6+7K3thljGiA='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        64643835616531643736626261313738313539326231373332386239663962653834666438633261
+        3837633037633864336461313631663830336531333136390a333964626164363036303839656434
+        61636636643366653531356333326365313138613433316439396635643334313466353232666239
+        3964313931626334320a633966653235663534363665623166633831626132373861353139616438
+        32623561643332646564303865303466643632393234366634613634323733633234616239393133
+        3632653362633032383830613661643964613933353934386262
+      peer4: '172.21.64.127'
+      peer6: 'fe80::'
+      own6: null
+      keepalive: 3600
+      mtu: 1450
+    bgp:
+      asn: 4242423220
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'MGH-MNT'
+      auth_provider: 'registry_email'
