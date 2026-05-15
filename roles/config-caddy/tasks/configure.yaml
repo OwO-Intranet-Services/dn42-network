@@ -116,13 +116,6 @@
     label: "{{ item.server_name }}"
   when: item.type == 'static-site'
 
-- name: Pin ACME server to IPv6 in /etc/hosts
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    regexp: '\s+{{ dn42_acme_host }}\s*$'
-    line: "{{ dn42_acme_ipv6 }} {{ dn42_acme_host }}"
-    state: present
-
 - name: Deploy Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2
