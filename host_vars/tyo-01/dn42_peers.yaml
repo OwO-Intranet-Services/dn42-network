@@ -471,3 +471,25 @@ peers:
       managed: true
       effective_mnt: 'THIGHHIGHS-MNT'
       auth_provider: 'registry_email'
+  - comment: 'node4 / NRT'
+    wg:
+      port: 23729
+      endpoint: 'nrt1.pixiainfra.pixia.eu.org:21023'
+      wg_pubkey: '7eD5aQ9LBHrxPabqMAGzCUIGLTRS1UGVD8A5X4pDgEI='
+      psk: null
+      peer4: '172.23.247.20'
+      peer6: 'fe80::3729'
+      own6: 'fe80::1023:2'
+      keepalive: 25
+      mtu: 1420
+    bgp:
+      asn: 4242423729
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'PIXIA-MNT'
+      auth_provider: 'registry_pgp'
