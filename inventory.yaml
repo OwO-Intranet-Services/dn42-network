@@ -60,8 +60,6 @@ all:
           wg_pubkey: "yHtmGTi6r9AtrSeTZyl2yce6nHdSVcc017VMI1s9HH8="
           region: NORTH_AMERICA_W
           country: US
-          autopeer: false
-          peering_comment: "This node is temporarily down."
 
         ams-01:
           ansible_host: ams-01.node.svc.moe
