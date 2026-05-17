@@ -520,3 +520,30 @@ peers:
       managed: true
       effective_mnt: 'REDEARTH-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 22363
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35633134643139346531346236616434653936366435333735363031363463383461346563333361
+        6465646538663935383935376363663834396134343639350a623633623230313361373634663937
+        34653665366233656666396537313861393834386339343863396638313165653833316333656363
+        3862383434376638660a656230373764666434613830313331663264373264353033623762336430
+        64313738643665633962306430326635666361643466333263383637663266653430
+      wg_pubkey: 'jK+5+Yrk8IRvZHDChqZkU3bwhdcxwiM5+nTuLl/mWhU='
+      psk: null
+      peer4: null
+      peer6: 'fe80::ca73:2363:1023'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422363
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'CHARLIEALEXANDER73-MNT'
+      auth_provider: 'registry_pgp'
