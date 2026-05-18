@@ -641,3 +641,24 @@ peers:
       managed: true
       effective_mnt: 'PIXIA-MNT'
       auth_provider: 'registry_pgp'
+  - wg:
+      port: 22789
+      endpoint: '[2a01:4f8:1c19:fc6e::1]:42023'
+      wg_pubkey: 'Iw8MbSNv27OJieIZg8ej1QBdrWY/AhK1zh4fPYmihAA='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1010'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422789
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'INT0X3-MNT'
+      auth_provider: 'kioubit'
