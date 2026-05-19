@@ -119,6 +119,7 @@ peers:
       effective_mnt: 'MGH-MNT'
       auth_provider: 'registry_email'
   - comment: 'node3 / BUF'
+    removed: true
     wg:
       port: 23729
       endpoint: '6.buf1.pixiainfra.pixia.eu.org:21023'
