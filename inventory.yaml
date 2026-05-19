@@ -84,6 +84,7 @@ all:
           region: EUROPE
           country: FR
           autopeer: false
+          peering_comment: "This node is currently only serving as route reflector."
 
     dn42:
       hosts:
