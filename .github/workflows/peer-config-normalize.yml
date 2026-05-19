@@ -4,13 +4,18 @@ on:
   pull_request:
     paths:
     - host_vars/*/dn42_peers.yaml
+  push:
+    branches:
+    - main
+    paths:
+    - host_vars/*/dn42_peers.yaml
 
 permissions:
   contents: write
 
 jobs:
   normalize:
-    if: github.actor != 'github-actions[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -31,16 +36,15 @@ jobs:
         python3 -m pip install --upgrade pip
         python3 -m pip install PyYAML
 
-    - name: Resolve diff refs
-      id: refs
-      run: |
-        echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
-        echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+    - name: Normalize peer files (push)
+      if: github.event_name == 'push'
+      run: python3 tools/normalize_peer_configs.py
 
-    - name: Normalize changed peer files
+    - name: Normalize changed peer files (PR)
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       env:
-        BASE_REF: ${{ steps.refs.outputs.base }}
-        HEAD_REF: ${{ steps.refs.outputs.head }}
+        BASE_REF: ${{ github.event.pull_request.base.sha }}
+        HEAD_REF: ${{ github.event.pull_request.head.sha }}
       run: python3 .github/scripts/normalize-changed-peers.py
 
     - name: Commit normalized peer files
@@ -49,5 +53,5 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add host_vars/*/dn42_peers.yaml
-        git commit -m "fix: normalize peer config to explicit form"
+        git commit -m "fix: normalize peer config"
         git push

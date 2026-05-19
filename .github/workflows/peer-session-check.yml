@@ -56,6 +56,7 @@ jobs:
           --json-output peer-session-report.json
 
     - name: Check explicit peer config form
+      if: github.event_name == 'pull_request'
       run: python3 tools/normalize_peer_configs.py --check
 
     - name: Run Ansible syntax checks
