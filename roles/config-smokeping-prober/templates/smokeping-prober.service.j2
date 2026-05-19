@@ -6,7 +6,8 @@ After=network.target
 [Service]
 ExecStart={{ smokeping_prober_binary_path }} \
     --config.file={{ smokeping_prober_config_file }} \
-    --web.listen-address={{ smokeping_prober_listen }}
+    --web.listen-address={{ smokeping_prober_listen }} \
+    --buckets={{ smokeping_prober_buckets }}
 Restart=on-failure
 RestartSec=5s
 NoNewPrivileges=true

@@ -1,0 +1,70 @@
+---
+- name: Quick BIRD config update
+  hosts: dn42
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Copy BIRD main configuration
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../roles/config-bird/files/bird.conf"
+        dest: /etc/bird/bird.conf
+        owner: bird
+        group: bird
+        mode: "0644"
+
+    - name: Copy DN42 filter configuration
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../roles/config-bird/files/dn42_filters.conf"
+        dest: /etc/bird/dn42_filters.conf
+        owner: bird
+        group: bird
+        mode: "0644"
+
+    - name: Copy Babel configuration
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../roles/config-bird/files/babel.conf"
+        dest: /etc/bird/babel.conf
+        owner: bird
+        group: bird
+        mode: "0644"
+
+    - name: Render DN42 misc configuration
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../roles/config-bird/templates/dn42_misc.conf.j2"
+        dest: /etc/bird/dn42_misc.conf
+        owner: bird
+        group: bird
+        mode: "0644"
+
+    - name: Reload BIRD configuration
+      ansible.builtin.command: birdc configure
+      register: bird_result
+      changed_when: "'Reconfigured' in bird_result.stdout"
+      failed_when: bird_result.rc != 0
+
+    - name: Show reload result
+      ansible.builtin.debug:
+        var: bird_result.stdout_lines
+
+- name: Quick smokeping-prober config update
+  hosts: dn42
+  become: true
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../roles/config-smokeping-prober/defaults/main.yaml"
+  tasks:
+    - name: Deploy smokeping-prober service unit
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../roles/config-smokeping-prober/templates/smokeping-prober.service.j2"
+        dest: /etc/systemd/system/smokeping-prober.service
+        owner: root
+        group: root
+        mode: "0644"
+      register: smokeping_unit
+
+    - name: Restart smokeping-prober
+      ansible.builtin.systemd:
+        name: smokeping-prober
+        state: restarted
+        daemon_reload: true
+      when: smokeping_unit.changed
