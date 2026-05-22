@@ -635,3 +635,24 @@ peers:
       managed: true
       effective_mnt: 'PIXIA-MNT'
       auth_provider: 'registry_pgp'
+  - wg:
+      port: 23777
+      endpoint: 'hk.dn42.cloudc.dev:21023'
+      wg_pubkey: 'ZynDjBdOWAS1YjZzwdiSI4kbthisE2xgPiOHopdfIxQ='
+      psk: null
+      peer4: '172.22.107.1'
+      peer6: 'fe80::3777'
+      own6: null
+      keepalive: null
+      mtu: 1380
+    bgp:
+      asn: 4242423777
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'CLOUDC-MNT'
+      auth_provider: 'kioubit'
