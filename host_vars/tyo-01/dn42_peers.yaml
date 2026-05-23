@@ -547,3 +547,30 @@ peers:
       managed: true
       effective_mnt: 'CHARLIEALEXANDER73-MNT'
       auth_provider: 'registry_pgp'
+  - wg:
+      port: 20706
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34353665636239313962336564663234656633303037363136366436366639396339383163396434
+        3033656637306663656461393462663932343734346366610a306231663366353737313931646331
+        35356664633563386536373066383263313063626335366437363236383437383631383532613633
+        3337373963353636350a333733366538363030646461633461626335323334333939366233396262
+        62643162343634323734303230623134306433643536303765303035366433303934
+      wg_pubkey: 'DGuMR7J1TMERIBoJ3tuJiI8cvHUyF84uQ7QwdhE26VI='
+      psk: null
+      peer4: null
+      peer6: 'fe80::abcd'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420706
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SILENTY4NG-MNT'
+      auth_provider: 'registry_email'
