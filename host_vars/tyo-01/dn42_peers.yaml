@@ -574,3 +574,30 @@ peers:
       managed: true
       effective_mnt: 'SILENTY4NG-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 20251
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        32663931326234663166383762613864353133613866363964633034323235323337346534613566
+        3965653365353565663563653363353933343235353031330a323064663638613463383161633339
+        65363933306337663433373538646364353733356330343637343966303430333464646335323639
+        3232643264616336620a656530323265363037313837363131393631616263396437313863383939
+        32646130336436396462656132303965366234623762363063386231363839303733
+      wg_pubkey: 'JpoUAlk2vf4oojmVVIpiT7nCt5ufidJMCrAa+b6oWU8='
+      psk: null
+      peer4: '172.23.163.32'
+      peer6: 'fe80::0251'
+      own6: 'fe80::1023'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420251
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'HANLIN-MNT'
+      auth_provider: 'kioubit'
