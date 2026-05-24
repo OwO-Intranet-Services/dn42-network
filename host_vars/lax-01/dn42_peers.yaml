@@ -741,3 +741,29 @@ peers:
       managed: true
       effective_mnt: 'NICKYDEV-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 20750
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        30303335383737643361383965636234363465343936613133316562323338366437643734373438
+        3066383462306231383631323439343266643834353931350a656366386339356261653436353534
+        38636139376236336434323430666430313739616166643266373765316434353939343331663136
+        6538343964643034310a623338646165623761396665326237613938616635653064643862383830
+        61646136326461633733396139613437376463316662626534366433373839306133
+      wg_pubkey: 'he4emu8e9UxiqOQDR8cJPXCpKSPtRIt+bJOrIg4XIEM='
+      psk: null
+      peer4: '172.22.122.225'
+      peer6: 'fe80::85ee:1e9a:ef1e:f54c'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420750
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'TRIHOP-MNT'
+      auth_provider: 'kioubit'
