@@ -185,3 +185,24 @@ peers:
       managed: true
       effective_mnt: 'SESS-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 22089
+      endpoint: 'andromeda.ipv8.monster:24861'
+      wg_pubkey: 'Yi5Qx2QIEd36EM188z/MemwFNckgeqa7Tn/eGWoBGSY='
+      psk: null
+      peer4: null
+      peer6: 'fe80::410:102'
+      own6: null
+      keepalive: 25
+      mtu: 1420
+    bgp:
+      asn: 4242422089
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'JSC-MNT'
+      auth_provider: 'kioubit'
