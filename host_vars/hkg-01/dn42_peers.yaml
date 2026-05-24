@@ -656,3 +656,30 @@ peers:
       managed: true
       effective_mnt: 'CLOUDC-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20251
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        62373338623539393061306534326363303431623732316265636430303139623561643261326432
+        3735393039343063663831393265316165636361666230340a356535333037333332396266383139
+        31383065386261366639323963323630353065356561323939623963373639306261656666393263
+        6466333861653938660a346138343366623137613565666363663962643964643164376463303266
+        37393762356234316365313264363434366434633039306564363565663635313431
+      wg_pubkey: '0T1LzUSOLckanEuH0bgX9o/RzbDN7vgSB4kAn1KDxXk='
+      psk: null
+      peer4: '172.23.163.35'
+      peer6: 'fe80::0251'
+      own6: 'fe80::1023:2'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420251
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'HANLIN-MNT'
+      auth_provider: 'kioubit'
