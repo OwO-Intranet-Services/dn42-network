@@ -601,3 +601,24 @@ peers:
       managed: true
       effective_mnt: 'HANLIN-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23380
+      endpoint: '4.jp-nobrand.taroball.top:21023'
+      wg_pubkey: 'ZUDgEIAcG5UblX0mkfB1aCyh8WxfLYs7ReNOd2W6Vm8='
+      psk: null
+      peer4: null
+      peer6: 'fe80::4242:4233:8002'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423380
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ZYK-MNT'
+      auth_provider: 'kioubit'
