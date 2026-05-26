@@ -683,3 +683,30 @@ peers:
       managed: true
       effective_mnt: 'HANLIN-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23380
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        30373062333632316136616337366237653630333565316635656666303130333166633138616666
+        6439643834323764633666303038313936383138373965300a653561373430376439623933656333
+        64326338363537316266353836346534373037393739396530326162306261623233346463313335
+        6361333361653964640a653932383466336631636266303562363764646461386331383038313030
+        31643439663831353465363365646564326563366134323635363662333064366163
+      wg_pubkey: 't2E7BwFa6Ax6QiuyHipF5dp58krfstwnwnzpIedpo00='
+      psk: null
+      peer4: null
+      peer6: 'fe80::4242:4233:8000'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423380
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ZYK-MNT'
+      auth_provider: 'kioubit'
