@@ -206,3 +206,31 @@ peers:
       managed: true
       effective_mnt: 'JSC-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23380
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35376166613431663430373764323131373564633832323537333730626263353036303730303039
+        3133353239343064623232663530313030336434356634390a646235393835323231656335343034
+        35626363356564643531393966393764373366356139316138653866653034326631363033316339
+        3861646339356135360a616433666365316466316333663062353230383061366261666161613131
+        38663335643461373761326435623865373762303230333564363734323036323134613264386634
+        3031646236396139643265393365386664633866663966616335
+      wg_pubkey: 'xUe+mmGxl0VPoxR9xtI21M19c6COcO47oNho0biI6Tg='
+      psk: null
+      peer4: null
+      peer6: 'fe80::4242:4233:800b'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423380
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ZYK-MNT'
+      auth_provider: 'kioubit'
