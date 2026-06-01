@@ -696,3 +696,31 @@ peers:
       managed: true
       effective_mnt: 'HEADSCARF175-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20925
+      endpoint: '[2a0e:46c4:2903:beef::4242]:21023'
+      wg_pubkey: 'JmjoF9DosETYg6++oO82eC3VvysK08ym7DTc/Z2RjB8='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        37376538616566303036393363653838316337326131363234666462386463636561333431356536
+        3139643664646234336566356430653532353530316666640a396137333631343264643831366438
+        30656664616562336161383464393432353133353631643333346237633339363261363962646136
+        6164326565316362390a316266663530366361393464356461386534306236616232393864373039
+        64663932393035353737616161306662633437666531346332626635646437313931303334363762
+        6135333238306465656337366361326161633162336565376636
+      peer4: null
+      peer6: 'fe80::925'
+      own6: null
+      keepalive: 20
+      mtu: null
+    bgp:
+      asn: 4242420925
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'YUETAU-MNT'
+      auth_provider: 'kioubit'
