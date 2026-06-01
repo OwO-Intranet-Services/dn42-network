@@ -724,3 +724,24 @@ peers:
       managed: true
       effective_mnt: 'YUETAU-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21013
+      endpoint: 'fin.dn42.naomu.net:59016'
+      wg_pubkey: 'g54OVfcsEKk9uRCKIlxShjQamux0Ce+P6lnIssUcaQQ='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1013'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242421013
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'NAOMU-MNT'
+      auth_provider: 'kioubit'
