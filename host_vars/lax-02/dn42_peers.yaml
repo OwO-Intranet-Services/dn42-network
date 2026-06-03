@@ -268,3 +268,31 @@ peers:
       managed: true
       effective_mnt: 'HEADSCARF175-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21233
+      endpoint: 'ax-us1-la.atr.dn42.sbs:25023'
+      wg_pubkey: 'eBemzrYObdfzGE/Y+mQRjgDIcohx04rvFZgz2ENYjEU='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        38333935326163383931333630376136323665363363396665393133623637353132613530356231
+        6163643339653339663133623330353830333835346332310a623536653765333739383162336130
+        62313831393365306130396338393662396430393230366238383532366462333537333564373833
+        6263363331626535630a633934646166323934343863636236333031383037646564316338353738
+        61326232636438346135616565663932316466306664326363373936633633393632313139343639
+        6630663538623363386365366333303337646136323538373462
+      peer4: null
+      peer6: 'fe80::97'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421233
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ATR-MNT'
+      auth_provider: 'registry_pgp'
