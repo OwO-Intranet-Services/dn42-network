@@ -630,3 +630,23 @@ peers:
       managed: true
       effective_mnt: 'ZYK-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23520
+      endpoint: '44.63.21.65:51872'
+      wg_pubkey: 'Uv9y2GU8DHbpd5GC6r60bAI8I+VrFvU2QsXyjciESgA='
+      psk: null
+      peer4: '172.21.92.1'
+      peer6: 'fe80::ade2'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423520
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'PONY-MNT'
+      auth_provider: 'registry_email'
