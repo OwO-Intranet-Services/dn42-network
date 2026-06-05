@@ -678,3 +678,30 @@ peers:
       managed: true
       effective_mnt: 'ATR-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20762
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        62363863623031616134643561383262313033333330626339383231643861646365656638313539
+        3862373566663630356531336132613234356132353966650a326634613832613237313530306632
+        64396465623335383238646163626461646664383734323336323432356366383832653566643936
+        6662653139616137630a303464323563656265376537313533363965306530326366636365306635
+        65303134393164373861326337386362373731333430646230356261646139353366
+      wg_pubkey: 'ezOq3YaDR8wqJ8q42zq49YDBs8vC2mcDIxhJNvlpuE4='
+      psk: null
+      peer4: '172.22.98.195'
+      peer6: 'fe80::762'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420762
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SILVERHA-MNT'
+      auth_provider: 'registry_email'
