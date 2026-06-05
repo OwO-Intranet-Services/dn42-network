@@ -650,3 +650,31 @@ peers:
       managed: true
       effective_mnt: 'PONY-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 21233
+      endpoint: 'ac-jp4.atr.dn42.sbs:21023'
+      wg_pubkey: 'lDFsKCSsROfTgv/gsf0OTHTdHRlTiws6/+C2HPTgUAk='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35626166316538613663633166383237393434333030356666633639303364393836616138333834
+        6663646435353666353763633461653163363037343235630a643532303630316163656538323237
+        64316536303161373638336431633139366361633562633163336630303262663138336331643066
+        3236663034323631370a323362346531666436316436653738616162666435376561613236383031
+        39626437393566336434363363303634333938363232333761643866636139323938316266656633
+        6662666566363465633262323761373937663563313331656664
+      peer4: null
+      peer6: 'fe80::1233:115'
+      own6: 'fe80::1023:2'
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242421233
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ATR-MNT'
+      auth_provider: 'kioubit'
