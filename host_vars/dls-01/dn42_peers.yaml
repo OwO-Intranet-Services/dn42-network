@@ -163,3 +163,24 @@ peers:
       managed: true
       effective_mnt: 'NICKYDEV-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 22213
+      endpoint: 'us1.115411.xyz:21023'
+      wg_pubkey: 'ldQkbgB+ErWemexq5h5+TDFBUR6sGTnVIT6KuHK0Nno='
+      psk: null
+      peer4: null
+      peer6: 'fdf1:8356:996d::1448'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422213
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'AFNOOI-MNT'
+      auth_provider: 'kioubit'
