@@ -710,3 +710,24 @@ peers:
       managed: true
       effective_mnt: 'ZYK-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22016
+      endpoint: 'sin1.dn42.sidereal.ca:21023'
+      wg_pubkey: 'V9+Lxlqn3scNI7hkULY3NsHbI/s1weObxLy0R2SLQjI='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2016'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422016
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SIDEREAL-MNT'
+      auth_provider: 'kioubit'
