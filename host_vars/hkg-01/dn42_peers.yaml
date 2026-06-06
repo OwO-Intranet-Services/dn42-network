@@ -710,3 +710,30 @@ peers:
       managed: true
       effective_mnt: 'ZYK-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20088
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        65363465376265363063373762336436663964363061383662656663643236653537623361373133
+        3438396266613530373438646632663038386361643730650a643936366264643164363363366531
+        65643631343066363061336633623738346638386665616631633133366436643037633632386438
+        3665306262386162350a333836626430313033336531353733666531636665353464626239353764
+        39613334396531663735633938316137333262613838323231303037386331656261
+      wg_pubkey: 'kAZ+q++A0oHAnZwI/CNEm2ODfahJbKeKJhjA7LbNNUw='
+      psk: null
+      peer4: null
+      peer6: 'fe80::88'
+      own6: 'fe80::1023'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420088
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'FURRY-MNT'
+      auth_provider: 'registry_email'
