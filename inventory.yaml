@@ -23,7 +23,8 @@ all:
           link_local_ipv6: fe80::1023:2
           ip_support: ipv6
           wg_pubkey: "dPTukyAM6scP2dlCYiP55BDb0lmuBhX7Rm4G8p/9awA="
-          peering_comment: "IPv6 only"
+          autopeer: false
+          peering_comment: "This node is offline. It will be revived soon."
           region: ASIA_E
           country: HK
 
