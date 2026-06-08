@@ -766,3 +766,31 @@ peers:
       managed: true
       effective_mnt: 'SIDEREAL-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23441
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        62623433663264383362326662616330306437326663623738373935336565373435326633376665
+        6534356531663837393535663031623461666437373939370a366661326337646235636533626564
+        33386566373235373238373132666432646565643965633936393762646231306164356666383966
+        3636326266663135640a613536343637353830356335336634396634636437636562323264623565
+        31316530616538343932633530396137363963353861336664613536353466386262653439333966
+        3364623037363535633531323866646339306136393262333534
+      wg_pubkey: 'VGOOlEZHsS0FTTL3RO7TSskYH4w0QAWNPkFvMDzctzg='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3441'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423441
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'CAZAGEN-MNT'
+      auth_provider: 'registry_ssh'
