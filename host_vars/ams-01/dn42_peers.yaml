@@ -794,3 +794,23 @@ peers:
       managed: true
       effective_mnt: 'CAZAGEN-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 21311
+      endpoint: 'strato-uplink.tnkoch.de:51822'
+      wg_pubkey: 'vdVEim3G8oqdST5/Z/qm17MSgcWTOLn2C+BywpiYSTU='
+      psk: null
+      peer4: '172.22.66.99'
+      peer6: 'fe80::1311'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421311
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'N4GI0S-MNT'
+      auth_provider: 'kioubit'
