@@ -705,3 +705,24 @@ peers:
       managed: true
       effective_mnt: 'SILVERHA-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 20642
+      endpoint: 'tyo-0.diffumist.me:21023'
+      wg_pubkey: 'KD/4v/fKXWXzvt2z3rxJN31QJIfw/cRSBq0nJppbYG4='
+      psk: null
+      peer4: '172.22.64.69'
+      peer6: 'fe80::642'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420642
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'DIFFUMIST-MNT'
+      auth_provider: 'kioubit'
