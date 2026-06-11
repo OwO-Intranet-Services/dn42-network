@@ -814,3 +814,30 @@ peers:
       managed: true
       effective_mnt: 'N4GI0S-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21255
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        38383732303631633330323261393831633937333363386236636362656564393830636434643732
+        6634303739653837376235353362393636613033313862300a333063376265316536323931643236
+        37383039356263306533393234636163656162343838303665663237646663333432323861343632
+        3737363164366536320a346233353663643861623766656633306337623766336431346636326638
+        33643834656538316634356538353439316261363739353434343236653865376137
+      wg_pubkey: 'xMEuKyAKHOZYKcT3utgyAVl2x6bugY0Z9A6ES5wB0DU='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1255:17'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242421255
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'YUKINO-MNT'
+      auth_provider: 'kioubit'
