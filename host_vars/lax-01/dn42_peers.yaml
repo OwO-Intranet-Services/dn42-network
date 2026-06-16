@@ -880,3 +880,30 @@ peers:
       managed: true
       effective_mnt: 'NEO-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20088
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        66386462333638383937356661646461306161393038383764636539636539353565316163346538
+        6261313032303439613165326338643130346639646639660a376661303837626539613665363964
+        62323361333139366362376663653564313932393562303464643464646237333366636235633232
+        3437313634343535610a613439663437383862636638363735653764346635393534383532653165
+        31373863353837376335333062306338303633343135376462353539323438363630
+      wg_pubkey: 'YjnCVWBsTBoslPqJ88ao+bzHsDFj2BezVW5qrvcLtiE='
+      psk: null
+      peer4: null
+      peer6: 'fe80::88'
+      own6: 'fe80::1023'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420088
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'FURRY-MNT'
+      auth_provider: 'kioubit'
