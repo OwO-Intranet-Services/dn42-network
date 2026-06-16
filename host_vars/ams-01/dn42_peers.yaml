@@ -841,3 +841,24 @@ peers:
       managed: true
       effective_mnt: 'YUKINO-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20280
+      endpoint: 'dn42.never-afk.de:51829'
+      wg_pubkey: 'MBTeiaflkJj1NI7LX7PNTHLc4mUJ3Qg7ahok3AtJkzk='
+      psk: null
+      peer4: null
+      peer6: 'fe80::4242'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420280
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'BIT-MNT'
+      auth_provider: 'kioubit'
