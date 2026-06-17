@@ -862,3 +862,24 @@ peers:
       managed: true
       effective_mnt: 'BIT-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23933
+      endpoint: 'de01.node.ztix.ink:21023'
+      wg_pubkey: 'jn/kBv7L7B6UVe6lysWgBZ8zWMB05RfhScaHHLFfrGU='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3933'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423933
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ZTIX-MNT'
+      auth_provider: 'kioubit'
