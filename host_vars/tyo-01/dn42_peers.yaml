@@ -440,7 +440,7 @@ peers:
   - wg:
       port: 20028
       endpoint: null
-      wg_pubkey: 'FzUn0AkkCObJ+Kdn8YqkGopUZb1D9k0fwewnXCNB8Eg='
+      wg_pubkey: 'Q9kncPFCcdOKxfcP6ai2rg3QlwVVnp4W5TahwlY3RBc='
       psk: null
       peer4: '172.20.202.62'
       peer6: 'fdc1:e451:2020:9500::1'
@@ -456,7 +456,7 @@ peers:
     autopeer:
       managed: true
       effective_mnt: 'NGWORKS-MNT'
-      auth_provider: 'registry_email'
+      auth_provider: 'kioubit'
   - wg:
       port: 22762
       endpoint: 'thighhighs.top:21023'
