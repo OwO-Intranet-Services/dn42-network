@@ -442,7 +442,7 @@ peers:
       endpoint: null
       wg_pubkey: 'Q9kncPFCcdOKxfcP6ai2rg3QlwVVnp4W5TahwlY3RBc='
       psk: null
-      peer4: '172.20.202.62'
+      peer4: '172.20.202.1'
       peer6: 'fdc1:e451:2020:9500::1'
       own6: null
       keepalive: null
