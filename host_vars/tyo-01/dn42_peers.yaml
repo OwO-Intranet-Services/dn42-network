@@ -453,6 +453,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: false
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'NGWORKS-MNT'
