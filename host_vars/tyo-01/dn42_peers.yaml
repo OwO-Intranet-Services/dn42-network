@@ -726,3 +726,30 @@ peers:
       managed: true
       effective_mnt: 'DIFFUMIST-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21810
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34623966626331393263313564626139373039623539373865653762613063323834363361326539
+        3630616361323237653837353734633835356339356430380a343134356636613866623531386637
+        38613930376462333136633031313566646137346434303930626136303135666132353734653731
+        3863613062646264350a303839613038623336623737383032336562646664303866633537636162
+        36613261323863306237356636396338326630373363373131623131373638373337
+      wg_pubkey: 'Q09qYo+am/qkseqy/Q5nrb+jtMAeTgHsVZ+er/cypXw='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1810'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421810
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SABRINA-MNT'
+      auth_provider: 'kioubit'
