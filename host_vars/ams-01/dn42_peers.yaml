@@ -900,3 +900,24 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+  - wg:
+      port: 21510
+      endpoint: 'de01.dn42.hwrng.dev:21023'
+      wg_pubkey: 'l8Cfwb5+f+ThOU1KbdaY5/JQwKnl1utPLkLW29IF3E4='
+      psk: null
+      peer4: null
+      peer6: 'fe80::93d4:3358:1510'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421510
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'YUZU-MNT'
+      auth_provider: 'kioubit'
