@@ -184,3 +184,24 @@ peers:
       managed: true
       effective_mnt: 'AFNOOI-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20083
+      endpoint: 'us1.dn42.redearth.qzz.io:21023'
+      wg_pubkey: 'n/jM4lF+Pl0LB48oy2WoOjm07LkGk/maKZLkEJN+5jM='
+      psk: null
+      peer4: null
+      peer6: 'fe80::83'
+      own6: null
+      keepalive: 25
+      mtu: 1380
+    bgp:
+      asn: 4242420083
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'REDEARTH-MNT'
+      auth_provider: 'kioubit'
