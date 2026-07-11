@@ -787,3 +787,24 @@ peers:
       managed: true
       effective_mnt: 'SESS-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 23376
+      endpoint: '44.32.191.70:21023'
+      wg_pubkey: 'R0iwMS06ENUAsHWWMa/9jL53KA+qam67dv79zfpB31Y='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3376'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423376
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'BRICK-MNT'
+      auth_provider: 'registry_email'
