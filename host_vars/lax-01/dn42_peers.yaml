@@ -929,3 +929,30 @@ peers:
       managed: true
       effective_mnt: 'REDEARTH-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20242
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        31333564313535666335616238653934346133383935356665303833316432396235616533326565
+        6438373338643937663665333336663733353964643132370a613437663763373163313833626632
+        36626537646465653364366131323333653862666433316139393864333535616433336364386236
+        6164373734636461350a376264613162333466323966316233343930313232663261393663373833
+        32313834363136313930666539303532336134653262343161316634383537383633
+      wg_pubkey: '9OdScCyyciCxS+PRQ70c1cEGHXAxzt7yNZ/jWzDGk3c='
+      psk: null
+      peer4: '172.22.149.11'
+      peer6: null
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420242
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: true
+      mp_bgp_transport: 'ipv4'
+    autopeer:
+      managed: true
+      effective_mnt: 'VIRTMAN-MNT'
+      auth_provider: 'registry_email'
