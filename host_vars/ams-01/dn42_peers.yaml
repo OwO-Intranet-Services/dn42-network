@@ -921,3 +921,23 @@ peers:
       managed: true
       effective_mnt: 'YUZU-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20498
+      endpoint: 'fra1.dn42.404550.xyz:36826'
+      wg_pubkey: 'dg1+1S5OjCsknlsKd0xVeAeT76td939DjzgXzF02M1o='
+      psk: null
+      peer4: '172.22.123.96'
+      peer6: null
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420498
+      ipv4: true
+      ipv6: false
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'ROUTE404-MNT'
+      auth_provider: 'kioubit'
