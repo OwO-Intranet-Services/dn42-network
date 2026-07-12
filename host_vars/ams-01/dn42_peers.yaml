@@ -921,3 +921,31 @@ peers:
       managed: true
       effective_mnt: 'YUZU-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23337
+      endpoint: '[2a02:2b88:2:904::1]:21023'
+      wg_pubkey: 'WujA99rvcR+rgbR/cT0a1kt1V178J7HWTchWRuMxOVU='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34313730356136363339363863636363663638353230313932646137623163613031353765386338
+        6434626434393332623137306536316233313566653362370a333532383732333861623533316136
+        32323931656633613235653436353733356162623561333466613561616631323431663934353936
+        6332623136353030640a643532376564646264303362396531626438653238353161373664376564
+        34316333393230333438353539663363613333306565343964343064376636646135623361656431
+        3032393239353262326539313938393263666361663734636531
+      peer4: '172.20.229.98'
+      peer6: 'fe80::3337'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242423337
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ROBAJZN-MNT'
+      auth_provider: 'registry_pgp'
