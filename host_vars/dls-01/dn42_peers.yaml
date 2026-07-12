@@ -184,3 +184,23 @@ peers:
       managed: true
       effective_mnt: 'AFNOOI-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20242
+      endpoint: 'warp.kl0ud.net:51920'
+      wg_pubkey: '9OdScCyyciCxS+PRQ70c1cEGHXAxzt7yNZ/jWzDGk3c='
+      psk: null
+      peer4: '172.22.149.12'
+      peer6: null
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420242
+      ipv4: true
+      ipv6: false
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'VIRTMAN-MNT'
+      auth_provider: 'registry_email'
