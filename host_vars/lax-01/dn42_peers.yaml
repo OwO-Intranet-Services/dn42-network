@@ -952,7 +952,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: true
-      mp_bgp_transport: 'ipv4'
+      mp_bgp_transport: 'ipv6'
     autopeer:
       managed: true
       effective_mnt: 'VIRTMAN-MNT'
