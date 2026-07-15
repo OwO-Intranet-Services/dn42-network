@@ -942,15 +942,15 @@ peers:
       wg_pubkey: '9OdScCyyciCxS+PRQ70c1cEGHXAxzt7yNZ/jWzDGk3c='
       psk: null
       peer4: '172.22.149.13'
-      peer6: 'fd00:7376:b495::13'
-      own6: null
+      peer6: 'fe80::0242'
+      own6: 'fe80::1023'
       keepalive: null
       mtu: null
     bgp:
       asn: 4242420242
       ipv4: true
       ipv6: true
-      extended_next_hop: false
+      extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
     autopeer:
