@@ -808,3 +808,24 @@ peers:
       managed: true
       effective_mnt: 'BRICK-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 22686
+      endpoint: 'dn42.andi.com.br:41023'
+      wg_pubkey: 'g+SQbE2fRQw8xgNVU6aaiRhxbvqToCF68mDUaFkkxmw='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2686'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422686
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'ANDIBR-MNT'
+      auth_provider: 'registry_email'
