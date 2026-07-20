@@ -949,3 +949,24 @@ peers:
       managed: true
       effective_mnt: 'ROBAJZN-MNT'
       auth_provider: 'registry_pgp'
+  - wg:
+      port: 22213
+      endpoint: null
+      wg_pubkey: '73FCWf+KvJ+bUHxJ6mpbEzmcELImdasIMB64zCf3sBQ='
+      psk: null
+      peer4: null
+      peer6: 'fe80::bcd0:80ff:fe67:e17a'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422213
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'AFNOOI-MNT'
+      auth_provider: 'kioubit'
