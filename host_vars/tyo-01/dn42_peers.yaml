@@ -829,3 +829,24 @@ peers:
       managed: true
       effective_mnt: 'ANDIBR-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 20078
+      endpoint: 'jp01.tes286.top:21023'
+      wg_pubkey: 'J9gSqa2nCiZ3sNxTftu0Vl3N5gtuzatVt0G+R6P+k3M='
+      psk: null
+      peer4: null
+      peer6: 'fe80::78'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242420078
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'TES286-MNT'
+      auth_provider: 'kioubit'
