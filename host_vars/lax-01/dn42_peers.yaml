@@ -957,3 +957,25 @@ peers:
       managed: true
       effective_mnt: 'VIRTMAN-MNT'
       auth_provider: 'kioubit'
+  - comment: 'TES286-US01'
+    wg:
+      port: 20078
+      endpoint: 'us01.tes286.top:21023'
+      wg_pubkey: '7Tg2GpJ2VvlHrLgBV5YJHgEZm6B7h0cj2zGfxiAvb2A='
+      psk: null
+      peer4: null
+      peer6: 'fe80::78'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242420078
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'TES286-MNT'
+      auth_provider: 'kioubit'
