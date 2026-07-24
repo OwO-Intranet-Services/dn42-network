@@ -871,3 +871,31 @@ peers:
       managed: true
       effective_mnt: 'FXNET-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20132
+      endpoint: 'nrt.fennechost.ing:41023'
+      wg_pubkey: '0HjAgv/vuOvycl6NcyWesyi6hm7g+WjUHHrCNpU4hlg='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        38336331373766376563666334663261316262663339313563313230336332613939323732363364
+        6234623335313837303161326262313235646630626138640a366533643562323335306435363630
+        30316532663636613334313462316533333835383831313265376533336530653965626566383236
+        3038636636663038390a343936346361623139653633656430366430316636336662356636643961
+        38326662653564623466306136363663613564633665313932393830313132653237643162376365
+        6265613332323437633936343530643734393733393435663131
+      peer4: null
+      peer6: 'fe80::132:1'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420132
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'KITLOTOR-MNT'
+      auth_provider: 'kioubit'
