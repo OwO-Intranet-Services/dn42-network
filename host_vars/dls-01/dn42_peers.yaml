@@ -184,3 +184,24 @@ peers:
       managed: true
       effective_mnt: 'AFNOOI-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21812
+      endpoint: 'dn42.toztech.com:21023'
+      wg_pubkey: 'sEj4PAuk/5d2ehayadbMG0Ys33Sujl183el7gAsc1Qs='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1812'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421812
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'TOZTECH-MNT'
+      auth_provider: 'kioubit'
