@@ -899,3 +899,30 @@ peers:
       managed: true
       effective_mnt: 'KITLOTOR-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22670
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        31636337663964633863623961346439303436323962343930656130643266333930353434613766
+        6338356631393462376433633736336634373364353764650a383164636265616561326462343538
+        32383466623466383837666564363036663331613432346235306365393434366630353336363863
+        3634323162303161610a346239343139633338333238303736626531386565363239643837376165
+        62356139636434316437353239613761663965393130393630643433313738353366
+      wg_pubkey: 'I8/j47KK47mFA4Pj+2jKwUEtjoIhMP6rQ4S+72MbAVc='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2670'
+      own6: null
+      keepalive: null
+      mtu: 1400
+    bgp:
+      asn: 4242422670
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'HAKURIN-MNT'
+      auth_provider: 'iedon'
