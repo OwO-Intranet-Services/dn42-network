@@ -1000,3 +1000,24 @@ peers:
       managed: true
       effective_mnt: 'MADPENGUIN-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22401
+      endpoint: 'lax1.ca.us.graywind.cn:21023'
+      wg_pubkey: 'oFzsubPMYhEOANJAUQpMbsJQyuasvOhMhIbMYsm6AmA='
+      psk: null
+      peer4: '172.20.155.97'
+      peer6: 'fe80::2401'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422401
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'GREYWIND-MNT'
+      auth_provider: 'iedon'
