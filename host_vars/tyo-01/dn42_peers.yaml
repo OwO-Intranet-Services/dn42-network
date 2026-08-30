@@ -926,3 +926,24 @@ peers:
       managed: true
       effective_mnt: 'HAKURIN-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 20705
+      endpoint: '151.250.94.244:708'
+      wg_pubkey: 'QFa84MA03kVEV4dSk5JLRmnE0XrUWGZ6twcQZxYZsgw='
+      psk: null
+      peer4: '172.23.203.193'
+      peer6: null
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420705
+      ipv4: true
+      ipv6: false
+      extended_next_hop: false
+      mp_bgp: true
+      mp_bgp_transport: 'ipv4'
+    autopeer:
+      managed: true
+      effective_mnt: 'VR18-MNT'
+      auth_provider: 'kioubit'
