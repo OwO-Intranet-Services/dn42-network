@@ -947,3 +947,24 @@ peers:
       managed: true
       effective_mnt: 'VR18-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21573
+      endpoint: 'tyo-1.dn42.sironeko.moe:21023'
+      wg_pubkey: 'fyuyvz9e89d4ksJ9PKHHjVCTGB0z9dfLKWsw3KmKOz4='
+      psk: null
+      peer4: '172.23.91.242'
+      peer6: 'fe80::1573'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421573
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SIRONEKO-MNT'
+      auth_provider: 'kioubit'
