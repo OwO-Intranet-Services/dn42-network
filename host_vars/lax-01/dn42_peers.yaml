@@ -1021,3 +1021,24 @@ peers:
       managed: true
       effective_mnt: 'GREYWIND-MNT'
       auth_provider: 'iedon'
+  - wg:
+      port: 21573
+      endpoint: 'lax-1.dn42.sironeko.moe:21023'
+      wg_pubkey: '+/Jr/Kwz6VITNrujQIJNS5W2yO71d5aHED9MCha4rUw='
+      psk: null
+      peer4: '172.23.91.241'
+      peer6: 'fe80::1573'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421573
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SIRONEKO-MNT'
+      auth_provider: 'kioubit'
