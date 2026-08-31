@@ -105,8 +105,8 @@ peers:
       peer4: '172.21.64.64'
       peer6: 'fdaa:8ad2:fc55::'
       own6: null
-      keepalive: null
-      mtu: null
+      keepalive: 25
+      mtu: 1420
     bgp:
       asn: 4242423220
       ipv4: true
