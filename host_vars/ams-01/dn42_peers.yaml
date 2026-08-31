@@ -991,3 +991,29 @@ peers:
       managed: true
       effective_mnt: 'MADPENGUIN-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21675
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        35613662353765363337346132656535633337313465646338353333663862383561386634396536
+        6535623664323731653064363064393731636239633166390a333335616462616562653162313234
+        38386565393663626236356666323436376634653537393064623333656237343735346331333935
+        3639326530376336620a653239376430646438303662643765323266653736636531393039616166
+        61316432353937643861616662623930633637643839383032383962633938393636
+      wg_pubkey: 'CPe2HdlvS8FSgTczInCv7drVaj3+z8MjVJN1/wgYuEc='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1227'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421675
+      ipv4: false
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: false
+    autopeer:
+      managed: true
+      effective_mnt: 'REXUM-MNT'
+      auth_provider: 'kioubit'
