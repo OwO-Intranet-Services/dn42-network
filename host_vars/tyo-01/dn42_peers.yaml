@@ -968,3 +968,30 @@ peers:
       managed: true
       effective_mnt: 'SIRONEKO-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20454
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        37613135333662656232343065353133356432393161323230626436303638386363373363356261
+        3139636638653839633665633537343232626363366562620a633135316664656131303764326438
+        33653361313466316131303866373064393064353634323237616637633838373736616261643936
+        3133616133373336310a383636653762663039653665373266366262306366656434373765663764
+        34366332623039376463613562633635376138663837306465616431356234633534
+      wg_pubkey: '8auu/+HFce5JAexe1b5MDg+nh4vutQVlXd0kJySXVGc='
+      psk: null
+      peer4: null
+      peer6: 'fe80::454'
+      own6: null
+      keepalive: null
+      mtu: 1420
+    bgp:
+      asn: 4242420454
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'NEDIFINITA-MNT'
+      auth_provider: 'kioubit'
