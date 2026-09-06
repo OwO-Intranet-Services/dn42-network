@@ -205,3 +205,30 @@ peers:
       managed: true
       effective_mnt: 'TOZTECH-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21695
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34383866393936636464316532313561653033613262366131666434643564373630613831366635
+        3038663235306133626562653439373661633639373534660a326430363461386330663230343338
+        65616263336363346163636565303831636465653238363732643565666537323863636537623066
+        3836663836326136300a383066336237653265653231386431623031353262653130366433613566
+        37343534643533316431333934613533653337356164356434623462333365303263
+      wg_pubkey: '1bLvU6LTKiWhTXMRtU/F+0cSWNvB/QY41uxqMNUHbgo='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1010'
+      own6: 'fe80::1011'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242421695
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'QUEENANT-MNT'
+      auth_provider: 'kioubit'
