@@ -1038,3 +1038,24 @@ peers:
       managed: true
       effective_mnt: 'SIRONEKO-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23945
+      endpoint: 'fr1.dn42.backendservice.net:23963'
+      wg_pubkey: 'yzmAdYa6LT7Uw4lPp4yucMI4h+in1sH3Vy1H8tHk9xI='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3945'
+      own6: 'fe80::1023:2'
+      keepalive: 25
+      mtu: 1420
+    bgp:
+      asn: 4242423945
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'GARBSAMU-MNT'
+      auth_provider: 'kioubit'
