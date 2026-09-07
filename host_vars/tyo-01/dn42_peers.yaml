@@ -1016,3 +1016,30 @@ peers:
       managed: true
       effective_mnt: 'REDBEAN0721-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23945
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        61353735346638313334626137343936396230616166656338396630393130363565313435333463
+        3164366532303331326632636565393936666162363265330a393637656432363765643438326537
+        37363566633333323261363866626161663737643136653136616363376337653133333063323832
+        6232653437373132360a626532616163613339663663643735363036663632343665326563396438
+        37386564623038376139386265633433623666343433373936366430323162366561
+      wg_pubkey: 'kXg6iFfxbLtfdrpoG6SMws2As9SXDqkV5SzsxG+/YkQ='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3945'
+      own6: 'fe80::1023:2'
+      keepalive: 15
+      mtu: 1420
+    bgp:
+      asn: 4242423945
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'GARBSAMU-MNT'
+      auth_provider: 'kioubit'
