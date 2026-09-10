@@ -1043,3 +1043,30 @@ peers:
       managed: true
       effective_mnt: 'GARBSAMU-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 21894
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        34633464376362336631323233303736633864373665643838396336626264353338313934386361
+        3437653061306162353435366330633031363230316664610a666637383038326262363034336133
+        39363063646661643865356537666333323465653561373632346433356534633061633865303435
+        6163323465343231640a393031366663323130396264323138316462353835376335313539356139
+        61656665626437616661356137323835633732383139383638623435373339303830
+      wg_pubkey: 'qIYbzatK7JCd+N6IBU4zoGaFhWae+V5sPAQXxHmJFCI='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1894'
+      own6: null
+      keepalive: 25
+      mtu: 1420
+    bgp:
+      asn: 4242421894
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'GLOAMING-MNT'
+      auth_provider: 'kioubit'
