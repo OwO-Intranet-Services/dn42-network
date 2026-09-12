@@ -1059,3 +1059,24 @@ peers:
       managed: true
       effective_mnt: 'GARBSAMU-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23077
+      endpoint: 'de-1.dn42.ferrets.space:21023'
+      wg_pubkey: 'N4Fy6nVSGZWa2mHYrZVHZ9m80q5gv5/4zSfDCPxTkHA='
+      psk: null
+      peer4: null
+      peer6: 'fe80::3077'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423077
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'FERRETS-MNT'
+      auth_provider: 'kioubit'
