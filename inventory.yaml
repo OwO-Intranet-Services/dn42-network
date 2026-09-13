@@ -24,7 +24,7 @@ all:
           ip_support: ipv6
           wg_pubkey: "dPTukyAM6scP2dlCYiP55BDb0lmuBhX7Rm4G8p/9awA="
           autopeer: false
-          peering_comment: "This node is offline. It will be revived soon."
+          peering_comment: "This node is offline. It may be revived at some point in the future."
           region: ASIA_E
           country: HK
 
@@ -46,7 +46,7 @@ all:
           ownip6: fd42:4242:1023:68::1
           ownip6block: fd42:4242:1023:68::/64
           link_local_ipv6: fe80::1023:2
-          ip_support: dual
+          ip_support: ipv4
           wg_pubkey: "NWNxHIL6Fdwk8AkflKAlpdpeo8l3fYyMZH+JcTug6iQ="
           region: NORTH_AMERICA_W
           country: US
