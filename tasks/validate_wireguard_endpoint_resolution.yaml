@@ -44,6 +44,6 @@
 
 - name: Warn about peers with unresolvable endpoints
   ansible.builtin.debug:
-    msg: "Skipping peer {{ item }} — endpoint failed to resolve"
+    msg: "Skipping peer {{ item }}"
   loop: "{{ wireguard_endpoint_failed_peers }}"
   when: wireguard_endpoint_failed_peers | length > 0

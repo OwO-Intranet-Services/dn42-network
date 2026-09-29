@@ -44,6 +44,13 @@
         | selectattr('removed')
         | list
       }}
+    wg_dn42_peers_desired_names: >-
+      {{
+        wg_dn42_peers_processed
+        | rejectattr('removed')
+        | map(attribute='name')
+        | list
+      }}
 
 - name: Validate DN42 WireGuard endpoint resolution
   ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/validate_wireguard_endpoint_resolution.yaml"
@@ -107,7 +114,7 @@
       | map(attribute='path')
       | map('basename')
       | map('regex_replace', '\.conf$', '')
-      | reject('in', wg_dn42_peers_configure | map(attribute='name') | list)
+      | reject('in', wg_dn42_peers_desired_names)
       | reject('in', wg_dn42_peers_remove | map(attribute='name') | list)
       | list
     }}
