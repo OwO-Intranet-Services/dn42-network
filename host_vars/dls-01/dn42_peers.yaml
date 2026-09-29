@@ -114,6 +114,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'MGH-MNT'
@@ -180,6 +181,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'AFNOOI-MNT'

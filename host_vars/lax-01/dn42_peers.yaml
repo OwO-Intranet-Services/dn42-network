@@ -112,6 +112,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'mhr'
     wg:
       port: 22279
@@ -130,6 +131,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'sun'
     wg:
       port: 23088
@@ -220,6 +222,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'Maraun'
     wg:
       port: 22225
@@ -386,6 +389,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'cloudc'
     wg:
       port: 23777
@@ -665,6 +669,7 @@ peers:
       extended_next_hop: false
       mp_bgp: true
       mp_bgp_transport: 'ipv4'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: '000DEV-MNT'
@@ -694,6 +699,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'MGH-MNT'
@@ -716,6 +722,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'PIXIA-MNT'
@@ -855,6 +862,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'AFNOOI-MNT'
@@ -953,6 +961,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'VIRTMAN-MNT'

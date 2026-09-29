@@ -126,6 +126,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'qiuxin'
     wg:
       port: 21771
@@ -144,6 +145,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'mhr'
     wg:
       port: 22279
@@ -198,6 +200,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'Nisbett'
     wg:
       port: 20398
@@ -277,6 +280,7 @@ peers:
       extended_next_hop: false
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'RoutedBits'
     wg:
       port: 20207
@@ -349,6 +353,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'cloudc'
     wg:
       port: 23777
@@ -626,6 +631,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'ZYK-MNT'
@@ -804,6 +810,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'BRICK-MNT'
@@ -867,6 +874,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'FXNET-MNT'

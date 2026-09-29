@@ -96,6 +96,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'launchpadx'
     wg:
       port: 23702
@@ -150,6 +151,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - wg:
       port: 22466
       endpoint: !vault |

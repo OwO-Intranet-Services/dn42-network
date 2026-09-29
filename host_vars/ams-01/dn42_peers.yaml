@@ -17,6 +17,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'mhr'
     wg:
       port: 22279
@@ -346,6 +347,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'BingxinBaka'
     wg:
       port: 23374
@@ -364,6 +366,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'Dimitry'
     wg:
       port: 20155
@@ -406,6 +409,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: false
+    removed: true
   - comment: 'leziblog'
     wg:
       port: 23377
@@ -424,6 +428,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
   - comment: 'cowgl'
     wg:
       port: 23999
@@ -498,6 +503,7 @@ peers:
       ipv6: true
       extended_next_hop: true
       mp_bgp: true
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'CHOFSTEDE-MNT'
@@ -545,6 +551,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: false
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'DISPAISY-MNT'
@@ -594,6 +601,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'DMITRYIT-MNT'
@@ -720,6 +728,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'YUETAU-MNT'
@@ -810,6 +819,7 @@ peers:
       ipv6: true
       extended_next_hop: false
       mp_bgp: false
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'N4GI0S-MNT'
@@ -879,6 +889,7 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
+    removed: true
     autopeer:
       managed: true
       effective_mnt: 'ZTIX-MNT'
