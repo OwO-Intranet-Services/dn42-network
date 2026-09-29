@@ -18,8 +18,13 @@ lg_autopeer_domain: "autopeer.iris.dn42"
 lg_autopeer_backend_url: "https://autopeer.owo.li"
 lg_autopeer_backend_host: "autopeer.owo.li"
 lg_autopeer_site_url: "https://{{ lg_autopeer_domain }}"
+lg_auth_frontend_host: "lax-01"
+lg_auth_domain: "auth.iris.dn42"
+lg_auth_backend_url: "https://dn42-auth.owo.li"
+lg_auth_backend_host: "dn42-auth.owo.li"
+lg_auth_site_url: "https://{{ lg_auth_domain }}"
 lg_looking_glass_site_url: "https://network.iris.dn42"
-lg_autopeer_oidc_methods:
+lg_auth_oidc_methods:
   - kind: oidc
     label: { key: iEdon }
     description: { key: "Authenticate with iEdon." }

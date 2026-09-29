@@ -1,0 +1,15 @@
+---
+- name: Unarchive auth frontend assets
+  ansible.builtin.unarchive:
+    src: "{{ auth_frontend_tarball_path }}"
+    dest: "{{ auth_frontend_root }}/"
+    owner: www-data
+    group: www-data
+
+- name: Render auth frontend config
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ auth_frontend_root }}/config.json"
+    owner: www-data
+    group: www-data
+    mode: "0644"

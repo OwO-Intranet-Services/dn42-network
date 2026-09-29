@@ -1,0 +1,6 @@
+---
+auth_frontend_artifacts_root: "{{ artifacts_root_dir }}/auth-frontend"
+auth_frontend_build_workspace: "{{ repository_root_dir }}/bird-lg-rs/auth-frontend"
+auth_frontend_dist_dir: "{{ auth_frontend_artifacts_root }}/dist"
+auth_frontend_tarball_path: "{{ auth_frontend_artifacts_root }}/site.tar.gz"
+auth_frontend_commit_stamp: "{{ auth_frontend_artifacts_root }}/last_build_commit"

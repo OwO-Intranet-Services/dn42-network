@@ -59,6 +59,12 @@ lg-proxy.{{ host }}.node  IN  CNAME  {{ hostvars[host].ansible_host }}.
 {{ lg_autopeer_domain | replace('.' + domain_name, '') }}  IN  AAAA  {{ hostvars[lg_autopeer_frontend_host].ownip6 }}
 {%   endif %}
 
+; Auth Frontend
+{%   if lg_auth_domain is defined and lg_auth_domain.endswith(domain_name) %}
+{{ lg_auth_domain | replace('.' + domain_name, '') }}  IN  A     {{ hostvars[lg_auth_frontend_host].ownip }}
+{{ lg_auth_domain | replace('.' + domain_name, '') }}  IN  AAAA  {{ hostvars[lg_auth_frontend_host].ownip6 }}
+{%   endif %}
+
 ; LG Server Domains
 {%   if lg_server_domains is defined %}
 {%     for domain in lg_server_domains %}

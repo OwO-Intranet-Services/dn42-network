@@ -1,0 +1,17 @@
+---
+- name: Get current commit hash for bird-lg-rs
+  ansible.builtin.command: git rev-parse HEAD
+  args:
+    chdir: "{{ repository_root_dir }}/bird-lg-rs"
+  register: auth_frontend_current_commit
+  changed_when: false
+
+- name: Build auth frontend artifact with cache
+  ansible.builtin.include_tasks: "{{ repository_root_dir }}/tasks/build_cached_artifact.yaml"
+  vars:
+    build_cache_artifact_name: auth frontend artifact
+    build_cache_artifact_path: "{{ auth_frontend_tarball_path }}"
+    build_cache_stamp_path: "{{ auth_frontend_commit_stamp }}"
+    build_cache_signature: "{{ auth_frontend_current_commit.stdout }}"
+    build_cache_steps_file: "{{ role_path }}/tasks/build.yaml"
+    build_cache_pending_message: "Would build auth frontend artifact into {{ auth_frontend_artifacts_root }}"

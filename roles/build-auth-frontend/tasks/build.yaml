@@ -1,0 +1,23 @@
+---
+- name: Run auth frontend trunk build
+  ansible.builtin.command:
+    argv:
+      - trunk
+      - build
+      - --release
+      - --dist
+      - "{{ auth_frontend_dist_dir }}"
+  args:
+    chdir: "{{ auth_frontend_build_workspace }}"
+  environment:
+    TRUNK_SKIP_VERSION_CHECK: "true"
+    NO_COLOR: "true"
+  changed_when: true
+
+- name: Compress auth frontend assets # noqa: command-instead-of-module
+  ansible.builtin.command:
+    cmd: tar czf {{ auth_frontend_tarball_path }} -C {{ auth_frontend_dist_dir }} .
+  environment:
+    # Keep macOS tar from adding AppleDouble ._* files that GNU tar would unpack.
+    COPYFILE_DISABLE: "1"
+  changed_when: true

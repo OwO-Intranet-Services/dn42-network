@@ -1,0 +1,8 @@
+---
+- name: Prepare auth frontend artifact directories
+  ansible.builtin.include_tasks:
+    file: install.yaml
+
+- name: Build auth frontend artifact
+  ansible.builtin.include_tasks:
+    file: configure.yaml

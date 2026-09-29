@@ -1,0 +1,6 @@
+{%- set config = {
+    "autopeer_api_url": lg_auth_site_url,
+    "oidc_methods": lg_auth_oidc_methods,
+    "allowed_return_urls": [lg_auth_site_url, lg_autopeer_site_url]
+} -%}
+{{ config | to_nice_json }}

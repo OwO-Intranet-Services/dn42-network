@@ -22,6 +22,11 @@
         - websites
         - autopeer
         - autopeer-frontend
+    - role: build-auth-frontend
+      tags:
+        - build
+        - websites
+        - auth-frontend
 
 - name: Deploy Network Site
   hosts: anycast
@@ -50,6 +55,19 @@
         - websites
         - autopeer
         - autopeer-frontend
+
+- name: Deploy Auth Frontend
+  hosts: auth_frontend
+  become: true
+  gather_facts: true
+  tags:
+    - websites
+    - auth-frontend
+  roles:
+    - role: deploy-auth-frontend
+      tags:
+        - websites
+        - auth-frontend
 
 - name: Configure Caddy Websites
   hosts: nodes

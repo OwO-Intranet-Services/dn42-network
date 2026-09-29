@@ -58,6 +58,17 @@
           'backend_host': lg_autopeer_backend_host
         }) -%}
       {%- endif -%}
+      {%- if inventory_hostname in groups.get('auth_frontend', []) -%}
+        {%- set _ = res.append({
+          'name': 'auth-' + inventory_hostname,
+          'server_name': lg_auth_domain,
+          'type': 'auth-site',
+          'dn42_cert': true,
+          'root': '/var/www/html/' ~ lg_auth_domain,
+          'backend_upstream': lg_auth_backend_url,
+          'backend_host': lg_auth_backend_host
+        }) -%}
+      {%- endif -%}
       {%- if inventory_hostname in groups.get(anycast_group, []) -%}
         {%- set _ = res.append({
           'name': 'network-iris-dn42',
