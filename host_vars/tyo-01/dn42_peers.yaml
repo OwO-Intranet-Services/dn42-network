@@ -1121,3 +1121,30 @@ peers:
       managed: true
       effective_mnt: 'AFNOOI-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23143
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        61313539363634643634313266633235373237303536633531393636373430323064343538353339
+        6137623432383062613635316365633236393539633064330a316637666665336536626331356638
+        34636336316133343166386135326266653232313339616230633965356633303337303834383237
+        3464653835393233320a323136313736303631373331323837396164663265373335643964623439
+        62303232346330623763313364613535643331626661353266366133373964363435
+      wg_pubkey: 'ma9vpr25iBDKthbd8tUFuCxbyzfJ2YHJ+K8bgdzOqzk='
+      psk: null
+      peer4: '172.20.188.7'
+      peer6: 'fe80::3143'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423143
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'AKIRA-MNT'
+      auth_provider: 'registry_email'
