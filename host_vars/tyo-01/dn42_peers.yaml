@@ -1148,3 +1148,24 @@ peers:
       managed: true
       effective_mnt: 'AKIRA-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 22054
+      endpoint: null
+      wg_pubkey: '3C/iVpKcM86rEvLn63xP/qqcD0T5K9NEyrAnqxDmCyw='
+      psk: null
+      peer4: '172.23.254.225'
+      peer6: 'fe80::2054:2'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422054
+      ipv4: true
+      ipv6: true
+      extended_next_hop: false
+      mp_bgp: true
+      mp_bgp_transport: 'ipv4'
+    autopeer:
+      managed: true
+      effective_mnt: '16LAB-MNT'
+      auth_provider: 'kioubit'
