@@ -1153,7 +1153,7 @@ peers:
       endpoint: null
       wg_pubkey: '3C/iVpKcM86rEvLn63xP/qqcD0T5K9NEyrAnqxDmCyw='
       psk: null
-      peer4: '172.23.254.225'
+      peer4: '172.23.254.228'
       peer6: 'fe80::2054:2'
       own6: null
       keepalive: null
