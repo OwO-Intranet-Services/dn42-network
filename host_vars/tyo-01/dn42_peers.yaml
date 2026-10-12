@@ -1153,7 +1153,7 @@ peers:
       endpoint: null
       wg_pubkey: 'We84lDTeTFShG54P0MZ0jjEVN2OQQawerrFRNJJ+/DE='
       psk: null
-      peer4: '172.23.254.228'
+      peer4: null
       peer6: 'fe80::2054:2'
       own6: null
       keepalive: null
@@ -1162,9 +1162,9 @@ peers:
       asn: 4242422054
       ipv4: true
       ipv6: true
-      extended_next_hop: false
+      extended_next_hop: true
       mp_bgp: true
-      mp_bgp_transport: 'ipv4'
+      mp_bgp_transport: 'ipv6'
     autopeer:
       managed: true
       effective_mnt: '16LAB-MNT'
