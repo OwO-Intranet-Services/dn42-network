@@ -1151,7 +1151,7 @@ peers:
   - wg:
       port: 22054
       endpoint: null
-      wg_pubkey: '3C/iVpKcM86rEvLn63xP/qqcD0T5K9NEyrAnqxDmCyw='
+      wg_pubkey: 'We84lDTeTFShG54P0MZ0jjEVN2OQQawerrFRNJJ+/DE='
       psk: null
       peer4: '172.23.254.228'
       peer6: 'fe80::2054:2'
