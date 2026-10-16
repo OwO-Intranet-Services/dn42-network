@@ -1091,3 +1091,24 @@ peers:
       managed: true
       effective_mnt: 'FERRETS-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20125
+      endpoint: '[2a0f:be01:0:100::113]:21023'
+      wg_pubkey: 'sgYSxYeBQX9IMbcj7zv6UxYYq7QQPDfMdaxHFlTeckY='
+      psk: null
+      peer4: '172.22.64.129'
+      peer6: 'fe80::125'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420125
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'SLOP-MNT'
+      auth_provider: 'registry_ssh'
