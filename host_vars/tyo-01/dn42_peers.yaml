@@ -1150,11 +1150,11 @@ peers:
       auth_provider: 'registry_email'
   - wg:
       port: 22054
-      endpoint: null
+      endpoint: 'tyo.dn42.16lab.tech:21023'
       wg_pubkey: 'We84lDTeTFShG54P0MZ0jjEVN2OQQawerrFRNJJ+/DE='
       psk: null
       peer4: null
-      peer6: 'fe80::2054:2'
+      peer6: 'fe80::2054:4'
       own6: null
       keepalive: null
       mtu: null
