@@ -1169,3 +1169,24 @@ peers:
       managed: true
       effective_mnt: '16LAB-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20709
+      endpoint: null
+      wg_pubkey: 'mOQjVt6dFONBrBPoUJ9uz2R2fQ5RWZiuLXfQmx5j+Ak='
+      psk: null
+      peer4: '172.21.80.129'
+      peer6: 'fe80::709'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420709
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'BRYCE-MNT'
+      auth_provider: 'registry_pgp'
