@@ -1190,3 +1190,30 @@ peers:
       managed: true
       effective_mnt: 'BRYCE-MNT'
       auth_provider: 'registry_pgp'
+  - wg:
+      port: 22966
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        33313863363637633863356631393639646131343863363537366533336234373235616162656635
+        3731643364376339373063643933313433623862366261650a643661636163366162393030393031
+        35323363636535336331306638353533376562643931393036303734383439363132303662643765
+        3064363038643033350a373564313261336431313631326462386436656430633937356164313333
+        62663639643963373933353465306439666432336337313336353033393530633239
+      wg_pubkey: 'j0xseQAP/OBobcFIhKte4fxJU5UuZWocoCHOXlXw2nU='
+      psk: null
+      peer4: '172.20.216.66'
+      peer6: 'fe80::2966:200'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422966
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'LINGYAO-MNT'
+      auth_provider: 'kioubit'
