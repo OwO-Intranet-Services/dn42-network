@@ -1121,3 +1121,30 @@ peers:
       managed: true
       effective_mnt: '16LAB-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22966
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        65343165626664653461333835643834356639346231613330396435346634663161386366336135
+        6436613362623034393039653330663662623737663364390a353239383535326231626632383236
+        38363436316236306634333636653265323939343138353234643261333639323730326136353463
+        6336666166373134660a333062393334643732633233616665346435316164666566323435393934
+        3034
+      wg_pubkey: 'rMKBv7TmLgvFgfpILlJjZNdTdI/1Ik7Kl8nnEHjZNiM='
+      psk: null
+      peer4: '172.20.216.78'
+      peer6: 'fd9e:4217:1100:14::1'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422966
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'LINGYAO-MNT'
+      auth_provider: 'kioubit'
