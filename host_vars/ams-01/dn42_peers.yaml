@@ -1112,3 +1112,30 @@ peers:
       managed: true
       effective_mnt: 'SLOP-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 22966
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        30613039383365663362326335613237613738366165343737666565306463653730633865316337
+        3435643434373437323036653161303732383039303836320a646235383437343731666539663532
+        36376333653363666162306331653161626336616138643230633562663331356532653533356261
+        3136306136333363620a333032346463353634656132333731666164383132376665393435623035
+        34383837346264623561323261326334396234393835363865346262373133356636
+      wg_pubkey: 'w2E0cdHpSsGXfCHBw1SSo+B95XQK18WLUdcrmnpo8j8='
+      psk: null
+      peer4: '172.20.216.77'
+      peer6: 'fd9e:4217:1100:13::1'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422966
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'LINGYAO-MNT'
+      auth_provider: 'kioubit'
