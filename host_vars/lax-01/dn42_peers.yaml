@@ -1148,3 +1148,24 @@ peers:
       managed: true
       effective_mnt: 'LINGYAO-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20028
+      endpoint: 'sjc1.edge.ngworks.org:51810'
+      wg_pubkey: '1i1Tv7fM+wIfX8w5b50KiBdUhcNy1CxAfzr+Jfft93c='
+      psk: null
+      peer4: null
+      peer6: 'fe80::28'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420028
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'NGWORKS-MNT'
+      auth_provider: 'kioubit'
