@@ -1169,3 +1169,31 @@ peers:
       managed: true
       effective_mnt: 'NGWORKS-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 23904
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        31376566356130373933316138633863346633633238656365653665316134383466363939396336
+        6233616263363531343630393530303561333238346563640a663761663836333162333764616538
+        39316139633233663936643961313530646464663732313635383961663363376361616631363362
+        3934623961396233370a616463326635313666343739636530306135353435383161373334333465
+        34376264363561313131373264336132333363626163396538356462306437306334343763653734
+        3530353432623564376131303762613236663732323664366435
+      wg_pubkey: 'DyDOdNolkz6Y6BqSty+A/9Ekio+eytc4oOJHzW9KqEc='
+      psk: null
+      peer4: '172.20.10.66'
+      peer6: 'fe80::3904'
+      own6: 'fe80::1023'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242423904
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'NOX-MNT'
+      auth_provider: 'registry_email'
