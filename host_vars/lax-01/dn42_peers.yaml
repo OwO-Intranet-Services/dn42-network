@@ -1197,3 +1197,31 @@ peers:
       managed: true
       effective_mnt: 'NOX-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 20573
+      endpoint: null
+      wg_pubkey: 'SaIbO2Ff9Yetv8jHHeIXhrZaNeBnb5xp0ZPGFn9vOkI='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        65303139353938346432376130383238396431323233356462333339343564633139653131353134
+        3136366538343233393035323339623439333033313565390a353536636435353764386434373233
+        64663364633838626362336232613130333339623962666662343032366432343265643061326134
+        3831316235363266610a613563363865343061613735653765653537343736626239313333353434
+        37323439626439653131353564656465383836616436313332336265396139353939626565363831
+        3565653662616535343437373034333039626238343139393263
+      peer4: null
+      peer6: 'fe80::ade1'
+      own6: 'fe80::ade0'
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420573
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'EVA9-MNT'
+      auth_provider: 'registry_email'
