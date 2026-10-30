@@ -1160,3 +1160,24 @@ peers:
       managed: true
       effective_mnt: 'KOFY-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 20136
+      endpoint: 'ams.dn42.qkg.ca:41023'
+      wg_pubkey: 'iR23ighQGyAqr56N0ZjZQa9YqQYpIiwhfjPvkn/ybBM='
+      psk: null
+      peer4: null
+      peer6: 'fe80::136'
+      own6: 'fe80::1023:2'
+      keepalive: 25
+      mtu: null
+    bgp:
+      asn: 4242420136
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'QKG-MNT'
+      auth_provider: 'registry_ssh'
