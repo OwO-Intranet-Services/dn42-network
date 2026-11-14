@@ -255,3 +255,31 @@ peers:
       managed: true
       effective_mnt: 'REDBEAN0721-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 22559
+      endpoint: 'n2kiq.us.to:51023'
+      wg_pubkey: 'YcDNJyF0eOdE2FDZrf192plEK9ovNY7VYnb1stsetF8='
+      psk: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        31653334353566613636633264643339616564646337373630663739366564383565356436366361
+        3362306162393939306561356532363635383165373836650a363063326164393034396235386662
+        63643430303136656564366663353437623033353133356636326364663937313565323834643332
+        6263303963663665620a633532383930616430653366386638643230643661623136376563643663
+        31643165343437623465623432636235353131646161343733343138623437306233343534636437
+        3237636431643637316164306539336337336563393464623965
+      peer4: '172.21.77.129'
+      peer6: 'fe80::1023'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422559
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'B0782FA6AD-MNT'
+      auth_provider: 'kioubit'
