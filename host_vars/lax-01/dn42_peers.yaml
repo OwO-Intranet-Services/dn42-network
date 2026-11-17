@@ -1226,3 +1226,24 @@ peers:
       managed: true
       effective_mnt: 'EVA9-MNT'
       auth_provider: 'registry_email'
+  - wg:
+      port: 22441
+      endpoint: null
+      wg_pubkey: 'EgI8olFE6dn7N01v48ORtyROoY0bMDYXCi0lHyL5DW8='
+      psk: null
+      peer4: null
+      peer6: 'fe80::2441'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242422441
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'WIRED-MNT'
+      auth_provider: 'kioubit'
