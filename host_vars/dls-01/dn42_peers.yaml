@@ -56,14 +56,20 @@ peers:
       auth_provider: 'migration'
   - wg:
       port: 20454
-      endpoint: 'dn42a.nedifinita.com:52381'
+      endpoint: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        61666234633131636565346633643130666664396534396465356633666637363435633233653162
+        3536393334393866303431316366393431386663646636610a393337663639356232313334336461
+        36626439343939353163646563303466303864653763303066656637336230393333623930316535
+        6664303734323665620a366265646438363339303635323865646338306235306235643736333138
+        61393535363634623337323066373231366234393062623436396665313335356366
       wg_pubkey: '8EXT6zciVdil3Zg6dqB0YT2SssTh2OTKDeBBfrVGUkE='
       psk: null
       peer4: null
       peer6: 'fe80::454'
-      own6: 'fe80::1023:2'
+      own6: null
       keepalive: null
-      mtu: 1420
+      mtu: null
     bgp:
       asn: 4242420454
       ipv4: true
@@ -71,11 +77,10 @@ peers:
       extended_next_hop: true
       mp_bgp: true
       mp_bgp_transport: 'ipv6'
-    removed: true
     autopeer:
       managed: true
       effective_mnt: 'NEDIFINITA-MNT'
-      auth_provider: 'migration'
+      auth_provider: 'kioubit'
   - comment: 'RoutedBits'
     wg:
       port: 20207
