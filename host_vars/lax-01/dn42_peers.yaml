@@ -1103,11 +1103,11 @@ peers:
       auth_provider: 'registry_pgp'
   - wg:
       port: 22054
-      endpoint: 'sjc.dn42.16lab.tech:21023'
-      wg_pubkey: 'WuX2GIlJDNW7K1QKZ1rVf2tcL9raNstq2vEyfAndKRU='
+      endpoint: 'lax.dn42.16lab.tech:21023'
+      wg_pubkey: 'cp/25wX912CCSZyJe43yEl/yz2zyVIZASxMIVrWo+hY='
       psk: null
       peer4: null
-      peer6: 'fe80::2054:2'
+      peer6: 'fe80::2054:8'
       own6: null
       keepalive: null
       mtu: null
@@ -1121,7 +1121,7 @@ peers:
     autopeer:
       managed: true
       effective_mnt: '16LAB-MNT'
-      auth_provider: 'kioubit'
+      auth_provider: 'iedon'
   - wg:
       port: 22966
       endpoint: !vault |
