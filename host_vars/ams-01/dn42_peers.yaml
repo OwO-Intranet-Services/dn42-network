@@ -1181,3 +1181,24 @@ peers:
       managed: true
       effective_mnt: 'QKG-MNT'
       auth_provider: 'registry_ssh'
+  - wg:
+      port: 20091
+      endpoint: 'ipv6.derouter.dn42.yukifia.moe:41023'
+      wg_pubkey: 'YDVLhRPQa8ZgWvEHX5Gw+myIjHSuD+HuRvCWvIjirUM='
+      psk: null
+      peer4: '172.22.122.70'
+      peer6: 'fe80::91'
+      own6: null
+      keepalive: null
+      mtu: null
+    bgp:
+      asn: 4242420091
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'YUKIFIA-MNT'
+      auth_provider: 'kioubit'
