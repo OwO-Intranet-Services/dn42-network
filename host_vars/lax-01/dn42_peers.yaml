@@ -1247,3 +1247,24 @@ peers:
       managed: true
       effective_mnt: 'WIRED-MNT'
       auth_provider: 'kioubit'
+  - wg:
+      port: 22248
+      endpoint: 'srv.gabrielggr.us.to:51835'
+      wg_pubkey: 'nSskSTMBqbh2hmfo+Ic1fMURQwxvz1EGTOnZ0PKlXgA='
+      psk: null
+      peer4: null
+      peer6: 'fe80::1'
+      own6: null
+      keepalive: 25
+      mtu: 1412
+    bgp:
+      asn: 4242422248
+      ipv4: true
+      ipv6: true
+      extended_next_hop: true
+      mp_bgp: true
+      mp_bgp_transport: 'ipv6'
+    autopeer:
+      managed: true
+      effective_mnt: 'GGR-MNT'
+      auth_provider: 'kioubit'
